@@ -36,7 +36,7 @@ private:
 	float game_timer;
 
 	Stage* stage = nullptr;
-
+	Enemy* enemy = nullptr;
 	Player* player = nullptr;
 
 	Sprite* sprite = nullptr;

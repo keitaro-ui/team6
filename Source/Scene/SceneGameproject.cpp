@@ -202,12 +202,12 @@ void SceneGameproject::Render()
 	{
 		//ステージ描画
 		stage->Render(rc, modelRenderer);
-
-		player->Render(rc, modelRenderer);
-
 		EnemyManager::Instance().Render(rc, modelRenderer);
+		//player->Render(rc, modelRenderer);
 
-		player->RenderDebugPrimitive(rc, shapeRenderer);
+		//EnemyManager::Instance().Render(rc, modelRenderer);
+
+		//player->RenderDebugPrimitive(rc, shapeRenderer);
 	}
 
 	// 3Dデバッグ描画
@@ -222,20 +222,20 @@ void SceneGameproject::Render()
 
 	// 2Dスプライト描画
 	{
-		sprite->Render(rc,
+		/*sprite->Render(rc,
 			610, 335, 0, 64.0f, 64.0f,
 			0,
-			1, 1, 1, 1);
+			1, 1, 1, 1);*/
 
-		sprite_text->Render(rc,
-			950, 0, 0, 120, 80, 0, 1, 1, 1, 1);
+		/*sprite_text->Render(rc,
+			950, 0, 0, 120, 80, 0, 1, 1, 1, 1);*/
 
-		int n[2]{};
+		//int n[2]{};
 		//n[0] = static_cast<int>(game_timer) / 100 % 10;
-		n[0] = static_cast<int>(game_timer) / 10 % 10;
-		n[1] = static_cast<int>(game_timer) % 10;
+		//n[0] = static_cast<int>(game_timer) / 10 % 10;
+		//n[1] = static_cast<int>(game_timer) % 10;
 
-		for (int i = 0; i < 2; i++)
+		/*for (int i = 0; i < 2; i++)
 		{
 			sprite_number->Render(rc,
 				32 * 2 * i + 1100, 10,
@@ -245,7 +245,7 @@ void SceneGameproject::Render()
 				372.5, 514,
 				0,
 				1, 1, 1, 1);
-		}
+		}*/
 	}
 }
 

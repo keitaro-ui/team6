@@ -8,8 +8,8 @@
 class Enemy : public Character
 {
 public:
-	Enemy() {}
-	~Enemy() {}
+	Enemy();
+	~Enemy();
 
 	//”jŠü
 	void Destroy();
@@ -22,5 +22,11 @@ public:
 
 	int model_index = -1;
 	/*int BoardModel_index = -1;*/
+
+	// Ž€–S”»’è
+	virtual bool IsDead() const { return health <= 0; }
+
+private:
+	Model* model = nullptr;
 
 };
