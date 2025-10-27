@@ -202,7 +202,7 @@ void SceneGameproject::Render()
 	{
 		//ステージ描画
 		stage->Render(rc, modelRenderer);
-		EnemyManager::Instance().Render(rc, modelRenderer);
+		//EnemyManager::Instance().Render(rc, modelRenderer);
 		//player->Render(rc, modelRenderer);
 
 		//EnemyManager::Instance().Render(rc, modelRenderer);
@@ -216,7 +216,7 @@ void SceneGameproject::Render()
 		//player->RenderDebugPrimitive(rc, shapeRenderer);
 
 		//エネミーデバッグプリミティブ描画
-		EnemyManager::Instance(); 
+		//EnemyManager::Instance(); 
 		//.RenderDebugPrimitive(rc, shapeRenderer);
 	}
 

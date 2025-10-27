@@ -31,7 +31,7 @@ void CameraController::Update(float elapsedTime)
 	angle.y += ax * 0.2f;
 
 
-	//X²‚ÌƒJƒƒ‰‰ñ“]‚ğ§ŒÀ
+	////X²‚ÌƒJƒƒ‰‰ñ“]‚ğ§ŒÀ
 	if (angle.x < minAngleX)
 	{
 		angle.x = minAngleX;
@@ -41,14 +41,14 @@ void CameraController::Update(float elapsedTime)
 		angle.x = maxAngleX;
 	}
 
-	if (angle.y < minAngleY)
-	{
-		angle.y = minAngleY;
-	}
-	if (angle.y > maxAngleY)
-	{
-		angle.y = maxAngleY;
-	}
+	//if (angle.y < minAngleY)
+	//{
+	//	angle.y = minAngleY;
+	//}
+	//if (angle.y > maxAngleY)
+	//{
+	//	angle.y = maxAngleY;
+	//}
 
 
 	//Y²‚Ì‰ñ“]’l‚ğ-3.14`3.14‚Éû‚Ü‚é‚æ‚¤‚É‚·‚é
@@ -88,7 +88,7 @@ void CameraController::Update(float elapsedTime)
 	Camera::Instance().SetLookAt(eye, target, DirectX::XMFLOAT3(0, 1, 0));
 
 	//SetCursorPos(Graphics::Instance().GetScreenWidth() / 2.0f, Graphics::Instance().GetScreenHeight() / 2.0f);
-	//mouse.Update();
+	mouse.Update();
 }
 
 void CameraController::MouseCamera(float elapsedTime)

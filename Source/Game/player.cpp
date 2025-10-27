@@ -45,7 +45,7 @@ void Player::Update(float elapsedTime)
 	shottimer++;
 	//Mouse& mouse = Input::Instance().GetMouse();
 	////ˆÚ“®“ü—Íˆ—
-	//InputMove(elapsedTime);
+	InputMove(elapsedTime);
 
 	////ƒWƒƒƒ“ƒv“ü—Íˆ—
 	//InputJump();
