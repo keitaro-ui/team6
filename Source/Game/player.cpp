@@ -57,7 +57,7 @@ void Player::Update(float elapsedTime)
 	coolgun(elapsedTime);
 
 	//’eŠÛ“ü—Íˆ—
-	InputProjectile();
+	//InputProjectile();
 
 	//‘¬—Íˆ—XV
 	UpdateVelocity(elapsedTime);
