@@ -33,11 +33,9 @@ public:
 	void DrawGUI() override;
 
 private:
-	Stage* stage = nullptr;
+	std::unique_ptr<Stage> stage = nullptr;
 
-	Player* player = nullptr;
-
-	Sprite* sprite = nullptr;
+	std::unique_ptr<Player> player = nullptr;
 
 	Balloon* balloon = nullptr;
 
@@ -45,17 +43,8 @@ private:
 
 	Box* box = nullptr;
 
-	Sprite* sprite2 = nullptr;
-	Sprite* sprite3 = nullptr;
-
+	std::unique_ptr<Sprite> sprites[3];
+	
 	CameraController* cameraController = nullptr;
 	int change = 0;
-	
-public:
-	
-
-	SceneTutorial(Stage* stage, Player* player, CameraController* cameraController)
-		: stage(stage), player(player), cameraController(cameraController)
-	{
-	}
 };

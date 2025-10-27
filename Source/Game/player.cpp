@@ -24,9 +24,9 @@ Player::Player()
 	scale.x = scale.y = scale.z = 0.21f;
 
 	//ヒットSE読み込み
-	hitSE = Audio::Instance().LoadAudioSource("Data/Sound/Hit.wav");
+	/*hitSE = Audio::Instance().LoadAudioSource("Data/Sound/Hit.wav");
 	shotSE = Audio::Instance().LoadAudioSource("Data/Sound/revolver.wav");
-	takeSE = Audio::Instance().LoadAudioSource("Data/Sound/take revolver.wav");
+	takeSE = Audio::Instance().LoadAudioSource("Data/Sound/take revolver.wav");*/
 }
 
 //デストラクタ

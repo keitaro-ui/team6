@@ -10,22 +10,21 @@
 #include "SceneTitle.h"
 #include "SceneGame.h"
 #include "SceneLoading.h"
-#include "SceneGameproject.h"
 
 
 // 初期化
 void SceneTutorial::Initialize()
 {
 	//ステージ初期化
-	stage = new Stage();
+	stage = std::make_unique<Stage>();
 
 	//プレイヤー初期化
-	player = new Player();
+	player = std::make_unique<Player>();
 
 	//レティクル関数
-	sprite = new Sprite("Data/Sprite/レティクル.png");
-	sprite2 = new Sprite("Data/Sprite/チュートリアル問題.png");
-	sprite3 = new Sprite("Data/Sprite/チュートリアル解答.png");
+	sprites[0] = std::make_unique<Sprite>("Data/Sprite/レティクル.png");
+	sprites[1] = std::make_unique<Sprite>("Data/Sprite/チュートリアル問題.png");
+	sprites[2] = std::make_unique<Sprite>("Data/Sprite/チュートリアル解答.png");
 
 	//レティクル関数
 	SceneGame::RoadModel();
@@ -106,6 +105,7 @@ void SceneTutorial::Initialize()
 // 終了化
 void SceneTutorial::Finalize()
 {
+	//mouseの位置ロック状態を解除
 	Input::Instance().GetMouse().Unlock();
 
 	//カメラコントローラー終了化
@@ -115,20 +115,7 @@ void SceneTutorial::Finalize()
 		cameraController = nullptr;
 	}
 
-	//ステージ終了化
-	if (stage != nullptr)
-	{
-		delete stage;
-		stage = nullptr;
-	}
-
-	//プレイヤー終了化
-	if (player != nullptr)
-	{
-		delete player;
-		player = nullptr;
-	}
-
+	//boxなどのenemyを継承しているnewはdeleteしてはいけない。EnemyManagerごと消す
 	//エネミー終了化
 	EnemyManager::Instance().Clear();
 }
@@ -182,7 +169,7 @@ void SceneTutorial::Update(float elapsedTime)
 		//シーン遷移
 		if (gamePad.GetButtonDown() & anyButton)
 		{
-			SceneManager::Instance().ChangeScene(new SceneLoading(new SceneGameproject));
+			SceneManager::Instance().ChangeScene(new SceneLoading(new SceneGame));
 		}
 		break;
 	};
@@ -241,7 +228,7 @@ void SceneTutorial::Render()
 
 		if (change == 1)
 		{
-			sprite->Render(rc,
+			sprites[0]->Render(rc,
 				610, 335, 0, 64.0f, 64.0f,
 				0,
 				1, 1, 1, 1);
@@ -249,7 +236,7 @@ void SceneTutorial::Render()
 
 		if (change == 0)
 		{
-			sprite2->Render(rc,
+			sprites[1]->Render(rc,
 				0, 0, 0, screenWidth, screenHeight,
 				0,
 				1, 1, 1, 1);
@@ -257,7 +244,7 @@ void SceneTutorial::Render()
 
 		if (change == 2)
 		{
-			sprite3->Render(rc,
+			sprites[2]->Render(rc,
 				0, 0, 0, screenWidth, screenHeight,
 				0,
 				1, 1, 1, 1);
