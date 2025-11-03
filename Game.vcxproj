@@ -159,6 +159,7 @@
     <ClInclude Include="Source\System\ModelRenderer.h" />
     <ClInclude Include="Source\System\ModelResource.h" />
     <ClInclude Include="Source\System\Mouse.h" />
+    <ClInclude Include="Source\System\PhongShadowShader.h" />
     <ClInclude Include="Source\System\RenderContext.h" />
     <ClInclude Include="Source\System\RenderState.h" />
     <ClInclude Include="Source\System\Shader.h" />

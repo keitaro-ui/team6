@@ -23,5 +23,7 @@ private:
 	const HWND				hWnd;
 	HDC						hDC;
 	HighResolutionTimer		timer;
+	
+	
 };
 

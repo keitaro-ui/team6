@@ -223,45 +223,7 @@ void Player::coolgun(float elpasedTime)
 //デバッグ用GUI描画
 void Player::DrawDebugGUI()
 {
-	//ImVec2 pos = ImGui::GetMainViewport()->GetWorkPos();
-	//ImGui::SetNextWindowPos(ImVec2(pos.x + 10, pos.y + 10), ImGuiCond_Once);
-	//ImGui::SetNextWindowSize(ImVec2(300, 300), ImGuiCond_FirstUseEver);
-
-	//if (ImGui::Begin("Player", nullptr, ImGuiWindowFlags_None))
-	//{
-	//	//マウスの位置
-	//	ImGui::Text("x = %f", ndc.x);
-	//	ImGui::Text("y = %f", ndc.y);
-
-	//	//的
-	//	//extern int count_1, count_2, count_3, count_4;
-	//	ImGui::Text("count_1 = %d", count_1);
-	//	ImGui::Text("count_2 = %d", count_2);
-	//	ImGui::Text("count_3 = %d", count_3);
-	//	ImGui::Text("count_4 = %d", count_4);
-
-	//	//トランスフォーム
-	//	if (ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_DefaultOpen))
-	//	{
-	//		//位置
-	//		ImGui::InputFloat3("Position", &position.x);
-	//		//回転
-	//		DirectX::XMFLOAT3 a;
-	//		a.x = DirectX::XMConvertToDegrees(angle.x);
-	//		a.y = DirectX::XMConvertToDegrees(angle.y);
-	//		a.z = DirectX::XMConvertToDegrees(angle.z);
-	//		ImGui::InputFloat3("Angle", &a.x);
-	//		angle.x = DirectX::XMConvertToRadians(a.x);
-	//		angle.y = DirectX::XMConvertToRadians(a.y);
-	//		angle.z = DirectX::XMConvertToRadians(a.z);
-	//		//スケール
-	//		ImGui::InputFloat3("Scale", &scale.x);
-
-	//		//カメラ
-	//		//ImGui::InputFloat3("eye",&)
-	//	}
-	//}
-	//ImGui::End();
+	
 }
 
 //描画処理
