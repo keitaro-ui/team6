@@ -45,6 +45,31 @@ void Mouse::Update()
 	buttonDown = ~buttonState[1] & newButtonState;	// 押した瞬間
 	buttonUp = ~newButtonState & buttonState[1];	// 離した瞬間
 
+
+	if (buttonDown & (1 << 2))  // 右ボタンが押された瞬間
+	{
+		bLock = !bLock;  // トグル（切り替え）
+
+		if (bLock)
+		{
+			ShowCursor(FALSE); // カーソル非表示
+
+			// 中央にリセット
+			POINT center = { (LONG)(screenWidth / 2.0f), (LONG)(screenHeight / 2.0f) };
+			::ClientToScreen(hWnd, &center);
+			::SetCursorPos(center.x, center.y);
+
+			// 前回座標を中央に初期化（これが重要）
+			positionX[0] = positionX[1] = screenWidth / 2.0f;
+			positionY[0] = positionY[1] = screenHeight / 2.0f;
+			deltaPositionX = deltaPositionY = 0;
+		}
+		else
+		{
+			ShowCursor(TRUE); // カーソル表示
+		}
+	}
+
 	// カーソル位置の取得
 	POINT cursor;
 	::GetCursorPos(&cursor);
