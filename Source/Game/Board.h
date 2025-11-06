@@ -1,9 +1,8 @@
 #pragma once
-
 #include "System/Model.h"
 #include "Enemy.h"
+#include "Player.h"
 
-//スライム
 class Board : public Enemy
 {
 public:
@@ -16,12 +15,22 @@ public:
 	//描画処理
 	void Render(const RenderContext& rc, ModelRenderer* renderer) override;
 
-	void CreateModel();
+	//距離によるイベントを検出する
+	bool CheckPlayerOnBoard(const Player* player);
+
+	//クイズ開始処理
+	void StartQuiz();
 
 protected:
 	//死亡したときに呼ばれる
-	void OnDead() override;
+	//void OnDead() override;
+
+//変数
+public:
+	bool quizStarted = false;
+	bool playerNear = false;
 
 private:
-	
+	Model* model_boad;
+	bool quizFlag;
 };

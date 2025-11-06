@@ -27,7 +27,7 @@ void SceneTutorial::Initialize()
 	sprites[2] = std::make_unique<Sprite>("Data/Sprite/チュートリアル解答.png");
 
 	//レティクル関数
-	SceneGame::RoadModel();
+	//SceneGame::RoadModel();
 	
 	
 	//カメラ初期設定
@@ -61,7 +61,7 @@ void SceneTutorial::Initialize()
 		/*target->setobjnum(i);*/
 
 		//Board* board = new Board();
-		board = new Board();
+		//board = new Board();
 
 		//Box* box = new Box();
 		box = new Box();

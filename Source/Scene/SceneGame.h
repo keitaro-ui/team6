@@ -33,8 +33,7 @@ public:
 	void DrawGUI() override;
 
 private:
-	float game_timer;
-
+	//ポインタ宣言
 	std::unique_ptr<Stage> stage = nullptr;
 	
 	std::unique_ptr<Player> player = nullptr;
@@ -44,13 +43,19 @@ private:
 	std::unique_ptr<Sprite> sprite_text = nullptr;
 
 	Balloon* balloon = nullptr;
-	
-	Board* board = nullptr;
+
+	//Board* board = nullptr;
+
+	//複数のBoardを管理する配列
+	//std::vector<std::shared_ptr<Board>> boards;  
+	std::vector<Board*> boards;
 
 	Box* box = nullptr;
-
 	CameraController* cameraController = nullptr;
 
+	//変数宣言
+	bool quizFlag = false;
+
 public:
-	static void RoadModel();
+	//static void RoadModel();
 };

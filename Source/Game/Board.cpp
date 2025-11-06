@@ -4,32 +4,24 @@
 #include <ctime>
 #include <cstdlib>
 
-Model* model_boad[20];
-int board_answer = -1;
-int BoardModel_index = -1;
-bool CreateSelect = true;
+// Playerクラスのインスタンスが必要
+// BoardのコンストラクタでPlayerインスタンスを受け取る
 
-//コンストラクタ
+// 例1: Playerインスタンスを引数で受け取る場合
 Board::Board()
 {
-
-	//モデルが大きいのでスケーリング
-	scale.x = scale.y = scale.z = 0.6f;
-
-	//幅、高さ設定
+	model_boad = new Model("Data/Model/Boad/boad_1.mdl");
+	scale.x = scale.y = scale.z = 0.2f;
 	radius = 0.2f;
 	height = 0.0f;
-	if (CreateSelect == true)
-	{
-		CreateModel();
-	}
-	CreateSelect = false;
+	quizFlag = false;
 }
 
 //デストラクタ
 Board::~Board()
 {
-	
+	quizFlag = false;
+	delete model_boad;
 }
 
 //更新処理
@@ -46,35 +38,54 @@ void Board::Update(float elapsedTime)
 
 	//無敵時間更新
 	UpdateInvincibleTimer(elapsedTime);
+
+	//if ()
+	{
+
+	}
 }
 
 //描画処理
 void Board::Render(const RenderContext& rc, ModelRenderer* renderer)
 {
-	renderer->Render(rc, transform, model_boad[BoardModel_index], ShaderId::Lambert);
+	renderer->Render(rc, transform, model_boad, ShaderId::Lambert);
 }
 
-void Board::CreateModel()
+//playerと対面でクイズ開始させる
+bool Board::CheckPlayerOnBoard(const Player* player)
 {
-	srand((unsigned int)time(NULL));
+	// 現在の距離を計算
+	DirectX::XMVECTOR boardPos_vec = DirectX::XMLoadFloat3(&position);
+	DirectX::XMVECTOR playerPos_vec = DirectX::XMLoadFloat3(&player->GetPosition());
+	DirectX::XMVECTOR distVec = DirectX::XMVectorSubtract(boardPos_vec, playerPos_vec);
+	DirectX::XMFLOAT3 distance;
+	DirectX::XMStoreFloat3(&distance, distVec);
 
-	/*std::random_device rd;
-	std::mt19937 gen(rd());
-	std::uniform_int_distribution<int>dist(1, 20);
-	
-	BoardModel_index = dist(gen);
-	board_answer = BoardModel_index;*/
+	// プレイヤーとボードの水平距離（XZ平面）
+	float distXZ = sqrtf(distance.x * distance.x + distance.z * distance.z);
 
-	std::srand(static_cast<unsigned int>(std::time(0)));
-	BoardModel_index = std::rand() % 20 + 1;
-	board_answer = BoardModel_index;
+	// 極端に近い距離（例：30cm以内）を接近判定に使う
+	const float NEAR_DISTANCE = 0.3f;
+
+	bool isNear = (distXZ <= NEAR_DISTANCE);
+
+	// 「前フレームは離れていて、今フレームで近づいた」→ その瞬間だけ true を返す
+	bool justEntered = (!playerNear && isNear);
+
+	// 状態を次フレームに持ち越す
+	playerNear = isNear;
+
+	// クイズ開始判定
+	if (justEntered) {
+		quizStarted = true;
+		return true;
+	}
+
+	return false;
 }
 
-void Board::OnDead()
+//クイズの中身
+void Board::StartQuiz()
 {
-	//自信を破棄
-	/*if (scale.x > 0.0f)
-	{
-		Destroy();
-	}*/
+
 }
