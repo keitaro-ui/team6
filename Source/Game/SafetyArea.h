@@ -14,6 +14,7 @@ public:
         position = { 0.0f, 0.0f, 0.0f };
         XMStoreFloat4x4(&transform, DirectX::XMMatrixIdentity());
         balloonModel = new Model("Data/Model/Target/balloon.mdl");
+        scale={0.6f, 0.6f, 0.6f};
         assert(balloonModel && "balloonModel Ç™ì«Ç›çûÇﬂÇ‹ÇπÇÒ");
     }
     

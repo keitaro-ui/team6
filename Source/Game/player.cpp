@@ -119,7 +119,7 @@ void Player::InputProjectile()
 			//if (mouse.GetButtonDown() & Mouse::BTN_LEFT)
 			if (GetAsyncKeyState('Q') & 1)
 			{
-				DirectX::XMFLOAT3 pos = { 0, 2.0f, 20 };
+				DirectX::XMFLOAT3 pos = { position.x, 2.0f, position.z };
 
 				// ===== SafetyArea生成 =====
 				SafetyArea* area = new SafetyArea(&ProjectileManager::Instance());
@@ -147,6 +147,7 @@ void Player::coolgun(float elpasedTime)
 //デバッグ用GUI描画
 void Player::DrawDebugGUI()
 {
+	ImGui::DragFloat3("pos", &position.x);
 	
 }
 

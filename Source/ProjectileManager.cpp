@@ -57,7 +57,7 @@ void ProjectileManager::Render(const RenderContext& rc, ModelRenderer* renderer)
 	for (auto projectile : projectiles)
 	{
 		//if (projectile && !projectile->IsDead())
-			projectile->Render(rc, renderer);
+		projectile->Render(rc, renderer);
 	}
 	//for (auto area : projectiles)
 	//{

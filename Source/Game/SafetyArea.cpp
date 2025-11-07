@@ -50,8 +50,8 @@ void SafetyArea::Render(const RenderContext& rc, ModelRenderer* renderer)
 {
    
     if (!balloonModel || !renderer) return;
-        renderer->Render(rc, transform, balloonModel, ShaderId::Lambert);
-    
+    renderer->Render(rc, transform, balloonModel, ShaderId::Lambert);
+    //RenderDebugPrimitive(rc, renderer);
 }
 
 void SafetyArea::RenderDebugPrimitive(const RenderContext& rc, ShapeRenderer* renderer)

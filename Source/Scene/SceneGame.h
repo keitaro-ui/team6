@@ -38,24 +38,16 @@ private:
 	
 	std::unique_ptr<Player> player = nullptr;
 
-	std::unique_ptr<Sprite> sprite = nullptr;
-	std::unique_ptr<Sprite> sprite_number = nullptr;
-	std::unique_ptr<Sprite> sprite_text = nullptr;
+	CameraController* cameraController = nullptr;
 
 	Balloon* balloon = nullptr;
 
-	//Board* board = nullptr;
-
 	//•¡”‚ÌBoard‚ğŠÇ—‚·‚é”z—ñ
-	//std::vector<std::shared_ptr<Board>> boards;  
 	std::vector<Board*> boards;
-
-	Box* box = nullptr;
-	CameraController* cameraController = nullptr;
 
 	//•Ï”éŒ¾
 	bool quizFlag = false;
 
 public:
-	//static void RoadModel();
+	
 };

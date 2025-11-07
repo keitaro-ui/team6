@@ -22,10 +22,9 @@ void SceneGame::Initialize()
 	player = std::make_unique<Player>();
 
 	//スプライト初期設定
-	sprite = std::make_unique<Sprite>("Data/Sprite/レティクル.png");
-	sprite_number = std::make_unique<Sprite>("Data/Sprite/number.png");
-	sprite_text = std::make_unique<Sprite>("Data/Sprite/残り時間.png");
-
+	{
+		
+	}
 	//カメラ初期設定
 	Graphics& graphics = Graphics::Instance();
 	Camera& camera = Camera::Instance();
@@ -52,46 +51,45 @@ void SceneGame::Initialize()
 	EnemyManager& enemyManager = EnemyManager::Instance();
 	//for (int i = 0; i < 20; i++)
 	{
-		//EnemySlime* target = new EnemySlime();
-		balloon = new Balloon();
-		
-		box = new Box();
-		/*box->setobjnum(i);*/
-		
-		//エネミー位置
+		//ランダムを出力した変数3つ
 		std::random_device rd;
 		std::mt19937 gen(rd());
 		std::uniform_real_distribution<float>dist (-4.0f, 4.0f);
 		std::uniform_real_distribution<float>dist2(0.5f, 4.0f);
 		std::uniform_real_distribution<float>dist3(5.0f, 10.0f);
-
+	
+		//エネミー位置
+		balloon = new Balloon();
 		balloon->SetPosition(DirectX::XMFLOAT3(dist(gen), dist2(gen), dist3(gen)));
 		balloon->SetAngle(DirectX::XMFLOAT3(0, DirectX::XM_PI, 0));
 		
 		//クイズ板の初期設定
 		{
-			//auto board = std::make_shared<Board>();
-			Board* board = new Board();
+			/*Board* board_0 = new Board();
+			board_0->SetPosition(Board::boardPos[0]);
+			board_0->SetAngle(Board::boardAng[0]);
+			enemyManager.Instance().Register(board_0);
+			boards.push_back(board_0);
+			
+			Board* board_1 = new Board();
+			board_1->SetPosition(Board::boardPos[1]);
+			board_1->SetAngle(Board::boardAng[1]);
+			enemyManager.Instance().Register(board_1);
+			boards.push_back(board_1);
 
-			board->SetPosition(DirectX::XMFLOAT3(0, 2.0f, 14));
-			board->SetAngle(DirectX::XMFLOAT3(0, DirectX::XM_PI, 0));
+			Board* board_2 = new Board();
+			board_2->SetPosition(Board::boardPos[2]);
+			board_2->SetAngle(Board::boardAng[2]);
+			enemyManager.Instance().Register(board_2);
+			boards.push_back(board_2);
 
-			enemyManager.Instance().Register(board);
-			boards.push_back(board);
+			Board* board_3 = new Board();
+			board_3->SetPosition(Board::boardPos[3]);
+			board_3->SetAngle(Board::boardAng[3]);
+			enemyManager.Instance().Register(board_3);
+			boards.push_back(board_3);*/
 		}
-
-		//if (i % 5 == 0) { num = 0; hei++; }
-		
-		box->SetPosition(DirectX::XMFLOAT3(-4.6f+2.3f*num, 1.45f*hei, 12));
-
-		num++;
-		
-		//enemyManager.Register(balloon);
-		
-		//enemyManager.Register(box);
-		balloon->box = box;
 	}
-
 	//マウス位置の取得とロック
 	Input::Instance().GetMouse().Lock();
 }
@@ -132,7 +130,7 @@ void SceneGame::Update(float elapsedTime)
 	//エネミー更新処理
 	EnemyManager::Instance().Update(elapsedTime);
 
-	// プレイヤーがボードに近づいたか？
+	// プレイヤーがボードに近づいた時
 	for (auto& board : boards)
 	{
 		if (board->CheckPlayerOnBoard(player.get()))
@@ -181,12 +179,12 @@ void SceneGame::Render()
 	{
 		//ステージ描画
 		stage->Render(rc, modelRenderer);
-		//EnemyManager::Instance().Render(rc, modelRenderer);
+		
 		//player->Render(rc, modelRenderer);
 
-		EnemyManager::Instance().Render(rc, modelRenderer);
+		ProjectileManager::Instance().Render(rc, modelRenderer);
 
-		//player->RenderDebugPrimitive(rc, shapeRenderer);
+		EnemyManager::Instance().Render(rc, modelRenderer);
 	}
 
 	// 3Dデバッグ描画

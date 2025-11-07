@@ -4,14 +4,16 @@
 #include <ctime>
 #include <cstdlib>
 
-// Playerクラスのインスタンスが必要
-// BoardのコンストラクタでPlayerインスタンスを受け取る
-
-// 例1: Playerインスタンスを引数で受け取る場合
 Board::Board()
 {
-	model_boad = new Model("Data/Model/Boad/boad_1.mdl");
-	scale.x = scale.y = scale.z = 0.2f;
+	//デフォルト（指定なしの場合）
+	model = std::make_unique<Model>("Data/Model/Boad/boad_1.mdl");
+	position = { 0, 0, 0 };
+	angle = { 0, DirectX::XM_PI, 0 };
+	scale = { 0.2f, 0.2f, 0.2f };
+
+	//boardPos[0] = { 0.0f, 0.0f, 15.0f };
+
 	radius = 0.2f;
 	height = 0.0f;
 	quizFlag = false;
@@ -21,7 +23,12 @@ Board::Board()
 Board::~Board()
 {
 	quizFlag = false;
-	delete model_boad;
+}
+
+//modelのセッター
+void Board::SetModel(const char* modelPath)
+{
+	model = std::make_unique<Model>(modelPath);
 }
 
 //更新処理
@@ -34,7 +41,7 @@ void Board::Update(float elapsedTime)
 	UpdateTransform();
 
 	//モデル行列更新
-	//model_->UpdateTransform();
+	//model->UpdateTransform();
 
 	//無敵時間更新
 	UpdateInvincibleTimer(elapsedTime);
@@ -48,7 +55,8 @@ void Board::Update(float elapsedTime)
 //描画処理
 void Board::Render(const RenderContext& rc, ModelRenderer* renderer)
 {
-	renderer->Render(rc, transform, model_boad, ShaderId::Lambert);
+	//renderer->Render(rc, transform, model_boad, ShaderId::Lambert);
+	renderer->Render(rc, transform, model.get(), ShaderId::Lambert);
 }
 
 //playerと対面でクイズ開始させる
@@ -87,5 +95,7 @@ bool Board::CheckPlayerOnBoard(const Player* player)
 //クイズの中身
 void Board::StartQuiz()
 {
-
+	// モデルに書かれたクイズ内容を参照する想定
+   // ここではデバッグ出力のみ
+	OutputDebugStringA("Board::StartQuiz() called\n");
 }
