@@ -9,7 +9,7 @@ ProjectileManager::ProjectileManager()
 //デストラクタ
 ProjectileManager::~ProjectileManager()
 {
-	Clear();
+	//Clear();
 }
 
 //弾丸削除
@@ -24,14 +24,22 @@ void ProjectileManager::Update(float elapsedTime)
 	//更新処理
 	for (Projectile* projectile : projectiles)
 	{
-		projectile->Update(elapsedTime);
+		//if (projectile && !projectile->IsDead())
+		{
+			projectile->Update(elapsedTime);
+		}
 	}
+
+
 
 	//破棄処理
 	for (Projectile * projectile : removes)
 	{
-		std::vector<Projectile*>::iterator it = std::find(projectiles.begin(),
-			projectiles.end(), projectile);
+		if (!projectile) continue;
+		auto it = std::find(projectiles.begin(), projectiles.end(), projectile);
+
+		/*std::vector<Projectile*>::iterator it = std::find(projectiles.begin(),
+			projectiles.end(), projectile);*/
 		if (it != projectiles.end())
 		{
 			projectiles.erase(it);
@@ -46,10 +54,15 @@ void ProjectileManager::Update(float elapsedTime)
 //描画処理
 void ProjectileManager::Render(const RenderContext& rc, ModelRenderer* renderer)
 {
-	for (Projectile* projectile : projectiles)
+	for (auto projectile : projectiles)
 	{
-		projectile->Render(rc, renderer);
+		//if (projectile && !projectile->IsDead())
+			projectile->Render(rc, renderer);
 	}
+	//for (auto area : projectiles)
+	//{
+	//	area->Render(rc, renderer);
+	//}
 }
 
 //デバッグプリミティブ描画

@@ -43,6 +43,13 @@ public:
 		float height,
 		const DirectX::XMFLOAT4& color) const;
 
+	// ‰~‚ð•`‰æ
+	void RenderCircle(
+		const RenderContext& rc,
+		const DirectX::XMFLOAT3& position,
+		float radius,
+		const DirectX::XMFLOAT4& color) const;
+
 private:
 	struct Mesh
 	{

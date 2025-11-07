@@ -2,6 +2,7 @@
 #include"System/Input.h"
 #include<imgui.h>
 #include "Camera.h"
+#include "SafetyArea.h"
 
 #include "EnemyManager.h"
 #include "Collision.h"
@@ -23,10 +24,7 @@ Player::Player()
 	//モデルが大きいのでスケーリング
 	scale.x = scale.y = scale.z = 0.21f;
 
-	//ヒットSE読み込み
-	/*hitSE = Audio::Instance().LoadAudioSource("Data/Sound/Hit.wav");
-	shotSE = Audio::Instance().LoadAudioSource("Data/Sound/revolver.wav");
-	takeSE = Audio::Instance().LoadAudioSource("Data/Sound/take revolver.wav");*/
+	
 }
 
 //デストラクタ
@@ -57,13 +55,13 @@ void Player::Update(float elapsedTime)
 	coolgun(elapsedTime);
 
 	//弾丸入力処理
-	//InputProjectile();
+	InputProjectile();
 
 	//速力処理更新
 	UpdateVelocity(elapsedTime);
 
 	//弾丸更新処理
-	projectileManager.Update(elapsedTime);
+	//projectileManager.Update(elapsedTime);
 
 	//プレイヤーとエネミーとの衝突処理
 	CollisionPlayerVsEnemies();
@@ -87,7 +85,7 @@ void Player::Update(float elapsedTime)
 		float amp = 0.4f; // 振幅
 		//cameraController->angle.x = amp * sinf(v_angle);
 		cameraController->angle.x = amp * ((sinf(v_angle) + 1.0) * 0.5);
-		takeSE->Play(false);
+		//takeSE->Play(false);
 	}
 
 	//mouse.Update();
@@ -113,102 +111,28 @@ void Player::InputProjectile()
 	GamePad& gamePad = Input::Instance().GetGamePad();
 
 	Mouse& mouse = Input::Instance().GetMouse();
-	if (finish == false)
+	//if (finish == false)
 	{
-		if (interval == true)
+		//if (interval == true)
 		{
-			//直進弾丸発射
-			if (mouse.GetButtonDown() & Mouse::BTN_LEFT)
+
+			//if (mouse.GetButtonDown() & Mouse::BTN_LEFT)
+			if (GetAsyncKeyState('Q') & 1)
 			{
-				shotSE->Play(false);
-				guntime = 1.3f;		//弾の発射間隔
-				v_guntime = 0.7f;
-				v_angle = 0;
-				//前方向
-				DirectX::XMFLOAT3 dir;
-				dir = cameraController->dir;
+				DirectX::XMFLOAT3 pos = { 0, 2.0f, 20 };
 
-				//発射位置（プレイヤーの腰あたり）
-				DirectX::XMFLOAT3 pos;
-				pos.x = position.x + dir.x * 0.20f;
-				pos.y = position.y + height * 0.25f - 0.05;
-				pos.z = position.z + dir.z * 0.20f;
-
-				//発射
-				ProjectileStraight* projectile = new ProjectileStraight(&projectileManager);
-
-				DirectX::XMFLOAT4X4 projectileTransform = model->GetNode("tipofPistol")->globalTransform;
-				DirectX::XMMATRIX projectileMATRIX = DirectX::XMLoadFloat4x4(&projectileTransform);
-				DirectX::XMMATRIX worldMatrix = DirectX::XMLoadFloat4x4(&transform);
-
-				// X軸を反転するスケーリング行列を作成
-				//DirectX::XMMATRIX flipMatrix = DirectX::XMMatrixScaling(-1.0f, 1.0f, 1.0f);
-				//projectileMATRIX = DirectX::XMMatrixMultiply(projectileMATRIX * worldMatrix, flipMatrix);
-				DirectX::XMStoreFloat4x4(&projectileTransform, projectileMATRIX * worldMatrix);
-
-				projectile->Launch(dir, { projectileTransform._41,projectileTransform._42 + 0.1f,projectileTransform._43 });
-				//projectile->Launch(dir, pos);
-				//projectileManager.Register(projectile);
-
-				interval = false;
-				vibe_interval = false;
+				// ===== SafetyArea生成 =====
+				SafetyArea* area = new SafetyArea(&ProjectileManager::Instance());
+				area->SetPosition(pos);
+				
+				//projectileManager.Register(area);
+				//interval = false;
+				//vibe_interval = false;
 			}
 		}
 	}
 
-#if 0
-	//追尾弾発射
-	if (gamePad.GetButtonDown() & GamePad::BTN_Y)
-	{
-		//前方向
-		DirectX::XMFLOAT3 dir;
-		dir.x = sinf(angle.y);
-		dir.y = 0;
-		dir.z = cosf(angle.y);
 
-		//発射位置（プレイヤーの腰あたり）
-		DirectX::XMFLOAT3 pos;
-		pos.x = position.x;
-		pos.y = position.y + height * 0.5f;
-		pos.z = position.z;
-
-
-		//ターゲット
-		DirectX::XMFLOAT3 target;
-		target.x = pos.x + dir.x * 1000.0f;
-		target.y = pos.y + dir.y * 1000.0f;
-		target.z = pos.z + dir.z * 1000.0f;
-
-		//一番近くの敵をターゲットする
-		float dist = FLT_MAX;
-		EnemyManager& enemyManager = EnemyManager::Instance();
-		int enemyCount = enemyManager.GetEnemyCount();
-		for (int i = 0; i < enemyCount; ++i)
-		{
-			//敵との距離判定
-			Enemy* enemy = EnemyManager::Instance().GetEnemy(i);
-			DirectX::XMVECTOR P = DirectX::XMLoadFloat3(&position);
-			DirectX::XMVECTOR E = DirectX::XMLoadFloat3(&enemy->GetPosition());
-			DirectX::XMVECTOR V = DirectX::XMVectorSubtract(E, P);
-			DirectX::XMVECTOR D = DirectX::XMVector3LengthSq(V);
-
-			float d;
-			DirectX::XMStoreFloat(&d, D);
-			if (d < dist)
-			{
-				dist = d;
-				target = enemy->GetPosition();
-				target.y += enemy->GetHeight() * 0.5f;
-			}
-
-		}
-
-		//発射
-		ProjectileHoming* projectile = new ProjectileHoming(&projectileManager);
-		projectile->Launch(dir, pos, target);
-
-	}
-#endif
 }
 
 void Player::coolgun(float elpasedTime)
@@ -232,7 +156,7 @@ void Player::Render(const RenderContext& rc, ModelRenderer* renderer)
 	renderer->Render(rc, transform, model, ShaderId::Lambert);
 
 	//弾丸描画処理
-	projectileManager.Render(rc, renderer);
+	//projectileManager.Render(rc, renderer);
 	DirectX::XMFLOAT4X4 projectileTransform = model->GetNode("tipofPistol")->globalTransform;
 	DirectX::XMMATRIX projectileMATRIX = DirectX::XMLoadFloat4x4(&projectileTransform);
 	DirectX::XMMATRIX worldMatrix = DirectX::XMLoadFloat4x4(&transform);
@@ -339,11 +263,11 @@ void Player::CollisionProjectilesVsEnemies()
 	EnemyManager& enemyManager = EnemyManager::Instance();
 
 	//全ての弾丸と全ての敵を総当たりで衝突処理
-	int projectileCount = projectileManager.GetProjectileCount();
+	int projectileCount = ProjectileManager::Instance().GetProjectileCount();
 	int enemyCount = enemyManager.GetEnemyCount();
 	for (int i = 0; i < projectileCount; ++i)
 	{
-		Projectile* projectile = projectileManager.GetProjectile(i);
+		Projectile* projectile = ProjectileManager::Instance().GetProjectile(i);
 
 		for (int j = 0; j < enemyCount; ++j)
 		{

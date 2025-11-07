@@ -67,7 +67,7 @@ private:
 
     int shottimer = 0;
 
-    ProjectileManager    projectileManager;
+    //ProjectileManager    projectileManager;
 
     float guntime = 1.5f;
     float v_guntime = 0.7f;

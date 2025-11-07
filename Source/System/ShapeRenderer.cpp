@@ -410,3 +410,35 @@ void ShapeRenderer::Render(const RenderContext& rc, const Mesh& mesh, const Dire
 	// ï`âÊ
 	dc->Draw(mesh.vertexCount, 0);
 }
+
+
+// â~ï`âÊ
+void ShapeRenderer::RenderCircle(
+	const RenderContext& rc,
+	const DirectX::XMFLOAT3& position,
+	float radius,
+	const DirectX::XMFLOAT4& color) const
+{
+	// â~ÇXZïΩñ è„Ç…ï`âÊÇ∑ÇÈ
+	const int subdivisions = 64;
+	std::vector<DirectX::XMFLOAT3> vertices;
+	float step = DirectX::XM_2PI / subdivisions;
+
+	for (int i = 0; i < subdivisions; ++i)
+	{
+		float theta1 = step * i;
+		float theta2 = step * (i + 1);
+		vertices.emplace_back(DirectX::XMFLOAT3(sinf(theta1) * radius, 0.0f, cosf(theta1) * radius));
+		vertices.emplace_back(DirectX::XMFLOAT3(sinf(theta2) * radius, 0.0f, cosf(theta2) * radius));
+	}
+
+	// àÍéûÉÅÉbÉVÉÖê∂ê¨
+	Mesh tempMesh;
+	//CreateMesh(rc.device, vertices, tempMesh);
+
+	DirectX::XMMATRIX T = DirectX::XMMatrixTranslation(position.x, position.y, position.z);
+	DirectX::XMFLOAT4X4 transform;
+	DirectX::XMStoreFloat4x4(&transform, T);
+
+	Render(rc, tempMesh, transform, color);
+}

@@ -22,9 +22,12 @@ public:
 	//デバッグプリミティブ描画
 	virtual void RenderDebugPrimitive(const RenderContext& rc, ShapeRenderer* renderer);
 
-	//破棄
-	void Destroy();
+	//bool isDead = false;
 
+	//破棄
+	//bool IsDead() const { return IsDead; }
+	void Destroy();
+	
 	//位置取得
 	const DirectX::XMFLOAT3& GetPosition() const { return position; }
 

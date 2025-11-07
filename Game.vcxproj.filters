@@ -189,6 +189,9 @@
     <ClInclude Include="Source\System\PhongShadowShader.h">
       <Filter>Source\System</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Game\SafetyArea.h">
+      <Filter>Source\Game</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="External\imgui-docking\imgui.cpp">
@@ -331,6 +334,9 @@
     </ClCompile>
     <ClCompile Include="Source\Scene\SceneTutorial.cpp">
       <Filter>Source\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Game\SafetyArea.cpp">
+      <Filter>Source\Game</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
