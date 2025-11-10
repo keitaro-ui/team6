@@ -124,6 +124,7 @@ void SceneGame::Update(float elapsedTime)
 	//プレイヤー更新処理
 	player->Update(elapsedTime);
 
+
 	//ステージ更新処理
 	stage->Update(elapsedTime);
 
@@ -195,6 +196,8 @@ void SceneGame::Render()
 		//エネミーデバッグプリミティブ描画
 		//EnemyManager::Instance(); 
 		//.RenderDebugPrimitive(rc, shapeRenderer);
+
+		player->RenderDebugPrimitive(rc, shapeRenderer);
 	}
 
 	// 2Dスプライト描画

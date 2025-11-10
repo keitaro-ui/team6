@@ -104,45 +104,45 @@ void CameraController::MouseCamera(float elapsedTime)
 	float moveY = io.MouseDelta.y * 0.02f;
 
 	// カメラ平行移動
-	if (io.MouseDown[ImGuiMouseButton_Middle])
-	{
-		float mousePosX = io.MousePos.x;
-		float mousePosY = io.MousePos.y;
+	//if (io.MouseDown[ImGuiMouseButton_Middle])
+	//{
+	//	float mousePosX = io.MousePos.x;
+	//	float mousePosY = io.MousePos.y;
 
-		DirectX::XMFLOAT2 mousePos = { mousePosX,mousePosY };
-		//target += {mousePos.x, 0, mousePos.y};
-	}
+	//	DirectX::XMFLOAT2 mousePos = { mousePosX,mousePosY };
+	//	//target += {mousePos.x, 0, mousePos.y};
+	//}
 
 	// マウス左ボタン押下中
-	if (io.MouseDown[ImGuiMouseButton_Left])
-	{
-		// Y軸回転
-		angle.y += moveX * 0.5f;
-		if (angle.y > DirectX::XM_PI)
-		{
-			angle.y -= DirectX::XM_2PI;
-		}
-		else if (angle.y < -DirectX::XM_PI)
-		{
-			angle.y += DirectX::XM_2PI;
-		}
-		// X軸回転
-		angle.x += moveY * 0.5f;
-		if (angle.x > DirectX::XM_PI)
-		{
-			angle.x -= DirectX::XM_2PI;
-		}
-		else if (angle.x < -DirectX::XM_PI)
-		{
-			angle.x += DirectX::XM_2PI;
-		}
-	}
+	//if (io.MouseDown[ImGuiMouseButton_Left])
+	//{
+	//	// Y軸回転
+	//	angle.y += moveX * 0.5f;
+	//	if (angle.y > DirectX::XM_PI)
+	//	{
+	//		angle.y -= DirectX::XM_2PI;
+	//	}
+	//	else if (angle.y < -DirectX::XM_PI)
+	//	{
+	//		angle.y += DirectX::XM_2PI;
+	//	}
+	//	// X軸回転
+	//	angle.x += moveY * 0.5f;
+	//	if (angle.x > DirectX::XM_PI)
+	//	{
+	//		angle.x -= DirectX::XM_2PI;
+	//	}
+	//	else if (angle.x < -DirectX::XM_PI)
+	//	{
+	//		angle.x += DirectX::XM_2PI;
+	//	}
+	//}
 
 	// マウスホイール
-	else if (io.MouseWheel != 0)
-	{
-		// ズーム
-		range -= io.MouseWheel * range * 0.1f;
-	}
+	//else if (io.MouseWheel != 0)
+	//{
+	//	// ズーム
+	//	range -= io.MouseWheel * range * 0.1f;
+	//}
 }
 

@@ -160,10 +160,13 @@
     <ClInclude Include="Source\System\ModelRenderer.h" />
     <ClInclude Include="Source\System\ModelResource.h" />
     <ClInclude Include="Source\System\Mouse.h" />
+    <ClInclude Include="Source\System\PhongShader.h" />
     <ClInclude Include="Source\System\PhongShadowShader.h" />
     <ClInclude Include="Source\System\RenderContext.h" />
     <ClInclude Include="Source\System\RenderState.h" />
     <ClInclude Include="Source\System\Shader.h" />
+    <ClInclude Include="Source\System\ShadowMap.h" />
+    <ClInclude Include="Source\System\ShadowMapShader.h" />
     <ClInclude Include="Source\System\ShapeRenderer.h" />
     <ClInclude Include="Source\System\Sprite.h" />
   </ItemGroup>
@@ -213,7 +216,10 @@
     <ClCompile Include="Source\System\ModelRenderer.cpp" />
     <ClCompile Include="Source\System\ModelResource.cpp" />
     <ClCompile Include="Source\System\Mouse.cpp" />
+    <ClCompile Include="Source\System\PhongShader.cpp" />
     <ClCompile Include="Source\System\RenderState.cpp" />
+    <ClCompile Include="Source\System\ShadowMap.cpp" />
+    <ClCompile Include="Source\System\ShadowMapShader.cpp" />
     <ClCompile Include="Source\System\ShapeRenderer.cpp" />
     <ClCompile Include="Source\System\Sprite.cpp" />
   </ItemGroup>

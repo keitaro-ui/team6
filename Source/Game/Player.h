@@ -5,6 +5,8 @@
 #include <ProjectileManager.h>
 #include "CameraController.h"
 #include "System/AudioSource.h"
+#include "SafetyArea.h"
+#include <vector>
 
 //プレイヤー
 class Player : public Character
@@ -56,6 +58,8 @@ private:
     //マウス操作
     void SStws();
 
+    void InputSafetrSrea();
+
     float moveSpeed = 5.0f;
 
     float turnSpeed = DirectX::XMConvertToRadians(720);
@@ -89,5 +93,20 @@ public:
     //std::chrono::system_clock::time_point minutes;
 
     void coolgun(float elapsedTime);
+   
+private:
+    std::vector<SafetyArea*> safetyAreas;
 
+    //セーフティエリア制限個数
+    int maxSafetyAreaCount = 5;
+
+    //デバック表示
+    bool shoeDebug = true;
+    DirectX::XMFLOAT4 debugColor = { 1, 1, 0, 0.5f }; // 黄色っぽい半透明
+
+
+    //デバックの半径
+    float radius = 3.0f;
+    //デバッグの高さ
+    float height = 0.35f;
 };

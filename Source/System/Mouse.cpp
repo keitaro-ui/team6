@@ -1,4 +1,5 @@
 #include "System/Mouse.h"
+#include "imgui.h"
 
 static const int KeyMap[] =
 {
@@ -34,6 +35,15 @@ void Mouse::Update()
 		}
 	}
 
+	ImGuiIO& io = ImGui::GetIO();
+	if (io.WantCaptureMouse)
+	{
+		// ImGui がマウスを使っている場合は更新しない
+		deltaPositionX = 0;
+		deltaPositionY = 0;
+		return;
+	}
+
 	// ホイール
 	wheel[1] = wheel[0];
 	wheel[0] = 0;
@@ -45,8 +55,11 @@ void Mouse::Update()
 	buttonDown = ~buttonState[1] & newButtonState;	// 押した瞬間
 	buttonUp = ~newButtonState & buttonState[1];	// 離した瞬間
 
+	bool isRightClickDown = (buttonState[0] & (1 << 2)) != 0;   // 現在押されているか
+	bool wasRightClickDown = (buttonState[1] & (1 << 2)) != 0; // 前フレームの状態
 
-	if (buttonDown & (1 << 2))  // 右ボタンが押された瞬間
+	// 押した瞬間のみ
+	if (isRightClickDown && !wasRightClickDown)
 	{
 		bLock = !bLock;  // トグル（切り替え）
 

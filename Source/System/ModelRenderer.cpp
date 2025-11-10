@@ -4,6 +4,8 @@
 #include "ModelRenderer.h"
 #include "BasicShader.h"
 #include "LambertShader.h"
+#include "PhongShader.h"
+#include "ShadowMapShader.h"
 
 // コンストラクタ
 ModelRenderer::ModelRenderer(ID3D11Device* device)
@@ -23,6 +25,8 @@ ModelRenderer::ModelRenderer(ID3D11Device* device)
 	// シェーダー生成
 	shaders[static_cast<int>(ShaderId::Basic)] = std::make_unique<BasicShader>(device);
 	shaders[static_cast<int>(ShaderId::Lambert)] = std::make_unique<LambertShader>(device);
+	shaders[static_cast<int>(ShaderId::Phong)] = std::make_unique<PhongShader>(device);
+	shaders[static_cast<int>(ShaderId::Shadow)] = std::make_unique<ShadowMapShader>(device);
 }
 
 // 描画実行
@@ -39,7 +43,32 @@ void ModelRenderer::Render(const RenderContext& rc, const DirectX::XMFLOAT4X4& w
 		cbScene.lightDirection.x = rc.lightDirection.x;
 		cbScene.lightDirection.y = rc.lightDirection.y;
 		cbScene.lightDirection.z = rc.lightDirection.z;
+
+		//cbScene.cameraPosition.x = rc.cameraPosition.x;
+		//cbScene.cameraPosition.y = rc.cameraPosition.y;
+		//cbScene.cameraPosition.z = rc.cameraPosition.z;
+		//cbScene.cameraPosition.w = 1.0f;
+
+		//cbScene.lightViewProjection = rc.lightViewProjection;
+
 		dc->UpdateSubresource(sceneConstantBuffer.Get(), 0, 0, &cbScene, 0, 0);
+	}
+
+	// Phong定数バッファ更新
+	{
+		//LightConstants data{};
+		//data.ambientColor = ambientColor;
+		//data.directionalLightColor = directionalLightColor;
+		//data.directionalLightDirection = directionalLightDirection;
+		//dc->UpdateSubresource(lightConstantBuffer.Get(), 0, 0, &data, 0, 0);
+	}
+
+	//Shadow
+	{
+		//ShadowMapConstants data{};
+		//data.shadowColor = shadowColor;
+		//data.shadowBias = shadowBias;
+		//dc->UpdateSubresource(shadowMapConstantBuffer.Get(), 0, 0, &data, 0, 0);
 	}
 
 	// 定数バッファ設定
@@ -47,21 +76,31 @@ void ModelRenderer::Render(const RenderContext& rc, const DirectX::XMFLOAT4X4& w
 	{
 		sceneConstantBuffer.Get(),
 		skeletonConstantBuffer.Get(),
+		lightConstantBuffer.Get(),
+		shadowMapConstantBuffer.Get()
 	};
 	dc->VSSetConstantBuffers(0, _countof(vsConstantBuffers), vsConstantBuffers);
 
 	ID3D11Buffer* psConstantBuffers[] =
 	{
 		sceneConstantBuffer.Get(),
+		skeletonConstantBuffer.Get(),
+		lightConstantBuffer.Get(),
+		shadowMapConstantBuffer.Get(),
 	};
 	dc->PSSetConstantBuffers(0, _countof(psConstantBuffers), psConstantBuffers);
 
 	// サンプラステート設定
 	ID3D11SamplerState* samplerStates[] =
 	{
-		rc.renderState->GetSamplerState(SamplerState::LinearWrap)
+		rc.renderState->GetSamplerState(SamplerState::LinearWrap),
+		rc.renderState->GetSamplerState(SamplerState::PointClamp),
+		rc.renderState->GetSamplerState(SamplerState::LinearWrap),
+		rc.renderState->GetSamplerState(SamplerState::LinearClamp),
+		rc.renderState->GetSamplerState(SamplerState::ShadowSampler),
 	};
 	dc->PSSetSamplers(0, _countof(samplerStates), samplerStates);
+
 
 	// レンダーステート設定
 	dc->OMSetDepthStencilState(rc.renderState->GetDepthStencilState(DepthState::TestAndWrite), 0);

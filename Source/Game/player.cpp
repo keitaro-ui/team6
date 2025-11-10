@@ -2,7 +2,7 @@
 #include"System/Input.h"
 #include<imgui.h>
 #include "Camera.h"
-#include "SafetyArea.h"
+
 
 #include "EnemyManager.h"
 #include "Collision.h"
@@ -56,6 +56,9 @@ void Player::Update(float elapsedTime)
 
 	//弾丸入力処理
 	InputProjectile();
+
+	//セーフティエリア処理
+	InputSafetrSrea();
 
 	//速力処理更新
 	UpdateVelocity(elapsedTime);
@@ -117,18 +120,7 @@ void Player::InputProjectile()
 		{
 
 			//if (mouse.GetButtonDown() & Mouse::BTN_LEFT)
-			if (GetAsyncKeyState('Q') & 1)
-			{
-				DirectX::XMFLOAT3 pos = { position.x, 2.0f, position.z };
-
-				// ===== SafetyArea生成 =====
-				SafetyArea* area = new SafetyArea(&ProjectileManager::Instance());
-				area->SetPosition(pos);
-				
-				//projectileManager.Register(area);
-				//interval = false;
-				//vibe_interval = false;
-			}
+		
 		}
 	}
 
@@ -149,6 +141,30 @@ void Player::DrawDebugGUI()
 {
 	ImGui::DragFloat3("pos", &position.x);
 	
+	// 最大数を調整
+	ImGui::DragInt("Max Safety Area Count", &maxSafetyAreaCount, 1, 1, 20);
+
+	// 現在の設置数を表示
+	ImGui::Text("Current Count: %d / %d", (int)safetyAreas.size(), maxSafetyAreaCount);
+
+	if (ImGui::CollapsingHeader("Spawned SafetyAreas"))
+	{
+		for (int i = 0; i < safetyAreas.size(); ++i)
+		{
+			SafetyArea* area = safetyAreas[i];
+			if (!area) continue;
+
+			std::string label = "SpawnPos " + std::to_string(i);
+			ImGui::DragFloat3(label.c_str(), &area->position.x, 0.01f);
+
+			// 半径
+			ImGui::DragFloat((label + " Radius").c_str(), &radius, 0.01f, 0.1f, 50.0f);
+
+			// 高さ
+			ImGui::DragFloat((label + " Height").c_str(), &height, 0.01f, 0.1f, 20.0f);
+
+		}
+	}
 }
 
 //描画処理
@@ -178,6 +194,19 @@ void Player::RenderDebugPrimitive(const RenderContext& rc, ShapeRenderer* render
 
 	//弾丸デバッグプリミティブ描画
 	//projectileManager.RenderDebugPrimitive(rc, renderer);
+
+	for (auto* area : safetyAreas)
+	{
+		if (!area) continue;
+
+		const DirectX::XMFLOAT3& center = {
+			area->GetPosition().x,
+			0.5f,
+			area->GetPosition().z
+		};
+
+		renderer->RenderCylinder(rc, center, radius,-height, { 0.2f, 1.0f, 0.2f, 1.0f });
+	}
 }
 
 //スティック入力値から移動ベクトルを取得
@@ -333,6 +362,34 @@ void Player::SStws()
 	STORE.z /= STORE.w;
 
 	w_pos = { STORE.x,STORE.y,STORE.z };
+}
+
+void Player::InputSafetrSrea()
+{
+	if (GetAsyncKeyState('Q') & 1&& maxSafetyAreaCount>0)
+	{
+		DirectX::XMFLOAT3 forward = Camera::Instance().GetFront();
+
+		//DirectX::XMFLOAT3 pos = { position.x, 2.0f, position.z };
+
+		DirectX::XMFLOAT3 spawnPos = {
+		  position.x + forward.x,
+		  position.y + 1.0f,
+		  position.z + forward.z 
+		};
+
+		// ===== SafetyArea生成 =====
+		SafetyArea* area = new SafetyArea(&ProjectileManager::Instance());
+		area->SetPosition(spawnPos);
+		maxSafetyAreaCount -= 1;
+		safetyAreas.push_back(area);
+
+		//projectileManager.Register(area);
+		//interval = false;
+		//vibe_interval = false;
+	}
+
+
 }
 
 //着地したときに呼ばれる

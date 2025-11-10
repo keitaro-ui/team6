@@ -10,4 +10,6 @@ struct RenderContext
 	DirectX::XMFLOAT4X4		view;
 	DirectX::XMFLOAT4X4		projection;
 	DirectX::XMFLOAT3		lightDirection = { 0, -1, 0 };
+	DirectX::XMFLOAT4 cameraPosition = { 0,1,0,1 };
+	DirectX::XMFLOAT4X4 lightViewProjection{};
 };
