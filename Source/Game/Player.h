@@ -104,9 +104,12 @@ private:
     bool shoeDebug = true;
     DirectX::XMFLOAT4 debugColor = { 1, 1, 0, 0.5f }; // 黄色っぽい半透明
 
-
     //デバックの半径
-    float radius = 3.0f;
+    float radius = 2.0f;
     //デバッグの高さ
     float height = 0.35f;
+
+    float safeCooldown = 0.0f;        // 現在のクールタイム残り時間
+    bool canPlaceSafeArea = true;     // 設置可能かどうか
+    float safeInterval = 2.0f;
 };

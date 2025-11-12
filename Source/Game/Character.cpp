@@ -130,22 +130,22 @@ void Character::UpdateVelocity(float elapsedTime)
 	position.y += velocity.y * elapsedTime;
 
 	//地面判定
-	if (position.y < 0.0f)
-	{
-		position.y = 0.0f;
-		velocity.y = 0.0f;
+	//if (position.y < 0.0f)
+	//{
+	//	position.y = 0.0f;
+	//	velocity.y = 0.0f;
 
-		//着地した
-		if (!isGround)
-		{
-			OnLanding();
-		}
-		isGround = true;
-	}
-	else
-	{
-		isGround = false;
-	}
+	//	//着地した
+	//	if (!isGround)
+	//	{
+	//		OnLanding();
+	//	}
+	//	isGround = true;
+	//}
+	//else
+	//{
+	//	isGround = false;
+	//}
 }
 
 //無敵時間更新

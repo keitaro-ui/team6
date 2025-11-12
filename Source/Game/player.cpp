@@ -60,6 +60,16 @@ void Player::Update(float elapsedTime)
 	//セーフティエリア処理
 	InputSafetrSrea();
 
+	if (!canPlaceSafeArea)
+	{
+		safeCooldown -= elapsedTime;
+		if (safeCooldown <= 0.0f)
+		{
+			safeCooldown = 0.0f;
+			canPlaceSafeArea = true;
+		}
+	}
+
 	//速力処理更新
 	UpdateVelocity(elapsedTime);
 
@@ -139,7 +149,7 @@ void Player::coolgun(float elpasedTime)
 //デバッグ用GUI描画
 void Player::DrawDebugGUI()
 {
-	ImGui::DragFloat3("pos", &position.x);
+	ImGui::DragFloat3("pos", &position.x,0.01f);
 	
 	// 最大数を調整
 	ImGui::DragInt("Max Safety Area Count", &maxSafetyAreaCount, 1, 1, 20);
@@ -149,6 +159,12 @@ void Player::DrawDebugGUI()
 
 	if (ImGui::CollapsingHeader("Spawned SafetyAreas"))
 	{
+			// 半径
+		ImGui::DragFloat(("Radius"), &radius, 0.01f, 0.1f, 50.0f);
+
+			// 高さ
+		ImGui::DragFloat(("Height"), &height, 0.01f, 0.1f, 20.0f);
+
 		for (int i = 0; i < safetyAreas.size(); ++i)
 		{
 			SafetyArea* area = safetyAreas[i];
@@ -156,13 +172,6 @@ void Player::DrawDebugGUI()
 
 			std::string label = "SpawnPos " + std::to_string(i);
 			ImGui::DragFloat3(label.c_str(), &area->position.x, 0.01f);
-
-			// 半径
-			ImGui::DragFloat((label + " Radius").c_str(), &radius, 0.01f, 0.1f, 50.0f);
-
-			// 高さ
-			ImGui::DragFloat((label + " Height").c_str(), &height, 0.01f, 0.1f, 20.0f);
-
 		}
 	}
 }
@@ -366,11 +375,9 @@ void Player::SStws()
 
 void Player::InputSafetrSrea()
 {
-	if (GetAsyncKeyState('Q') & 1&& maxSafetyAreaCount>0)
+	if (GetAsyncKeyState('R') & 1 && canPlaceSafeArea && maxSafetyAreaCount>0)
 	{
 		DirectX::XMFLOAT3 forward = Camera::Instance().GetFront();
-
-		//DirectX::XMFLOAT3 pos = { position.x, 2.0f, position.z };
 
 		DirectX::XMFLOAT3 spawnPos = {
 		  position.x + forward.x,
@@ -384,9 +391,8 @@ void Player::InputSafetrSrea()
 		maxSafetyAreaCount -= 1;
 		safetyAreas.push_back(area);
 
-		//projectileManager.Register(area);
-		//interval = false;
-		//vibe_interval = false;
+		canPlaceSafeArea = false;
+		safeCooldown = safeInterval;
 	}
 
 

@@ -109,8 +109,8 @@ void Mouse::Update()
 		::ClientToScreen(hWnd, &cursor2);
 		::SetCursorPos(cursor2.x, cursor2.y);
 
-		deltaPositionX = positionX[0] - (viewportW / 2.0f);
-		deltaPositionY = positionY[0] - (viewportH / 2.0f);
+		deltaPositionX = (positionX[0] - (viewportW / 2.0f))*0.5f;
+		deltaPositionY = (positionY[0] - (viewportH / 2.0f))*0.5f;
 	}
 }
 

@@ -31,6 +31,16 @@ void SceneTitle::Finalize()
 		delete sprite;
 		sprite = nullptr;
 	}
+    if (sprite2 != nullptr)
+    {
+        delete sprite2;
+        sprite2 = nullptr;
+    }
+    if (sprite3 != nullptr)
+    {
+        delete sprite3;
+        sprite3 = nullptr;
+    }
 
     ShowCursor(false);
 	

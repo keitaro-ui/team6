@@ -107,6 +107,8 @@ void SceneGame::Finalize()
 		cameraController = nullptr;
 	}
 
+	delete balloon;
+
 	//boxなどのenemyを継承しているnewはdeleteしてはいけない。EnemyManagerごと消す
 	//エネミー終了化
 	EnemyManager::Instance().Clear();
@@ -119,11 +121,13 @@ void SceneGame::Update(float elapsedTime)
 	DirectX::XMFLOAT3 target = player->GetPosition();
 	target.y += 0.5f;
 	cameraController->SetTarget(target);
+
+
+	// カメラ更新
 	cameraController->Update(elapsedTime);
 
 	//プレイヤー更新処理
 	player->Update(elapsedTime);
-
 
 	//ステージ更新処理
 	stage->Update(elapsedTime);
