@@ -1,15 +1,13 @@
-#include"Player.h"
-#include"System/Input.h"
-#include<imgui.h>
+#include "Player.h"
+#include "System/Input.h"
+#include <imgui.h>
 #include "Camera.h"
-
 
 #include "EnemyManager.h"
 #include "Collision.h"
 #include "ProjectileStraight.h"
 #include "ProjectHoming.h"
 #include "../System/Graphics.h"
-#include "Camera.h"
 #include "System/Audio.h"
 
 
@@ -23,8 +21,7 @@ Player::Player()
 
 	//モデルが大きいのでスケーリング
 	scale.x = scale.y = scale.z = 0.21f;
-
-	
+	//sition.z = 3.0f;
 }
 
 //デストラクタ
@@ -41,25 +38,27 @@ DirectX::XMFLOAT3 ndc = {};
 void Player::Update(float elapsedTime)
 {
 	shottimer++;
-	//Mouse& mouse = Input::Instance().GetMouse();
+
 	////移動入力処理
 	InputMove(elapsedTime);
 
 	////ジャンプ入力処理
 	//InputJump();
 
+	// カメラ角度反映
 	angle.x = -cameraController->getAngle().x;
 	angle.y = cameraController->getAngle().y - DirectX::XM_PIDIV2;
 
-	//弾の間隔
-	coolgun(elapsedTime);
+	// 弾の間隔
+	coolgun(elapsedTime); 
 
-	//弾丸入力処理
-	InputProjectile();
+	// 弾丸入力
+	InputProjectile();   
 
-	//セーフティエリア処理
-	InputSafetrSrea();
+	// セーフティエリア入力
+	InputSafetrSrea();     
 
+	// クールタイム更新
 	if (!canPlaceSafeArea)
 	{
 		safeCooldown -= elapsedTime;
@@ -89,19 +88,6 @@ void Player::Update(float elapsedTime)
 	UpdateTransform();
 	model->UpdateTransform();
 
-	if (vibe_interval == false)
-	{
-		float w = 5.0f; // 角速度
-
-		v_angle += w * elapsedTime;
-
-		float amp = 0.4f; // 振幅
-		//cameraController->angle.x = amp * sinf(v_angle);
-		cameraController->angle.x = amp * ((sinf(v_angle) + 1.0) * 0.5);
-		//takeSE->Play(false);
-	}
-
-	//mouse.Update();
 }
 
 //移動入力処理
@@ -124,24 +110,14 @@ void Player::InputProjectile()
 	GamePad& gamePad = Input::Instance().GetGamePad();
 
 	Mouse& mouse = Input::Instance().GetMouse();
-	//if (finish == false)
-	{
-		//if (interval == true)
-		{
-
-			//if (mouse.GetButtonDown() & Mouse::BTN_LEFT)
-		
-		}
-	}
-
 
 }
 
 void Player::coolgun(float elpasedTime)
 {
-	Camera& camera = Camera::Instance();
 	guntime -= elpasedTime;
 	v_guntime -= elpasedTime;
+
 	if (guntime <= 0)interval = true;
 	if (v_guntime <= 0)vibe_interval = true;
 }
@@ -149,6 +125,8 @@ void Player::coolgun(float elpasedTime)
 //デバッグ用GUI描画
 void Player::DrawDebugGUI()
 {
+	ImGui::Begin("Player Debug");
+
 	ImGui::DragFloat3("pos", &position.x,0.01f);
 	
 	// 最大数を調整
@@ -174,6 +152,7 @@ void Player::DrawDebugGUI()
 			ImGui::DragFloat3(label.c_str(), &area->position.x, 0.01f);
 		}
 	}
+	ImGui::End();
 }
 
 //描画処理

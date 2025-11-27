@@ -36,6 +36,8 @@ public:
 		std::string			textureFilename;
 		DirectX::XMFLOAT4	color = { 0.8f, 0.8f, 0.8f, 1.0f };
 
+
+
 		Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> shaderResourceView;
 
 		template<class Archive>

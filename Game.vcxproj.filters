@@ -379,6 +379,9 @@
     <None Include="Shader\Scene.hlsli">
       <Filter>Shader</Filter>
     </None>
+    <None Include="Shader\LightingFunctions.hlsli">
+      <Filter>Shader</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\SpriteVS.hlsl">
