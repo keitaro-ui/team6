@@ -228,6 +228,7 @@
   <ItemGroup>
     <None Include="Shader\Basic.hlsli" />
     <None Include="Shader\Lambert.hlsli" />
+    <None Include="Shader\LightingFunctions.hlsli" />
     <None Include="Shader\Scene.hlsli" />
     <None Include="Shader\ShapeRenderer.hlsli" />
     <None Include="Shader\PrimitiveRenderer.hlsli" />
