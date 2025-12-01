@@ -6,9 +6,12 @@
 Stage::Stage()
 {
 	//ステージモデルを読み込み
-	model = new Model("Data/Model/Stage/itsuki_stagedata.mdl");
+	model = new Model("Data/Model/Stage/syusei.mdl");
+	//model = new Model("Data/Model/Stage/StageT.mdl");
+	//model = new Model("Data/Model/Stage/ExampleStage.mdl");
 
 	scale.x = scale.y = scale.z = 0.02f;
+	/*scale.x = scale.y = scale.z = 1.0f;*/
 	position.y = 4.0f;
 
  

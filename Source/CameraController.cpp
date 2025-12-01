@@ -128,7 +128,20 @@ void CameraController::HandleNormal(float elapsedTime)
 	DirectX::XMFLOAT3 front;
 	DirectX::XMStoreFloat3(&front, Front);
 
-	eye = target; 
+	DirectX::XMVECTOR RightV = Transform.r[0];
+	DirectX::XMFLOAT3 right;
+	DirectX::XMStoreFloat3(&right, RightV);
+
+	if (!moveForwardInitialized)
+	{
+		moveForward = front;
+		float len = sqrt(moveForward.x * moveForward.x + moveForward.y * moveForward.y + moveForward.z * moveForward.z);
+		moveForward.x /= len;
+		moveForward.y /= len;
+		moveForward.z /= len;
+		moveForwardInitialized = true;
+	}
+	//eye = target;
 
 	// target は前方向ベクトルを足す
 	target.x = (eye.x + front.x);
@@ -144,28 +157,42 @@ void CameraController::HandleNormal(float elapsedTime)
 	dir.y /= len;
 	dir.z /= len;
 
-	bool isWalking = (GetAsyncKeyState('W') & 0x8000) ||
-		(GetAsyncKeyState('S') & 0x8000) ||
-		(GetAsyncKeyState('A') & 0x8000) ||
-		(GetAsyncKeyState('D') & 0x8000);
+	DirectX::XMFLOAT3 moveVec = { 0,0,0 };
+	float moveSpeed = 5.0f;
 
+	if (GetAsyncKeyState('W') & 0x8000) { moveVec.x += dir.x;  moveVec.z += dir.z; }
+	if (GetAsyncKeyState('S') & 0x8000) { moveVec.x -= dir.x;  moveVec.z -= dir.z; }
+
+	if (GetAsyncKeyState('D') & 0x8000) { moveVec.x += right.x;  moveVec.z += right.z; }
+	if (GetAsyncKeyState('A') & 0x8000) { moveVec.x -= right.x;  moveVec.z -= right.z; }
+
+	// 移動量正規化して速度を反映
+	float moveLen = sqrt(moveVec.x * moveVec.x + moveVec.y * moveVec.y + moveVec.z * moveVec.z);
+	if (moveLen > 0.0f)
+	{
+		moveVec.x /= moveLen;
+		moveVec.y /= moveLen;
+		moveVec.z /= moveLen;
+
+		eye.x += moveVec.x * moveSpeed * elapsedTime;
+		//eye.y += moveVec.y * moveSpeed * elapsedTime;
+		eye.z += moveVec.z * moveSpeed * elapsedTime;
+	}
+
+	eye.y = 1.5f;
+	
 	// Bobタイマー更新
+	bool isWalking = moveLen > 0.0f;
 	if (isWalking)
-	{
 		bobTimer += elapsedTime * bobSpeed;
-	}
 	else
-	{
 		bobTimer = 0.0f;
-	}
 
-	// Bobオフセット計算
-	float bobOffsetY = sinf(bobTimer) * bobAmountY;
-	float bobOffsetX = cosf(bobTimer * 0.5f) * bobAmountX;
+	// Bobオフセット（Yのみ）
+	float bobOffsetY = (sinf(bobTimer) * bobAmountY);
 
-	// カメラ位置に反映
+	// カメラ位置にBob反映
 	DirectX::XMFLOAT3 bobbedEye = eye;
-	bobbedEye.x += bobOffsetX;
 	bobbedEye.y += bobOffsetY;
 
 	//カメラの視点と注視点を設定
