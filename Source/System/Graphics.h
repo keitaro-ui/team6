@@ -6,6 +6,7 @@
 #include "RenderState.h"
 #include "ShapeRenderer.h"
 #include "ModelRenderer.h"
+#include "LineRenderer.h"
 
 // グラフィックス
 class Graphics
@@ -58,6 +59,9 @@ public:
 	// モデルレンダラ取得
 	ModelRenderer* GetModelRenderer() const { return modelRenderer.get(); }
 
+	// ラインレンダラ取得
+	LineRenderer* GetLineRenderer() const { return lineRenderer.get(); }
+
 private:
 	HWND											hWnd = nullptr;
 	Microsoft::WRL::ComPtr<ID3D11Device>			device;
@@ -73,4 +77,5 @@ private:
 	std::unique_ptr<RenderState>					renderState;
 	std::unique_ptr<ShapeRenderer>					shapeRenderer;
 	std::unique_ptr<ModelRenderer>					modelRenderer;
+	std::unique_ptr<LineRenderer>					lineRenderer;
 };

@@ -10,6 +10,7 @@
 #include "../Game/Balloon.h"
 #include "../Game/Board.h"
 #include "../Game/Box.h"
+#include "../Game/EnemySlime.h"
 
 // ÉQÅ[ÉÄÉVÅ[Éì
 class SceneGame : public Scene
@@ -39,9 +40,12 @@ private:
 	
 	std::unique_ptr<Player> player = nullptr;
 
+	std::unique_ptr<EnemySlime> enemyslime = nullptr;
+
 	CameraController* cameraController = nullptr;
 
 	Balloon* balloon = nullptr;
+	
 
 	Board* boards[4];
 

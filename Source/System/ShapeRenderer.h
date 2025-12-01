@@ -69,6 +69,7 @@ private:
 		DirectX::XMFLOAT4X4		worldViewProjection;
 		DirectX::XMFLOAT4		color;
 	};
+
 	// ï`âÊé¿çs
 	void Render(const RenderContext& rc, const Mesh& mesh, const DirectX::XMFLOAT4X4& transform, const DirectX::XMFLOAT4& color) const;
 
@@ -100,4 +101,5 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11PixelShader>	pixelShader;
 	Microsoft::WRL::ComPtr<ID3D11InputLayout>	inputLayout;
 	Microsoft::WRL::ComPtr<ID3D11Buffer>		constantBuffer;
+
 };

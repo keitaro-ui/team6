@@ -10,6 +10,7 @@
 #include "SceneGame.h"
 
 #include "SceneLoading.h"
+#include "../Game/PlayerManager.h"
 
 
 // 初期化
@@ -20,6 +21,10 @@ void SceneGame::Initialize()
 
 	//プレイヤー初期化
 	player = std::make_unique<Player>();
+	PlayerManager::Instance().Register(player.get());
+
+	enemyslime = std::make_unique<EnemySlime>();
+	//enemyslime->player = player.get();
 
 	//スプライト初期設定
 	{
@@ -155,6 +160,8 @@ void SceneGame::Update(float elapsedTime)
 	player->Update(elapsedTime);
 	player->SetPosition(physics.CircleVsStage(player->GetPosition(), 1));
 
+	enemyslime->Update(elapsedTime);
+
 	//ステージ更新処理
 	stage->Update(elapsedTime);
 
@@ -234,6 +241,8 @@ void SceneGame::Render()
 		
 		//player->Render(rc, modelRenderer);
 
+		enemyslime->Render(rc, modelRenderer);
+
 		ProjectileManager::Instance().Render(rc, modelRenderer);
 
 		EnemyManager::Instance().Render(rc, modelRenderer);
@@ -249,7 +258,11 @@ void SceneGame::Render()
 		//.RenderDebugPrimitive(rc, shapeRenderer);
 
 		player->RenderDebugPrimitive(rc, shapeRenderer);
+<<<<<<< HEAD
 		physics.RenderDebugPrimitive(rc, shapeRenderer);
+=======
+		enemyslime->RenderDebugPrimitive(rc, shapeRenderer);
+>>>>>>> master
 	}
 
 	// 2Dスプライト描画

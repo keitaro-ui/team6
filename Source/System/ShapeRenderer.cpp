@@ -436,6 +436,8 @@ void ShapeRenderer::CreateCylinderMesh(ID3D11Device* device, float radius1, floa
 	CreateMesh(device, vertices, cylinderMesh);
 }
 
+
+
 // ï`âÊé¿çs
 void ShapeRenderer::Render(const RenderContext& rc, const Mesh& mesh, const DirectX::XMFLOAT4X4& transform, const DirectX::XMFLOAT4& color) const
 {
@@ -508,3 +510,4 @@ void ShapeRenderer::RenderCircle(
 
 	Render(rc, tempMesh, transform, color);
 }
+

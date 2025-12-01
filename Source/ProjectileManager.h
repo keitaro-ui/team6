@@ -3,6 +3,7 @@
 #include <vector>
 #include <set>
 #include "Projectile.h"
+#include "Game/SafetyArea.h"
 
 //’eŠÛƒ}ƒl[ƒWƒƒ[
 class ProjectileManager
@@ -38,6 +39,7 @@ public:
 
 	// ’eŠÛæ“¾
 	Projectile* GetProjectile(int index) { return projectiles.at(index); }
+	Projectile* GetSafety(int index) { return safetyAreas.at(index); }
 
 	//’eŠÛíœ
 	void Remove(Projectile* projectile);
@@ -45,4 +47,5 @@ public:
 private:
 	std::vector<Projectile*>	projectiles;
 	std::set < Projectile*>  removes;
+	std::vector<SafetyArea*> safetyAreas;
 };
