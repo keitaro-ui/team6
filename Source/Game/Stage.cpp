@@ -1,4 +1,6 @@
 #include "Stage.h"
+#include "PlayerManager.h"
+#include "WayPoint.h"
 
 //コンストラクタ
 Stage::Stage()
@@ -8,6 +10,8 @@ Stage::Stage()
 
 	scale.x = scale.y = scale.z = 0.02f;
 	position.y = 4.0f;
+
+ 
 }
 
 Stage::~Stage()
@@ -33,6 +37,99 @@ void Stage::Render(const RenderContext& rc, ModelRenderer* renderer)
 	//レンダラモデルに描画してもらう
 	renderer->Render(rc, transform, model, ShaderId::Lambert);
 }
+
+void Stage::DestinationPointSet(int index)
+{
+    //edge[0] = 上（12時）
+    //edge[1] = 右（3時）
+    //edge[2] = 下（6時）
+    //edge[3] = 左（9時)
+
+    int x = index % COLUM_COUNT;
+
+    // 0: 12時（上）
+    int point = index - COLUM_COUNT;
+    if (point >= 0)
+    {
+        wayPoint[index]->edge[0]->destinationPoint = point;
+
+        DirectX::XMVECTOR dest = DirectX::XMLoadFloat3(&wayPoint[point]->position);
+        DirectX::XMVECTOR orig = DirectX::XMLoadFloat3(&wayPoint[index]->position);
+        DirectX::XMVECTOR len = DirectX::XMVector3Length(DirectX::XMVectorSubtract(dest, orig));
+
+        wayPoint[index]->edge[0]->cost = DirectX::XMVectorGetX(len);
+    }
+    else
+    {
+        wayPoint[index]->edge[0]->destinationPoint = -1;
+        wayPoint[index]->edge[0]->cost = FLT_MAX;
+    }
+
+
+    // 1: 3時（右）
+    point = index + 1;
+    if ((x + 1) < COLUM_COUNT)
+    {
+        wayPoint[index]->edge[1]->destinationPoint = point;
+
+        DirectX::XMVECTOR dest = DirectX::XMLoadFloat3(&wayPoint[point]->position);
+        DirectX::XMVECTOR orig = DirectX::XMLoadFloat3(&wayPoint[index]->position);
+        DirectX::XMVECTOR len = DirectX::XMVector3Length(DirectX::XMVectorSubtract(dest, orig));
+
+        wayPoint[index]->edge[1]->cost = DirectX::XMVectorGetX(len);
+    }
+    else
+    {
+        wayPoint[index]->edge[1]->destinationPoint = -1;
+        wayPoint[index]->edge[1]->cost = FLT_MAX;
+    }
+
+
+    // 2: 6時（下）
+    point = index + COLUM_COUNT;
+    if (point < MAX_WAY_POINT)
+    {
+        wayPoint[index]->edge[2]->destinationPoint = point;
+
+        DirectX::XMVECTOR dest = DirectX::XMLoadFloat3(&wayPoint[point]->position);
+        DirectX::XMVECTOR orig = DirectX::XMLoadFloat3(&wayPoint[index]->position);
+        DirectX::XMVECTOR len = DirectX::XMVector3Length(DirectX::XMVectorSubtract(dest, orig));
+
+        wayPoint[index]->edge[2]->cost = DirectX::XMVectorGetX(len);
+    }
+    else
+    {
+        wayPoint[index]->edge[2]->destinationPoint = -1;
+        wayPoint[index]->edge[2]->cost = FLT_MAX;
+    }
+
+
+    // 3: 9時（左）
+    point = index - 1;
+    if (x > 0)
+    {
+        wayPoint[index]->edge[3]->destinationPoint = point;
+
+        DirectX::XMVECTOR dest = DirectX::XMLoadFloat3(&wayPoint[point]->position);
+        DirectX::XMVECTOR orig = DirectX::XMLoadFloat3(&wayPoint[index]->position);
+        DirectX::XMVECTOR len = DirectX::XMVector3Length(DirectX::XMVectorSubtract(dest, orig));
+
+        wayPoint[index]->edge[3]->cost = DirectX::XMVectorGetX(len);
+    }
+    else
+    {
+        wayPoint[index]->edge[3]->destinationPoint = -1;
+        wayPoint[index]->edge[3]->cost = FLT_MAX;
+    }
+
+    //余った４～７個を無効にする
+    for (int i = 4; i < 8; i++)
+    {
+        wayPoint[index]->edge[i]->destinationPoint = -1;
+        wayPoint[index]->edge[i]->cost = FLT_MAX;
+    }
+}
+
 
 void Stage::RenderImGui()
 {
@@ -62,3 +159,37 @@ void Stage::RenderImGui()
 	ImGui::End();
 }
 
+// インデックス番号からウェイポイントの座標を取得
+DirectX::XMFLOAT3 Stage::GetIndexWayPoint(int index)
+{
+
+	return wayPoint[index]->position;
+}
+
+// 座標から一番近いウェイポイントのインデックスを取得
+int Stage::NearWayPointIndex(DirectX::XMFLOAT3 target)
+{
+    float minLength = FLT_MAX;
+    float length = 0.0f;
+    int index = -1;
+    // VECTORに変換
+    DirectX::XMVECTOR targetPos = DirectX::XMLoadFloat3(&target);
+
+    for (int i = 0; i < MAX_WAY_POINT; ++i)
+    {
+        DirectX::XMVECTOR point = DirectX::XMLoadFloat3(&(wayPoint[i]->position));
+        // 距離を求める
+        DirectX::XMVECTOR vector = DirectX::XMVectorSubtract(targetPos, point);
+        DirectX::XMVECTOR vectorLength = DirectX::XMVector3Length(vector);
+        DirectX::XMStoreFloat(&length, vectorLength);
+
+        // 求めた距離が保存しているものより小さければ
+        if (minLength > length)
+        {
+            // 値を更新
+            minLength = length;
+            index = i;
+        }
+    }
+    return index;
+}

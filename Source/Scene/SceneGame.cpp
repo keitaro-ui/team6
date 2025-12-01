@@ -9,6 +9,7 @@
 #include "SceneTitle.h"
 #include "SceneGame.h"
 #include "SceneLoading.h"
+#include "../Game/PlayerManager.h"
 
 //float game_timer;
 
@@ -20,6 +21,10 @@ void SceneGame::Initialize()
 
 	//プレイヤー初期化
 	player = std::make_unique<Player>();
+	PlayerManager::Instance().Register(player.get());
+
+	enemyslime = std::make_unique<EnemySlime>();
+	//enemyslime->player = player.get();
 
 	//スプライト初期設定
 	{
@@ -129,6 +134,8 @@ void SceneGame::Update(float elapsedTime)
 	//プレイヤー更新処理
 	player->Update(elapsedTime);
 
+	enemyslime->Update(elapsedTime);
+
 	//ステージ更新処理
 	stage->Update(elapsedTime);
 
@@ -187,6 +194,8 @@ void SceneGame::Render()
 		
 		//player->Render(rc, modelRenderer);
 
+		enemyslime->Render(rc, modelRenderer);
+
 		ProjectileManager::Instance().Render(rc, modelRenderer);
 
 		EnemyManager::Instance().Render(rc, modelRenderer);
@@ -202,6 +211,7 @@ void SceneGame::Render()
 		//.RenderDebugPrimitive(rc, shapeRenderer);
 
 		player->RenderDebugPrimitive(rc, shapeRenderer);
+		enemyslime->RenderDebugPrimitive(rc, shapeRenderer);
 	}
 
 	// 2Dスプライト描画

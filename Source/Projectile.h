@@ -6,6 +6,12 @@
 //‘O•ûéŒ¾
 class ProjectileManager;
 
+enum class ProjectileType
+{
+	Other,
+	Safetiy,
+};
+
 //’eŠÛ
 class Projectile
 {
@@ -61,4 +67,6 @@ public:
 
 	//’e‚Ì”¼Œa
 	float					radius = 0.05f;
+
+	ProjectileType type = ProjectileType::Other;
 };

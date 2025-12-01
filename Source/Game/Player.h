@@ -15,6 +15,7 @@ public:
     Player();
     ~Player() override;
 
+
     //更新処理
     void Update(float elapsedTime);
 
@@ -93,6 +94,12 @@ public:
     //std::chrono::system_clock::time_point minutes;
 
     void coolgun(float elapsedTime);
+
+    float GetMaxSafeAreaCount() { return maxSafetyAreaCount; }
+    bool GetputTrue() { return putTrue; }
+    int GetLastSafetyAreaIndex() const { return lastSafetyAreaIndex; }
+
+    const std::vector<SafetyArea*>& GetSafety()const { return safetyAreas; }
    
 private:
     std::vector<SafetyArea*> safetyAreas;
@@ -112,4 +119,8 @@ private:
     float safeCooldown = 0.0f;        // 現在のクールタイム残り時間
     bool canPlaceSafeArea = true;     // 設置可能かどうか
     float safeInterval = 2.0f;
+
+    int lastSafetyAreaIndex = -1;
+
+    bool putTrue = false;
 };
