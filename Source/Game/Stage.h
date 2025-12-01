@@ -2,6 +2,7 @@
 
 #include "System/ModelRenderer.h";
 #include "Character.h"
+#include <DirectXMath.h>
 #include "imgui.h"
 
 //ステージ

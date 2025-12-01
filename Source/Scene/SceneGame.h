@@ -4,6 +4,7 @@
 #include "../Game/Player.h"
 #include "CameraController.h"
 #include "DirectXMath.h"
+#include "PhysicsSystem2d.h"
 #include "System/Sprite.h"
 #include "Scene.h"
 #include "../Game/Balloon.h"
@@ -42,12 +43,15 @@ private:
 
 	Balloon* balloon = nullptr;
 
-	//•¡”‚ÌBoard‚ğŠÇ—‚·‚é”z—ñ
-	std::vector<Board*> boards;
+	Board* boards[4];
+
+	std::unique_ptr<Sprite> spr = nullptr;
 
 	//•Ï”éŒ¾
 	bool quizFlag = false;
-
+	bool fRenFlag = false;
+	PhysicsSystem2d physics;
+	Board* activeBoard = nullptr;
 public:
 	
 };

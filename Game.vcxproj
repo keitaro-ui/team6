@@ -133,6 +133,7 @@
     <ClInclude Include="Source\Game\Player.h" />
     <ClInclude Include="Source\Game\SafetyArea.h" />
     <ClInclude Include="Source\Game\Stage.h" />
+    <ClInclude Include="Source\PhysicsSystem2d.h" />
     <ClInclude Include="Source\ProjectHoming.h" />
     <ClInclude Include="Source\Projectile.h" />
     <ClInclude Include="Source\ProjectileManager.h" />
@@ -191,6 +192,7 @@
     <ClCompile Include="Source\Game\player.cpp" />
     <ClCompile Include="Source\Game\SafetyArea.cpp" />
     <ClCompile Include="Source\Game\Stage.cpp" />
+    <ClCompile Include="Source\PhysicsSystem2d.cpp" />
     <ClCompile Include="Source\ProjectHoming.cpp" />
     <ClCompile Include="Source\Projectile.cpp" />
     <ClCompile Include="Source\ProjectileManager.cpp" />
