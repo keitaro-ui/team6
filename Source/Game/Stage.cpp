@@ -6,21 +6,53 @@
 Stage::Stage()
 {
 	//ステージモデルを読み込み
-	model = new Model("Data/Model/Stage/syusei.mdl");
-	//model = new Model("Data/Model/Stage/StageT.mdl");
-	//model = new Model("Data/Model/Stage/ExampleStage.mdl");
+	//model = new Model("Data/Model/Stage/smallroom.mdl");
+	model = new Model("Data/Model/Stage/wallceiling.mdl");
 
+
+	//loadTextures.LoadNormal("Data/Model/Stage/Texture/Small room/aiStandardSurface2_Normal_Utility - Raw.png");
+	//loadTextures.LoadRoughness("Data/Model/Stage/Texture/Small room/aiStandardSurface2_Roughness_Utility - Raw.png");
+	//loadTextures.LoadMetalness("Data/Model/Stage/Texture/Small room/aiStandardSurface2_Metallic_Utility - Raw.png");
+	//loadTextures.LoadEmisive("Data/Model/Stage/Texture/Small room/aiStandardSurface2_Emissive_Utility - sRGB - Texture.png");
+
+	loadTextures.LoadNormal("Data/Model/Stage/Texture/wall/wallceilings_standardSurface1_Normal_Utility - Raw.png");
+	loadTextures.LoadRoughness("Data/Model/Stage/Texture/wall/wallceilings_standardSurface1_Roughness_Utility - Raw.png");
+	loadTextures.LoadMetalness("Data/Model/Stage/Texture/wall/wallceilings_standardSurface1_Metallic_Utility - Raw.png");
+
+	models.push_back(std::make_unique<Model>("Data/Model/Stage/wallceiling.mdl"));
+
+	{
+		LoadTextures tex;
+		tex.LoadNormal("Data/Model/Stage/Texture/wall/wallceilings_standardSurface1_Normal_Utility - Raw.png");
+		tex.LoadRoughness("Data/Model/Stage/Texture/wall/wallceilings_standardSurface1_Roughness_Utility - Raw.png");
+		tex.LoadMetalness("Data/Model/Stage/Texture/wall/wallceilings_standardSurface1_Metallic_Utility - Raw.png");
+		TextureList.push_back(tex);
+	}
+
+	models.push_back(std::make_unique<Model>("Data/Model/Stage/smallroom.mdl"));
+
+	{
+		LoadTextures tex;
+		tex.LoadNormal("Data/Model/Stage/Texture/object/walldata_Normal.png");
+		tex.LoadRoughness("Data/Model/Stage/Texture/object/walldata_Roughness.png");
+		tex.LoadMetalness("Data/Model/Stage/Texture/object/walldata_Metalness.png");
+		TextureList.push_back(tex);
+	}
+	
 	scale.x = scale.y = scale.z = 0.02f;
 	/*scale.x = scale.y = scale.z = 1.0f;*/
+
 	position.y = 4.0f;
 
  
+
 }
 
 Stage::~Stage()
 {
 	//ステージモデルを破棄
 	delete model;
+	
 }
 
 //更新処理
@@ -28,8 +60,13 @@ void Stage::Update(float elapsedTime)
 {
 	UpdateTransform();
 
+<<<<<<< HEAD
 	RenderImGui();
 	//DirectX::XMVector2LinePointDistance();
+=======
+	//RenderImGui();
+
+>>>>>>> master
 }
 
 //描画処理
@@ -38,8 +75,13 @@ void Stage::Render(const RenderContext& rc, ModelRenderer* renderer)
 	//DirectX::XMFLOAT4X4 transform;
 	//DirectX::XMStoreFloat4x4(&transform, DirectX::XMMatrixIdentity());
 
-	//レンダラモデルに描画してもらう
-	renderer->Render(rc, transform, model, ShaderId::Lambert);
+	for (size_t i = 0; i < models.size(); i++)
+	{
+		TextureList[i].Set(rc);
+		renderer->Render(rc, transform, models[i].get(), ShaderId::Lambert);
+		TextureList[i].Clear(rc);
+	}
+
 }
 
 void Stage::DestinationPointSet(int index)

@@ -359,12 +359,14 @@ void Player::InputSafetrSrea()
 {
 	if (GetAsyncKeyState('R') & 1 && canPlaceSafeArea && maxSafetyAreaCount>0)
 	{
+		DirectX::XMFLOAT3 CamPos = Camera::Instance().GetEye();
 		DirectX::XMFLOAT3 forward = Camera::Instance().GetFront();
 
+		float distance = 3.0f;
 		DirectX::XMFLOAT3 spawnPos = {
-		  position.x + forward.x,
-		  position.y + 1.0f,
-		  position.z + forward.z 
+		 CamPos.x + forward.x * distance,
+		4.0f,
+		CamPos.z + forward.z * distance
 		};
 
 		// ===== SafetyAreaê∂ê¨ =====

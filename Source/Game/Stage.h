@@ -1,14 +1,28 @@
 #pragma once
 
+#include <vector>
+
 #include "System/ModelRenderer.h";
 #include "Character.h"
 #include <DirectXMath.h>
 #include "imgui.h"
+#include "System/LoadTextures.h"
+
+struct TextureSet
+{
+	std::string normal;
+	std::string roughness;
+	std::string metalness;
+	std::string emissive;
+	std::string occlusion;
+};
+
 #include "WayPoint.h"
 
 #define ROW_COUNT 20
 #define COLUM_COUNT 20
 #define MAX_WAY_POINT 400
+
 
 //ステージ
 class Stage : public Character
@@ -41,4 +55,11 @@ public:
 	WayPoint* wayPoint[MAX_WAY_POINT];
 private:
 	Model* model = nullptr;
+
+	LoadTextures loadTextures;
+
+	std::vector<std::unique_ptr<Model>> models;
+	std::vector<LoadTextures> TextureList;
+	
+	std::unique_ptr<ModelRenderer> modelRenderer;
 };

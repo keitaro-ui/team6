@@ -288,8 +288,21 @@ void SceneGame::Render()
 		physics.RenderDebugPrimitive(rc, shapeRenderer);
 
 		//エネミーデバッグプリミティブ描画
+<<<<<<< HEAD
 		enemyslime->RenderDebugPrimitive(rc, shapeRenderer);
 		
+=======
+		//EnemyManager::Instance(); 
+		//.RenderDebugPrimitive(rc, shapeRenderer);
+
+		player->RenderDebugPrimitive(rc, shapeRenderer);
+
+
+		modelRenderer->RenderImGui(rc);
+
+		enemyslime->RenderDebugPrimitive(rc, shapeRenderer);
+
+>>>>>>> master
 	}
 
 	// 2Dスプライト描画
@@ -308,6 +321,7 @@ void SceneGame::DrawGUI()
 	//プレーヤーデバッグ処理
 	player->DrawDebugGUI();
 
+<<<<<<< HEAD
 	//クイズ関連のデバッグ
 	ImGui::Begin("Boards Debug");
 
@@ -340,4 +354,7 @@ void SceneGame::DrawGUI()
 	//}
 
 	ImGui::End();
+=======
+	stage->RenderImGui();
+>>>>>>> master
 }

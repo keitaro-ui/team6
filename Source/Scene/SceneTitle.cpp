@@ -97,10 +97,13 @@ void SceneTitle::Render()
 	{
 		float screenWidth = static_cast<float>(graphics.GetScreenWidth());
 		float screenHeight = static_cast<float>(graphics.GetScreenHeight());
+
         sprite->Render(rc,
-            0, 0, 0, screenWidth, screenHeight,
+            0, 0, 0, 
+            screenWidth, screenHeight,
             0,
             1, 1, 1, 1);
+
             //スタートとチュートリアルの描画と拡大
             if (cursorPos.x >= 505 && cursorPos.x <= 765)
             {

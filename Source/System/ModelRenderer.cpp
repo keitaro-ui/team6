@@ -97,9 +97,9 @@ void ModelRenderer::InitLights()
 
 	// スポットライトは空（カメラ追従で埋める）
 	ZeroMemory(&spot_light[0], sizeof(spot_lights) * 8);
-	spot_light[0].range = 15.0f;
-	spot_light[0].innerCorn = cosf(DirectX::XMConvertToRadians(6.5f));
-	spot_light[0].outerCorn = cosf(DirectX::XMConvertToRadians(20.5f));
+	spot_light[0].range = 20.0;
+	spot_light[0].innerCorn = cosf(DirectX::XMConvertToRadians(18.0f));
+	spot_light[0].outerCorn = cosf(DirectX::XMConvertToRadians(30.0f));
 }
 
 // 描画実行
@@ -111,7 +111,7 @@ void ModelRenderer::Render(const RenderContext& rc,
 	ID3D11DeviceContext* dc = rc.deviceContext;
 
 	// ImGui でライトUI表示 ＆ ライト可視化
-	RenderImGui(rc);
+	//RenderImGui(rc);
 
 	// カメラ位置にスポットライトを追従
 	UpdateSpotLightFromCamera();
@@ -156,7 +156,7 @@ void ModelRenderer::RenderImGui(const RenderContext& rc)
 		// ポイントライト可視化
 		if (ImGui::CollapsingHeader("Point Lights"))
 		{
-			for (int i = 0; i < 16; ++i)
+			for (int i = 0; i < 8; ++i)
 			{
 				std::string label = "PointLight " + std::to_string(i);
 				if (ImGui::TreeNode(label.c_str()))

@@ -1,5 +1,6 @@
 #include "System/Mouse.h"
 #include "imgui.h"
+#include "Graphics.h"
 
 static const int KeyMap[] =
 {
@@ -93,14 +94,20 @@ void Mouse::Update()
 	GetClientRect(hWnd, &rc);
 	UINT screenW = rc.right - rc.left;
 	UINT screenH = rc.bottom - rc.top;
-	UINT viewportW = screenWidth;
-	UINT viewportH = screenHeight;
+	//UINT viewportW = screenWidth;
+	//UINT viewportH = screenHeight;
+
+	UINT viewportW = static_cast<UINT>(Graphics::Instance().GetScreenWidth());
+	UINT viewportH = static_cast<UINT>(Graphics::Instance().GetScreenHeight());
 
 	// âÊñ ï‚ê≥
 	positionX[1] = positionX[0];
 	positionY[1] = positionY[0];
 	positionX[0] = (LONG)(cursor.x / static_cast<float>(viewportW) * static_cast<float>(screenW));
 	positionY[0] = (LONG)(cursor.y / static_cast<float>(viewportH) * static_cast<float>(screenH));
+
+	positionX[0] = cursor.x;  // ÇªÇÃÇ‹Ç‹
+	positionY[0] = cursor.y;
 
 
 	if (bLock)
@@ -111,6 +118,11 @@ void Mouse::Update()
 
 		deltaPositionX = (positionX[0] - (viewportW / 2.0f))*0.25f;
 		deltaPositionY = (positionY[0] - (viewportH / 2.0f))*0.25f;
+
+
+		// íÜâõÇ…ñﬂÇ∑
+		positionX[0] = viewportW / 2;
+		positionY[0] = viewportH / 2;
 	}
 }
 
