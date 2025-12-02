@@ -9,6 +9,7 @@
 #include "../Game/Balloon.h"
 #include "../Game/Board.h"
 #include "../Game/Box.h"
+#include "../Game/EnemySlime.h"
 
 // ゲームシーン
 class SceneGame : public Scene
@@ -38,9 +39,12 @@ private:
 	
 	std::unique_ptr<Player> player = nullptr;
 
+	std::unique_ptr<EnemySlime> enemyslime = nullptr;
+
 	CameraController* cameraController = nullptr;
 
 	Balloon* balloon = nullptr;
+	
 
 	//複数のBoardを管理する配列
 	std::vector<Board*> boards;

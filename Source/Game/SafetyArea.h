@@ -16,9 +16,11 @@ public:
         balloonModel = new Model("Data/Model/Target/balloon.mdl");
         scale={0.6f, 0.6f, 0.6f};
         assert(balloonModel && "balloonModel ‚ª“Ç‚İ‚ß‚Ü‚¹‚ñ");
+        type = ProjectileType::Safetiy;
     }
     
     ~SafetyArea();
+
     // Šù‘¶‚Ì‰¼‘zŠÖ”
     virtual void Update(float elapsedTime) override;
     virtual void Render(const RenderContext& rc, ModelRenderer* renderer) override;

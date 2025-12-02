@@ -135,6 +135,8 @@ void Player::DrawDebugGUI()
 	// Œ»Ý‚ÌÝ’u”‚ð•\Ž¦
 	ImGui::Text("Current Count: %d / %d", (int)safetyAreas.size(), maxSafetyAreaCount);
 
+	//ImGui::DragFloat3("slime.pos", &EnemyManager::Instance().GetEnemy(0)->GetPosition().x, 0.01f);
+
 	if (ImGui::CollapsingHeader("Spawned SafetyAreas"))
 	{
 			// ”¼Œa
@@ -371,9 +373,16 @@ void Player::InputSafetrSrea()
 		area->SetPosition(spawnPos);
 		maxSafetyAreaCount -= 1;
 		safetyAreas.push_back(area);
+		lastSafetyAreaIndex = safetyAreas.size() - 1;
 
 		canPlaceSafeArea = false;
 		safeCooldown = safeInterval;
+
+		putTrue = true;
+		/*if (putTrue == false)
+		{
+			putTrue = true;
+		}*/
 	}
 
 
@@ -400,4 +409,5 @@ void Player::InputJump()
 		}
 	}
 }
+
 

@@ -6,6 +6,7 @@
 #include "RenderState.h"
 #include "ShapeRenderer.h"
 #include "ModelRenderer.h"
+#include "LineRenderer.h"
 
 // グラフィックス
 class Graphics
@@ -58,8 +59,13 @@ public:
 	// モデルレンダラ取得
 	ModelRenderer* GetModelRenderer() const { return modelRenderer.get(); }
 
+<<<<<<< HEAD
 	//フルスクリーンモード
 	void SetFullScreen(bool fullscreen);
+=======
+	// ラインレンダラ取得
+	LineRenderer* GetLineRenderer() const { return lineRenderer.get(); }
+>>>>>>> 6e252551dfff2d12555e88397ab1e007b2b71cc1
 
 private:
 	HWND											hWnd = nullptr;
@@ -76,8 +82,12 @@ private:
 	std::unique_ptr<RenderState>					renderState;
 	std::unique_ptr<ShapeRenderer>					shapeRenderer;
 	std::unique_ptr<ModelRenderer>					modelRenderer;
+<<<<<<< HEAD
 
 	RECT windowed_rect{};     
 	DWORD windowed_style{};
 	Microsoft::WRL::ComPtr<ID3D11Texture2D> depthBuffer;
+=======
+	std::unique_ptr<LineRenderer>					lineRenderer;
+>>>>>>> 6e252551dfff2d12555e88397ab1e007b2b71cc1
 };
