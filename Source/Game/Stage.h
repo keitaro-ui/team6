@@ -1,8 +1,20 @@
 #pragma once
 
+#include <vector>
+
 #include "System/ModelRenderer.h";
 #include "Character.h"
 #include "imgui.h"
+#include "System/LoadTextures.h"
+
+struct TextureSet
+{
+	std::string normal;
+	std::string roughness;
+	std::string metalness;
+	std::string emissive;
+	std::string occlusion;
+};
 
 //ステージ
 class Stage : public Character
@@ -22,4 +34,11 @@ public:
 
 private:
 	Model* model = nullptr;
+
+	LoadTextures loadTextures;
+
+	std::vector<std::unique_ptr<Model>> models;
+	std::vector<LoadTextures> TextureList;
+	
+	std::unique_ptr<ModelRenderer> modelRenderer;
 };

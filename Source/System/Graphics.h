@@ -58,6 +58,9 @@ public:
 	// モデルレンダラ取得
 	ModelRenderer* GetModelRenderer() const { return modelRenderer.get(); }
 
+	//フルスクリーンモード
+	void SetFullScreen(bool fullscreen);
+
 private:
 	HWND											hWnd = nullptr;
 	Microsoft::WRL::ComPtr<ID3D11Device>			device;
@@ -73,4 +76,8 @@ private:
 	std::unique_ptr<RenderState>					renderState;
 	std::unique_ptr<ShapeRenderer>					shapeRenderer;
 	std::unique_ptr<ModelRenderer>					modelRenderer;
+
+	RECT windowed_rect{};     
+	DWORD windowed_style{};
+	Microsoft::WRL::ComPtr<ID3D11Texture2D> depthBuffer;
 };

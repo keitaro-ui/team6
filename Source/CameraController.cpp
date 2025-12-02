@@ -179,7 +179,7 @@ void CameraController::HandleNormal(float elapsedTime)
 		eye.z += moveVec.z * moveSpeed * elapsedTime;
 	}
 
-	eye.y = 1.5f;
+	eye.y = 4.0f;
 	
 	// Bobタイマー更新
 	bool isWalking = moveLen > 0.0f;

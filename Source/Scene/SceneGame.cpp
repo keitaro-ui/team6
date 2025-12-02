@@ -202,6 +202,8 @@ void SceneGame::Render()
 		//.RenderDebugPrimitive(rc, shapeRenderer);
 
 		player->RenderDebugPrimitive(rc, shapeRenderer);
+
+		modelRenderer->RenderImGui(rc);
 	}
 
 	// 2Dスプライト描画
@@ -215,4 +217,6 @@ void SceneGame::DrawGUI()
 {
 	//プレーヤーデバッグ処理
 	player->DrawDebugGUI();
+
+	stage->RenderImGui();
 }

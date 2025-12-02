@@ -15,6 +15,7 @@ const std::vector<D3D11_INPUT_ELEMENT_DESC> ModelResource::InputElementDescs =
 	{ "POSITION",     0, DXGI_FORMAT_R32G32B32_FLOAT,    0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	{ "NORMAL",       0, DXGI_FORMAT_R32G32B32_FLOAT,    0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	{ "TANGENT",      0, DXGI_FORMAT_R32G32B32_FLOAT,    0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+	{ "BINORMAL",     0, DXGI_FORMAT_R32G32B32_FLOAT,    0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	{ "TEXCOORD",     0, DXGI_FORMAT_R32G32_FLOAT,       0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	{ "COLOR",        0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	{ "BONE_WEIGHTS", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
@@ -25,13 +26,97 @@ const std::vector<D3D11_INPUT_ELEMENT_DESC> ModelResource::InputElementDescs =
 CEREAL_CLASS_VERSION(ModelResource::Node, 1)
 CEREAL_CLASS_VERSION(ModelResource::Material, 1)
 CEREAL_CLASS_VERSION(ModelResource::Subset, 1)
-CEREAL_CLASS_VERSION(ModelResource::Vertex, 1)
+CEREAL_CLASS_VERSION(ModelResource::Vertex, 2)
 CEREAL_CLASS_VERSION(ModelResource::Mesh, 1)
 CEREAL_CLASS_VERSION(ModelResource::NodeKeyData, 1)
 CEREAL_CLASS_VERSION(ModelResource::Keyframe, 1)
 CEREAL_CLASS_VERSION(ModelResource::Animation, 1)
 CEREAL_CLASS_VERSION(ModelResource, 1)
 
+
+static void ComputeTangentsForMesh(ModelResource::Mesh& mesh)
+{
+	// まずゼロ初期化（累積用）
+	for (auto& v : mesh.vertices)
+	{
+		v.tangent = DirectX::XMFLOAT3(0, 0, 0);
+		v.bitangent = DirectX::XMFLOAT3(0, 0, 0);
+	}
+
+	// インデックスはトライアングル前提（逆順やストリップなら調整）
+	for (size_t i = 0; i + 2 < mesh.indices.size(); i += 3)
+	{
+		uint32_t i0 = mesh.indices[i + 0];
+		uint32_t i1 = mesh.indices[i + 1];
+		uint32_t i2 = mesh.indices[i + 2];
+
+		auto& v0 = mesh.vertices[i0];
+		auto& v1 = mesh.vertices[i1];
+		auto& v2 = mesh.vertices[i2];
+
+		DirectX::XMVECTOR p0 = DirectX::XMLoadFloat3(&v0.position);
+		DirectX::XMVECTOR p1 = DirectX::XMLoadFloat3(&v1.position);
+		DirectX::XMVECTOR p2 = DirectX::XMLoadFloat3(&v2.position);
+
+		DirectX::XMVECTOR uv0 = DirectX::XMLoadFloat2(&v0.texcoord);
+		DirectX::XMVECTOR uv1 = DirectX::XMLoadFloat2(&v1.texcoord);
+		DirectX::XMVECTOR uv2 = DirectX::XMLoadFloat2(&v2.texcoord);
+
+		DirectX::XMVECTOR edge1 = DirectX::XMVectorSubtract(p1, p0);
+		DirectX::XMVECTOR edge2 = DirectX::XMVectorSubtract(p2, p0);
+
+		float x1 = DirectX::XMVectorGetX(DirectX::XMVectorSubtract(uv1, uv0));
+		float y1 = DirectX::XMVectorGetY(DirectX::XMVectorSubtract(uv1, uv0));
+		float x2 = DirectX::XMVectorGetX(DirectX::XMVectorSubtract(uv2, uv0));
+		float y2 = DirectX::XMVectorGetY(DirectX::XMVectorSubtract(uv2, uv0));
+
+		float denom = (x1 * y2 - x2 * y1);
+		float r = denom == 0.0f ? 0.0f : 1.0f / denom;
+
+		DirectX::XMVECTOR tangent = DirectX::XMVectorScale(
+			DirectX::XMVectorSubtract(
+				DirectX::XMVectorScale(edge1, y2),
+				DirectX::XMVectorScale(edge2, y1)
+			), r);
+
+		DirectX::XMVECTOR bitangent = DirectX::XMVectorScale(
+			DirectX::XMVectorSubtract(
+				DirectX::XMVectorScale(edge2, x1),
+				DirectX::XMVectorScale(edge1, x2)
+			), r);
+
+		// 加算（累積）
+		DirectX::XMFLOAT3 ttmp, btmp;
+		DirectX::XMStoreFloat3(&ttmp, tangent);
+		DirectX::XMStoreFloat3(&btmp, bitangent);
+
+		v0.tangent.x += ttmp.x; v0.tangent.y += ttmp.y; v0.tangent.z += ttmp.z;
+		v1.tangent.x += ttmp.x; v1.tangent.y += ttmp.y; v1.tangent.z += ttmp.z;
+		v2.tangent.x += ttmp.x; v2.tangent.y += ttmp.y; v2.tangent.z += ttmp.z;
+
+		v0.bitangent.x += btmp.x; v0.bitangent.y += btmp.y; v0.bitangent.z += btmp.z;
+		v1.bitangent.x += btmp.x; v1.bitangent.y += btmp.y; v1.bitangent.z += btmp.z;
+		v2.bitangent.x += btmp.x; v2.bitangent.y += btmp.y; v2.bitangent.z += btmp.z;
+	}
+
+	// 正規化して、法線と直交化（Gram-Schmidt）
+	for (auto& v : mesh.vertices)
+	{
+		DirectX::XMVECTOR n = DirectX::XMLoadFloat3(&v.normal);
+		DirectX::XMVECTOR t = DirectX::XMLoadFloat3(&v.tangent);
+		// t = normalize(t - n * dot(n, t))
+		DirectX::XMVECTOR proj = DirectX::XMVectorScale(n, DirectX::XMVectorGetX(DirectX::XMVector3Dot(n, t)));
+		DirectX::XMVECTOR orthT = DirectX::XMVectorSubtract(t, proj);
+		orthT = DirectX::XMVector3Normalize(orthT);
+
+		DirectX::XMVECTOR b = DirectX::XMLoadFloat3(&v.bitangent);
+		// bitangent can be recomputed as cross(normal, tangent) to be consistent
+		DirectX::XMVECTOR recomputedB = DirectX::XMVector3Normalize(DirectX::XMVector3Cross(n, orthT));
+
+		DirectX::XMStoreFloat3(&v.tangent, orthT);
+		DirectX::XMStoreFloat3(&v.bitangent, recomputedB);
+	}
+}
 // シリアライズ
 namespace DirectX
 {
@@ -125,10 +210,27 @@ void ModelResource::Subset::serialize(Archive& archive, int version)
 template<class Archive>
 void ModelResource::Vertex::serialize(Archive& archive, int version)
 {
-	archive(
+	/*archive(
 		CEREAL_NVP(position),
 		CEREAL_NVP(normal),
 		CEREAL_NVP(tangent),
+		CEREAL_NVP(bitangent),
+		CEREAL_NVP(texcoord),
+		CEREAL_NVP(color),
+		CEREAL_NVP(boneWeight),
+		CEREAL_NVP(boneIndex)
+	);*/
+
+	archive(
+		CEREAL_NVP(position),
+		CEREAL_NVP(normal),
+		CEREAL_NVP(tangent)
+	);
+
+	if (version >= 2)
+		archive(CEREAL_NVP(bitangent));
+
+	archive(
 		CEREAL_NVP(texcoord),
 		CEREAL_NVP(color),
 		CEREAL_NVP(boneWeight),
@@ -225,6 +327,8 @@ void ModelResource::BuildModel(ID3D11Device* device, const char* dirname)
 		{
 			subset.material = &materials.at(subset.materialIndex);
 		}
+
+		ComputeTangentsForMesh(mesh);
 
 		// 頂点バッファ
 		{

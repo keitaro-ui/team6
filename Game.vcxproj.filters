@@ -201,6 +201,7 @@
     <ClInclude Include="Source\System\ShadowMap.h">
       <Filter>Source\System</Filter>
     </ClInclude>
+    <ClInclude Include="Source\System\LoadTextures.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="External\imgui-docking\imgui.cpp">
@@ -355,6 +356,9 @@
     </ClCompile>
     <ClCompile Include="Source\System\ShadowMap.cpp">
       <Filter>Source\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\System\LoadTextures.cpp">
+      <Filter>Source</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

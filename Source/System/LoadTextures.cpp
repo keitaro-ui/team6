@@ -1,0 +1,164 @@
+#include "LoadTextures.h"
+
+#include "Misc.h"
+#include "Graphics.h"
+#include "GpuResourceUtils.h"
+#include "RenderContext.h"
+
+#include <imgui.h>
+
+LoadTextures::LoadTextures()
+{
+}
+
+void LoadTextures::Set(const RenderContext& rc)
+{
+	ID3D11DeviceContext* dc = rc.deviceContext;
+
+		// SRVîzóÒÇçÏê¨
+		ID3D11ShaderResourceView* srvs[5];
+		for (int i = 0; i < _countof(shaderResourceView); ++i) {
+			srvs[i] = shaderResourceView[i].Get();
+		}
+
+		if (!shaderResourceView[0])
+		{
+			CreateDummyTexture(shaderResourceView[0].GetAddressOf(), 0xFFFF7F7F);
+		}
+		if (!shaderResourceView[4])
+		{
+			CreateDummyTexture(shaderResourceView[4].GetAddressOf(), 0xFFFFFFFF);
+		}
+
+		dc->PSSetShaderResources(1, 5, srvs);
+		dc->PSSetShaderResources(5, 1, shaderResourceView[4].GetAddressOf());
+
+	//for (int i = 0; i < 6; i++)
+	//{
+	//	if (!shaderResourceView[i])
+	//		CreateDummyTexture(shaderResourceView[i].GetAddressOf(), 0xFFFF7F7F);
+	//}
+
+	//ID3D11ShaderResourceView* srvs[6];
+	//for (int i = 0; i < 6; i++)
+	//	srvs[i] = shaderResourceView[i].Get();
+
+	//dc->PSSetShaderResources(0, 6, srvs);
+}
+
+void LoadTextures::LoadNormal(const char* filename)
+{
+	ID3D11Device* device = Graphics::Instance().GetDevice();
+	HRESULT hr = S_OK;
+
+	D3D11_TEXTURE2D_DESC desc;
+
+	hr = GpuResourceUtils::LoadTexture(device, filename, shaderResourceView[0].GetAddressOf(), &desc);
+	_ASSERT_EXPR(SUCCEEDED(hr), HRTrace(hr));
+}
+
+void LoadTextures::LoadRoughness(const char* filename)
+{
+	ID3D11Device* device = Graphics::Instance().GetDevice();
+	HRESULT hr = S_OK;
+
+	D3D11_TEXTURE2D_DESC desc;
+
+	hr = GpuResourceUtils::LoadTexture(device, filename, shaderResourceView[1].GetAddressOf(), &desc);
+	_ASSERT_EXPR(SUCCEEDED(hr), HRTrace(hr));
+}
+
+void LoadTextures::LoadMetalness(const char* filename)
+{
+	ID3D11Device* device = Graphics::Instance().GetDevice();
+	HRESULT hr = S_OK;
+
+	D3D11_TEXTURE2D_DESC desc;
+
+	hr = GpuResourceUtils::LoadTexture(device, filename, shaderResourceView[2].GetAddressOf(), &desc);
+	_ASSERT_EXPR(SUCCEEDED(hr), HRTrace(hr));
+}
+
+void LoadTextures::LoadEmisive(const char* filename)
+{
+	ID3D11Device* device = Graphics::Instance().GetDevice();
+	HRESULT hr = S_OK;
+
+	D3D11_TEXTURE2D_DESC desc;
+
+	hr = GpuResourceUtils::LoadTexture(device, filename, shaderResourceView[3].GetAddressOf(), &desc);
+	_ASSERT_EXPR(SUCCEEDED(hr), HRTrace(hr));
+}
+
+void LoadTextures::LoadOcclusion(const char* filename)
+{
+	ID3D11Device* device = Graphics::Instance().GetDevice();
+	HRESULT hr = S_OK;
+
+	D3D11_TEXTURE2D_DESC desc;
+
+	hr = GpuResourceUtils::LoadTexture(device, filename, shaderResourceView[4].GetAddressOf(), &desc);
+	_ASSERT_EXPR(SUCCEEDED(hr), HRTrace(hr));
+}
+
+void LoadTextures::Clear(const RenderContext& rc)
+{
+	ID3D11DeviceContext* dc = rc.deviceContext;
+	ID3D11ShaderResourceView* clearShaderResourceView[] = { nullptr };
+
+	dc->PSSetShaderResources(1, 1, clearShaderResourceView);
+	dc->PSSetShaderResources(2, 1, clearShaderResourceView);
+	dc->PSSetShaderResources(3, 1, clearShaderResourceView);
+	dc->PSSetShaderResources(4, 1, clearShaderResourceView);
+
+	//ID3D11DeviceContext* dc = rc.deviceContext;
+
+	//ID3D11ShaderResourceView* nullSRVs[6] = { nullptr };
+
+	//dc->PSSetShaderResources(0, 6, nullSRVs);
+}
+
+HRESULT LoadTextures::CreateDummyTexture(ID3D11ShaderResourceView** shaderResourceView, DWORD value)
+{
+	ID3D11Device* device = Graphics::Instance().GetDevice();
+	HRESULT hr = S_OK;
+
+	float dimension = 16;
+
+	D3D11_TEXTURE2D_DESC texture2dDesc = {};
+	texture2dDesc.Width = dimension;
+	texture2dDesc.Height = dimension;
+	texture2dDesc.MipLevels = 1;
+	texture2dDesc.ArraySize = 1;
+	texture2dDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	texture2dDesc.SampleDesc.Count = 1;
+	texture2dDesc.SampleDesc.Quality = 0;
+	texture2dDesc.Usage = D3D11_USAGE_DEFAULT;
+	texture2dDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+
+	size_t texels = dimension * dimension;
+	std::unique_ptr<DWORD[]>sysmem = { std::make_unique<DWORD[]>(texels) };
+	for (size_t i = 0; i < texels; ++i)
+	{
+		sysmem[i] = 0xFFFF7F7F;
+	}
+
+	D3D11_SUBRESOURCE_DATA subresourceData = {};
+	subresourceData.pSysMem = sysmem.get();
+	subresourceData.SysMemPitch = sizeof(DWORD) * dimension;
+
+	Microsoft::WRL::ComPtr<ID3D11Texture2D> texture2d;
+	hr = device->CreateTexture2D(&texture2dDesc, &subresourceData, &texture2d);
+	_ASSERT_EXPR(SUCCEEDED(hr), HRTrace(hr));
+
+	D3D11_SHADER_RESOURCE_VIEW_DESC shaderResourceViewDesc = {};
+	shaderResourceViewDesc.Format = texture2dDesc.Format;
+	shaderResourceViewDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+	shaderResourceViewDesc.Texture2D.MipLevels = 1;
+
+	hr = device->CreateShaderResourceView(texture2d.Get(), &shaderResourceViewDesc, shaderResourceView);
+	_ASSERT_EXPR(SUCCEEDED(hr), HRTrace(hr));
+
+	return hr;
+
+}

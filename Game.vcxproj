@@ -155,6 +155,7 @@
     <ClInclude Include="Source\System\ImGuiRenderer.h" />
     <ClInclude Include="Source\System\Input.h" />
     <ClInclude Include="Source\System\LambertShader.h" />
+    <ClInclude Include="Source\System\LoadTextures.h" />
     <ClInclude Include="Source\System\Misc.h" />
     <ClInclude Include="Source\System\Model.h" />
     <ClInclude Include="Source\System\ModelRenderer.h" />
@@ -212,6 +213,7 @@
     <ClCompile Include="Source\System\ImGuiRenderer.cpp" />
     <ClCompile Include="Source\System\Input.cpp" />
     <ClCompile Include="Source\System\LambertShader.cpp" />
+    <ClCompile Include="Source\System\LoadTextures.cpp" />
     <ClCompile Include="Source\System\Model.cpp" />
     <ClCompile Include="Source\System\ModelRenderer.cpp" />
     <ClCompile Include="Source\System\ModelResource.cpp" />
