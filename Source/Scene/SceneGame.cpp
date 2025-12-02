@@ -211,12 +211,12 @@ void SceneGame::Render()
 		//.RenderDebugPrimitive(rc, shapeRenderer);
 
 		player->RenderDebugPrimitive(rc, shapeRenderer);
-<<<<<<< HEAD
+
 
 		modelRenderer->RenderImGui(rc);
-=======
+
 		enemyslime->RenderDebugPrimitive(rc, shapeRenderer);
->>>>>>> 6e252551dfff2d12555e88397ab1e007b2b71cc1
+
 	}
 
 	// 2Dスプライト描画

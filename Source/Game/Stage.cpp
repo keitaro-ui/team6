@@ -41,13 +41,11 @@ Stage::Stage()
 	
 	scale.x = scale.y = scale.z = 0.02f;
 	/*scale.x = scale.y = scale.z = 1.0f;*/
-<<<<<<< HEAD
 
-=======
 	position.y = 4.0f;
 
  
->>>>>>> 6e252551dfff2d12555e88397ab1e007b2b71cc1
+
 }
 
 Stage::~Stage()

@@ -167,12 +167,9 @@
     <ClInclude Include="Source\System\ImGuiRenderer.h" />
     <ClInclude Include="Source\System\Input.h" />
     <ClInclude Include="Source\System\LambertShader.h" />
-<<<<<<< HEAD
     <ClInclude Include="Source\System\LoadTextures.h" />
-=======
     <ClInclude Include="Source\System\LineRenderer.h" />
     <ClInclude Include="Source\System\Mathf.h" />
->>>>>>> 6e252551dfff2d12555e88397ab1e007b2b71cc1
     <ClInclude Include="Source\System\Misc.h" />
     <ClInclude Include="Source\System\Model.h" />
     <ClInclude Include="Source\System\ModelRenderer.h" />
@@ -233,18 +230,16 @@
     <ClCompile Include="Source\System\AudioResource.cpp" />
     <ClCompile Include="Source\System\AudioSource.cpp" />
     <ClCompile Include="Source\System\BasicShader.cpp" />
+    <ClCompile Include="Source\System\Character.cpp" />
     <ClCompile Include="Source\System\GamePad.cpp" />
     <ClCompile Include="Source\System\GpuResourceUtils.cpp" />
     <ClCompile Include="Source\System\Graphics.cpp" />
     <ClCompile Include="Source\System\ImGuiRenderer.cpp" />
     <ClCompile Include="Source\System\Input.cpp" />
     <ClCompile Include="Source\System\LambertShader.cpp" />
-<<<<<<< HEAD
     <ClCompile Include="Source\System\LoadTextures.cpp" />
-=======
     <ClCompile Include="Source\System\LineRenderer.cpp" />
     <ClCompile Include="Source\System\Mathf.cpp" />
->>>>>>> 6e252551dfff2d12555e88397ab1e007b2b71cc1
     <ClCompile Include="Source\System\Model.cpp" />
     <ClCompile Include="Source\System\ModelRenderer.cpp" />
     <ClCompile Include="Source\System\ModelResource.cpp" />

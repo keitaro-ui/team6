@@ -5,7 +5,6 @@
 #include "System/ModelRenderer.h";
 #include "Character.h"
 #include "imgui.h"
-<<<<<<< HEAD
 #include "System/LoadTextures.h"
 
 struct TextureSet
@@ -16,13 +15,13 @@ struct TextureSet
 	std::string emissive;
 	std::string occlusion;
 };
-=======
+
 #include "WayPoint.h"
 
 #define ROW_COUNT 20
 #define COLUM_COUNT 20
 #define MAX_WAY_POINT 400
->>>>>>> 6e252551dfff2d12555e88397ab1e007b2b71cc1
+
 
 //ステージ
 class Stage : public Character
