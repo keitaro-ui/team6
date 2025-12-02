@@ -31,12 +31,12 @@ void PhysicsSystem2d::Update()
                 ;
     // Box vs Circle
     std::vector<Circle> circles;
-    {
+    /*{
         Circle circle;
         circle.position = { 0,0,0 };
         circle.size = 0.5f;
         circles.push_back(circle);
-    }
+    }*/
 
     for (auto& o : obbs)
     {

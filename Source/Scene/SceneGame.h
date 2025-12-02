@@ -56,6 +56,11 @@ private:
 	bool fRenFlag = false;
 	PhysicsSystem2d physics;
 	Board* activeBoard = nullptr;
+	float playerSize;
+
+	float xDis;
+	float zDis;
+	DirectX::XMFLOAT3 blockSize;
 public:
 	
 };

@@ -96,6 +96,7 @@ public:
     float GetMaxSafeAreaCount() { return maxSafetyAreaCount; }
     bool GetputTrue() { return putTrue; }
     int GetLastSafetyAreaIndex() const { return lastSafetyAreaIndex; }
+    float GethitRadius() { return hitRadius; }
 
     const std::vector<SafetyArea*>& GetSafety()const { return safetyAreas; }
    
@@ -111,8 +112,12 @@ private:
 
     //デバックの半径
     float radius = 2.0f;
+
     //デバッグの高さ
     float height = 0.35f;
+
+    //当たり判定の大きさ
+    float hitRadius = 0.55f;
 
     float safeCooldown = 0.0f;        // 現在のクールタイム残り時間
     bool canPlaceSafeArea = true;     // 設置可能かどうか

@@ -79,10 +79,44 @@ void SceneGame::Initialize()
 
 	//当たり判定
 	{
+		xDis = 9.0f;
+		zDis = 6.6f;
+		blockSize = { 3.0f, 0.0f, 1.6f };
+
+		//外枠
+		physics.AddObb({ 0, 0, 0 }, { 28.5f, 0, 17.7f }, 0);
 		
-		physics.AddObb({ -2, 0, 10 }, { 2, 0, 2 }, 0);
-		physics.AddDoorObb({ 2, 0, 2 }, { 2, 0, 2 }, 0, 
-			{ 0, 0, 1 }, 3.0f, 0.5f);
+		//線上
+		/*for (int i = 0; i < 5; i++)
+		{
+			physics.AddObb({ -22.5f + i * xDis, 0.0f, 0.0f }, { 3.0f, 0.0f, 1.6f }, 0);
+		}*/
+
+		//for (int j = 0; j < 6; j++)
+		//{
+		//	physics.AddObb({ -22.5f + j * xDis, 0.0f, -13.2f/* + i * zDis*/ }, blockSize, 0);
+		//}
+
+		//++部分
+		//physics.AddObb({ -22.5f, 0.0f, 13.2f }, { 3.0f, 0.0f, 1.6f }, 0);
+		//physics.AddObb({ -22.5f, 0.0f, 6.6f }, { 3.0f, 0.0f, 1.6f }, 0);
+
+		for (int i = 0; i < 5; i++)
+		{
+			for (int j = 0; j < 6; j++)
+			{
+				if (i == 2 && j == 1)
+					//int a;
+					physics.AddDoorObb({ -22.5f + j * xDis, 0.0f, -13.2f + i * zDis }, blockSize, 0,
+						{ 0, 0, 1 }, xDis / 2, 0.2f);
+				else
+					physics.AddObb({ -22.5f + j * xDis, 0.0f, -13.2f + i * zDis }, blockSize, 0);
+				
+			}
+		}
+
+		/*physics.AddDoorObb({ 2, 0, 2 }, { 2, 0, 2 }, 0, 
+			{ 0, 0, 1 }, 3.0f, 0.5f);*/
 	}
 	//マウス位置の取得とロック
 	Input::Instance().GetMouse().Lock();
@@ -158,7 +192,7 @@ void SceneGame::Update(float elapsedTime)
 	
 	//プレイヤー更新処理
 	player->Update(elapsedTime);
-	player->SetPosition(physics.CircleVsStage(player->GetPosition(), 1));
+	player->SetPosition(physics.CircleVsStage(player->GetPosition(), player->GethitRadius()));
 
 	enemyslime->Update(elapsedTime);
 
@@ -167,9 +201,6 @@ void SceneGame::Update(float elapsedTime)
 
 	//エネミー更新処理
 	EnemyManager::Instance().Update(elapsedTime);
-
-	//当たり判定更新処理
-	physics.Update();
 
 	//クイズ処理
 	if (!quizFlag)   // ←クイズ中は検知しない
@@ -237,11 +268,11 @@ void SceneGame::Render()
 	// 3Dモデル描画
 	{
 		//ステージ描画
-		//stage->Render(rc, modelRenderer);
+		stage->Render(rc, modelRenderer);
 		
 		//player->Render(rc, modelRenderer);
 
-		enemyslime->Render(rc, modelRenderer);
+		//enemyslime->Render(rc, modelRenderer);
 
 		ProjectileManager::Instance().Render(rc, modelRenderer);
 
@@ -251,18 +282,14 @@ void SceneGame::Render()
 	// 3Dデバッグ描画
 	{
 		//プレイヤーデバッグプリミティブ描画
-		//player->RenderDebugPrimitive(rc, shapeRenderer);
+		player->RenderDebugPrimitive(rc, shapeRenderer);
+
+		//当たり判定デバッグプリミティブ描画
+		physics.RenderDebugPrimitive(rc, shapeRenderer);
 
 		//エネミーデバッグプリミティブ描画
-		//EnemyManager::Instance(); 
-		//.RenderDebugPrimitive(rc, shapeRenderer);
-
-		player->RenderDebugPrimitive(rc, shapeRenderer);
-<<<<<<< HEAD
-		physics.RenderDebugPrimitive(rc, shapeRenderer);
-=======
 		enemyslime->RenderDebugPrimitive(rc, shapeRenderer);
->>>>>>> master
+		
 	}
 
 	// 2Dスプライト描画
@@ -302,6 +329,15 @@ void SceneGame::DrawGUI()
 		}
 		ImGui::EndTabBar();
 	}
+
+	//if (ImGui::BeginTabBar("block"))
+	//{
+	//	ImGui::DragFloat("blockPos.x",  &xDis,0.02f, 30.0f, -30.0f);
+	//	ImGui::DragFloat("blockPos.z",  &zDis,0.02f, 30.0f, -30.0f);
+	//	ImGui::DragFloat3("blockSize", &blockSize.x, 0.02f, 30.0f, -30.0f);
+
+	//	ImGui::EndTabBar();
+	//}
 
 	ImGui::End();
 }

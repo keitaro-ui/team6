@@ -6,17 +6,19 @@
 // --- Board.cpp 内限定の初期値テーブル ---
 namespace 
 {
-    const DirectX::XMFLOAT3 INIT_POS[4] = {
-        { 0.0f, 0.0f, 15.0f },
-        { 5.0f, 0.0f, 10.0f },
-        { -5.0f, 0.0f, 10.0f },
-        { 0.0f, 0.0f, 5.0f },
+    const DirectX::XMFLOAT3 INIT_POS[4] = 
+    {
+        { -26.5f, 1.0f, 17.5f },
+        { -26.5f, 1.0f, -17.5f },
+        { 26.5f, 1.0f, -17.5f },
+        { 26.5f, 1.0f, 17.5f },
     };
 
-    const DirectX::XMFLOAT3 INIT_ANG[4] = {
+    const DirectX::XMFLOAT3 INIT_ANG[4] = 
+    {
         { 0, DirectX::XM_PI, 0 },
-        { 0, DirectX::XM_PI, 0 },
-        { 0, DirectX::XM_PI, 0 },
+        { 0, DirectX::XM_PI * 2, 0 },
+        { 0, DirectX::XM_PI * 2, 0 },
         { 0, DirectX::XM_PI, 0 },
     };
 }

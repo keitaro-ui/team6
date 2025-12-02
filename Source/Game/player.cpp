@@ -127,7 +127,8 @@ void Player::DrawDebugGUI()
 {
 	ImGui::Begin("Player Debug");
 
-	ImGui::DragFloat3("pos", &position.x,0.01f);
+	ImGui::DragFloat3("pos", &position.x,0.1f);
+	ImGui::DragFloat("hitRadius", &hitRadius, 0.01f);
 	
 	// Å‘å”‚ğ’²®
 	ImGui::DragInt("Max Safety Area Count", &maxSafetyAreaCount, 1, 1, 20);
