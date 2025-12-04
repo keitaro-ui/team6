@@ -91,6 +91,16 @@ public:
     bool finish = false;
     //std::chrono::system_clock::time_point minutes;
 
+    float maxHP = 100.0f;
+    float hp = 100.0f;
+
+    void AddDamage(float amount);
+
+    void Heal(float amount);
+
+    DirectX::XMFLOAT3 GetPosition() const { return position; }
+
+
     void coolgun(float elapsedTime);
 
     float GetMaxSafeAreaCount() { return maxSafetyAreaCount; }
@@ -100,8 +110,8 @@ public:
 
     const std::vector<SafetyArea*>& GetSafety()const { return safetyAreas; }
    
-private:
     std::vector<SafetyArea*> safetyAreas;
+private:
 
     //セーフティエリア制限個数
     int maxSafetyAreaCount = 5;

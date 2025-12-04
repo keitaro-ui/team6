@@ -135,6 +135,7 @@
     <ClInclude Include="Source\Game\Enemy.h" />
     <ClInclude Include="Source\Game\EnemyManager.h" />
     <ClInclude Include="Source\Game\EnemySlime.h" />
+    <ClInclude Include="Source\Game\GoalPoint.h" />
     <ClInclude Include="Source\Game\JudgmentBase.h" />
     <ClInclude Include="Source\Game\JudgmentDerived.h" />
     <ClInclude Include="Source\Game\NodeBase.h" />
@@ -144,6 +145,7 @@
     <ClInclude Include="Source\Game\SafetyArea.h" />
     <ClInclude Include="Source\Game\SearchAlgorithm.h" />
     <ClInclude Include="Source\Game\Stage.h" />
+    <ClInclude Include="Source\Game\StartPoint.h" />
     <ClInclude Include="Source\Game\WayPoint.h" />
     <ClInclude Include="Source\PhysicsSystem2d.h" />
     <ClInclude Include="Source\ProjectHoming.h" />

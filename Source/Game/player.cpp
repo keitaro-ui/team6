@@ -110,6 +110,25 @@ void Player::InputProjectile()
 
 }
 
+void Player::AddDamage(float amount)
+{
+	hp -= amount;
+	if (hp < 0.0f)
+	{
+		hp = 0.0f;
+	}
+}
+
+void Player::Heal(float amount)
+{
+	hp += amount;
+	if (hp > maxHP)
+	{
+		hp = maxHP;
+	}
+}
+
+
 void Player::coolgun(float elpasedTime)
 {
 	guntime -= elpasedTime;
@@ -134,6 +153,12 @@ void Player::DrawDebugGUI()
 	ImGui::Text("Current Count: %d / %d", (int)safetyAreas.size(), maxSafetyAreaCount);
 
 	//ImGui::DragFloat3("slime.pos", &EnemyManager::Instance().GetEnemy(0)->GetPosition().x, 0.01f);
+
+	ImGui::Text("Player this ptr: %p", (void*)this);
+	ImGui::Text("HP : %.2f / %.2f", hp, maxHP);
+	float hpRateDebug = (maxHP != 0.0f) ? (hp / maxHP) : 0.0f;
+	ImGui::Text("hpRate (calc) = %.4f", hpRateDebug);
+
 
 	if (ImGui::CollapsingHeader("Spawned SafetyAreas"))
 	{

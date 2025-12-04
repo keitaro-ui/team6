@@ -11,6 +11,9 @@
 #include "../Game/Board.h"
 #include "../Game/Box.h"
 #include "../Game/EnemySlime.h"
+#include "../Source/System/Sprite.h"
+#include "../Game/StartPoint.h"
+#include "../Game/GoalPoint.h"
 
 // ゲームシーン
 class SceneGame : public Scene
@@ -34,6 +37,12 @@ public:
 	// GUI描画
 	void DrawGUI() override;
 
+	StartPoint* startPoint = nullptr;
+	GoalPoint* goalPoint = nullptr;
+
+	Sprite hpBarTex;
+
+
 private:
 	//ポインタ宣言
 	std::unique_ptr<Stage> stage = nullptr;
@@ -41,6 +50,11 @@ private:
 	std::unique_ptr<Player> player = nullptr;
 
 	std::unique_ptr<EnemySlime> enemyslime = nullptr;
+
+	std::unique_ptr<StartPoint> startpoint = nullptr;
+
+	std::unique_ptr<GoalPoint> goalpoint = nullptr;
+
 
 	CameraController* cameraController = nullptr;
 

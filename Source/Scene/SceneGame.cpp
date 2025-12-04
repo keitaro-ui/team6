@@ -8,9 +8,14 @@
 #include "SceneManager.h"
 #include "SceneTitle.h"
 #include "SceneGame.h"
-
 #include "SceneLoading.h"
+#include "SceneResult.h"
 #include "../Game/PlayerManager.h"
+#include "../Game/SafetyArea.h"
+#include "../Source/System/Sprite.h"
+#include "../Source/Game/Player.h"
+#include "../Game/StartPoint.h"
+#include "../Game/GoalPoint.h"
 
 
 // 初期化
@@ -26,9 +31,20 @@ void SceneGame::Initialize()
 	enemyslime = std::make_unique<EnemySlime>();
 	//enemyslime->player = player.get();
 
+	//スタート位置初期化
+
+
+	//ゴール位置初期化
+	goalPoint = new GoalPoint({ 0.0f, 0.0f, 16.0f });
+
+
 	//スプライト初期設定
 	{
 		spr = std::make_unique<Sprite>("Data/Sprite/LoadingIcon.png");
+		Graphics& graphics = Graphics::Instance();
+		//HPバー読み込み
+		hpBarTex = Sprite("Data/Sprite/hp_bar.png");
+
 	}
 	//カメラ初期設定
 	Graphics& graphics = Graphics::Instance();
@@ -214,6 +230,37 @@ void SceneGame::Update(float elapsedTime)
 	//エネミー更新処理
 	EnemyManager::Instance().Update(elapsedTime);
 
+	//ステージ継続ダメージ
+	const float stageDamagePerSec = 5.0f;
+	player->AddDamage(stageDamagePerSec * elapsedTime);
+
+	// --- HPチェック ---
+	if (player->hp == 0.0f)
+	{
+		// SceneResult に切り替え
+		SceneManager::Instance().ChangeScene(new SceneLoading(new SceneResult()));
+		return; // 以降の更新は行わない
+	}
+
+
+	if (!player->safetyAreas.empty())
+	{
+		//SafetyArea内なら回復
+		for (auto& s : player->safetyAreas)
+		{
+			if (!s) continue;
+
+			if (s) s->Update(elapsedTime);
+			if (s && s->IsInside(player->GetPosition()))
+			{
+				player->Heal(5.0f * elapsedTime);
+				break;
+			}
+		}
+
+	}
+
+
 	//クイズ処理
 	if (!quizFlag)   // ←クイズ中は検知しない
 	{
@@ -308,12 +355,26 @@ void SceneGame::Render()
 
 	// 2Dスプライト描画
 	{
-		if (fRenFlag)
-		{
-			/*spr->Render(rc, 
-				)*/
-		}
+		float hpRate = std::clamp((float)player->hp / player->maxHP, 0.0f, 1.0f);
+
+		float texWidth = hpBarTex.GetWidth();
+		float texHeight = hpBarTex.GetHeight();
+
+		float drawWidth = texWidth * hpRate;
+
+		// ピクセル指定でOK
+		hpBarTex.Render(
+			rc,
+			0, 0,
+			0,
+			drawWidth, texHeight,     // 画面上の幅
+			0, 0,                     // 切り抜き開始位置
+			drawWidth, texHeight,        // 切り抜き高さ（ピクセル）
+			0,
+			1, 1, 1, 1
+		);
 	}
+
 }
 
 // GUI描画
