@@ -42,7 +42,7 @@ Stage::Stage()
 	scale.x = scale.y = scale.z = 0.02f;
 	/*scale.x = scale.y = scale.z = 1.0f;*/
 
-	position.y = 4.0f;
+	//position.y = 4.0f;
 
  
 
@@ -60,13 +60,10 @@ void Stage::Update(float elapsedTime)
 {
 	UpdateTransform();
 
-<<<<<<< HEAD
 	RenderImGui();
 	//DirectX::XMVector2LinePointDistance();
-=======
 	//RenderImGui();
 
->>>>>>> master
 }
 
 //ï`âÊèàóù

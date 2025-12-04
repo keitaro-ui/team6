@@ -8,10 +8,10 @@ namespace
 {
     const DirectX::XMFLOAT3 INIT_POS[4] = 
     {
-        { -26.5f, 1.0f, 17.5f },
-        { -26.5f, 1.0f, -17.5f },
-        { 26.5f, 1.0f, -17.5f },
-        { 26.5f, 1.0f, 17.5f },
+        { -26.5f, 3.0f, 17.5f },
+        { -26.5f, 3.0f, -17.5f },
+        { 26.5f, 3.0f, -17.5f },
+        { 26.5f, 3.0f, 17.5f },
     };
 
     const DirectX::XMFLOAT3 INIT_ANG[4] = 
@@ -36,7 +36,7 @@ Board::Board(int index)
     model = std::make_unique<Model>(paths[index]);
     position = INIT_POS[index];
     angle = INIT_ANG[index];
-    scale = { 0.2f, 0.2f, 0.2f };
+    scale = { 0.1f, 0.1f, 0.1f };
 
     quizNum = index;
 
@@ -75,9 +75,14 @@ bool Board::CheckNearBoard(const Player* player)
     DirectX::XMStoreFloat3(&distance, diff);
 
     float distXZ = std::sqrt(distance.x * distance.x + distance.z * distance.z);
-    const float NEAR_DISTANCE = 1.3f; //接近時の距離の変数
-
+    const float NEAR_DISTANCE = 2.3f; //接近時の距離の変数
     bool isNear = (distXZ <= NEAR_DISTANCE);
+
+    //debug
+    {
+    	debugDistXZ = distXZ;
+		DEBUG_NEAR_DISTANCE = NEAR_DISTANCE;
+    }
    
     if (isNear)
     {
@@ -132,6 +137,9 @@ void Board::DrawGUIValues()
 
     // クイズ状態
     ImGui::Text("Quiz Active: %s", quizActive ? "true" : "false");
+
+    ImGui::Text("distXZ: %.2f", debugDistXZ);
+    ImGui::Text("nearDist: %.2f", DEBUG_NEAR_DISTANCE);
 
     // デバッグ用ボタン
     if (ImGui::Button("Start Quiz")) StartQuiz();

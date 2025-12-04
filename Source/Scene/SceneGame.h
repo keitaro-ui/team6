@@ -60,6 +60,7 @@ private:
 
 	float xDis;
 	float zDis;
+	float debugDoorSize;
 	DirectX::XMFLOAT3 blockSize;
 public:
 	

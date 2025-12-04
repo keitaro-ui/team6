@@ -159,20 +159,19 @@ void CameraController::HandleNormal(float elapsedTime)
 		bobTimer = 0.0f;
 	}
 
-<<<<<<< HEAD
 	// Bobオフセット計算
 	float bobOffsetY = sinf(bobTimer) * bobAmountY;
 	float bobOffsetX = cosf(bobTimer * 0.5f) * bobAmountX;
-=======
-	eye.y = 4.0f;
+
+	//eye.y = 4.0f;
 	
 	// Bobタイマー更新
-	bool isWalking = moveLen > 0.0f;
+	/*bool isWalking = moveLen > 0.0f;
 	if (isWalking)
 		bobTimer += elapsedTime * bobSpeed;
 	else
-		bobTimer = 0.0f;
->>>>>>> master
+		bobTimer = 0.0f;*/
+
 
 	// カメラ位置に反映
 	DirectX::XMFLOAT3 bobbedEye = eye;

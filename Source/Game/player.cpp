@@ -11,9 +11,6 @@
 #include "System/Audio.h"
 
 
-int answer = -1, count_1, count_2, count_3, count_4;
-
-
 //コンストラクタ
 Player::Player()
 {
@@ -21,7 +18,7 @@ Player::Player()
 
 	//モデルが大きいのでスケーリング
 	scale.x = scale.y = scale.z = 0.21f;
-	//sition.z = 3.0f;
+	position.y = 3.0f;
 }
 
 //デストラクタ
@@ -272,7 +269,7 @@ void Player::CollisionPlayerVsEnemies()
 			outPosition))
 		{
 			//押し出し後の位置設定
-			enemy->SetPosition(outPosition);
+			//enemy->SetPosition(outPosition);
 		}
 	}
 }
@@ -304,7 +301,7 @@ void Player::CollisionProjectilesVsEnemies()
 				enemy->GetRadius(),
 				outPosition))
 			{
-				answer = enemy->model_index;
+				//answer = enemy->model_index;
 
 				//ダメージを与える
 				if (enemy->ApplyDamage(1, 0.5f))

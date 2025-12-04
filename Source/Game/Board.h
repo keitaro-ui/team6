@@ -45,6 +45,9 @@ private:
     bool quizActive;
     int quizNum;
 
+    float debugDistXZ;
+    float DEBUG_NEAR_DISTANCE;
+
 public:
     bool quizStarted = false;
     bool playerNear = false;

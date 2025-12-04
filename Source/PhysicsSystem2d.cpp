@@ -416,6 +416,7 @@ void PhysicsSystem2d::AddObb(DirectX::XMFLOAT3 center, DirectX::XMFLOAT3 size, f
     obbs.push_back(obb);
 }
 
+//doorDir:XZを{1,0,0}で右方向の辺、{0,0,1}で上方向なはず… doorDistで空白が始まる位置を決める。はず…
 void PhysicsSystem2d::AddDoorObb(DirectX::XMFLOAT3 center, DirectX::XMFLOAT3 size, float ang, DirectX::XMFLOAT3 doorDir,
 	float doorSize,float doorDist)
 {

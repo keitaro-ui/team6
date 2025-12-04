@@ -81,42 +81,62 @@ void SceneGame::Initialize()
 	{
 		xDis = 9.0f;
 		zDis = 6.6f;
+		debugDoorSize = 2.5f;
 		blockSize = { 3.0f, 0.0f, 1.6f };
 
 		//外枠
 		physics.AddObb({ 0, 0, 0 }, { 28.5f, 0, 17.7f }, 0);
 		
-		//線上
-		/*for (int i = 0; i < 5; i++)
+		int map[5][6] =
 		{
-			physics.AddObb({ -22.5f + i * xDis, 0.0f, 0.0f }, { 3.0f, 0.0f, 1.6f }, 0);
-		}*/
+			// 1列目
+			{ 1, 1, 0, 1, 1, 1 },
 
-		//for (int j = 0; j < 6; j++)
-		//{
-		//	physics.AddObb({ -22.5f + j * xDis, 0.0f, -13.2f/* + i * zDis*/ }, blockSize, 0);
-		//}
+			// 2列目
+			{ 1, -1, 1, 0, 0, -1 },
 
-		//++部分
-		//physics.AddObb({ -22.5f, 0.0f, 13.2f }, { 3.0f, 0.0f, 1.6f }, 0);
-		//physics.AddObb({ -22.5f, 0.0f, 6.6f }, { 3.0f, 0.0f, 1.6f }, 0);
+			// 3列目
+			{ 1, 1, 1, 0, 1, 1 },
 
-		for (int i = 0; i < 5; i++)
+			// 4列目
+			{ -1, 0, -1, 1, 1, 0 },
+
+			// 5列目
+			{ 0, 1, 0, -1, 0, 1 }
+		};
+
+		for (int z = 0; z < 5; z++)
 		{
-			for (int j = 0; j < 6; j++)
+			for (int x = 0; x < 6; x++)
 			{
-				if (i == 2 && j == 1)
-					//int a;
-					physics.AddDoorObb({ -22.5f + j * xDis, 0.0f, -13.2f + i * zDis }, blockSize, 0,
-						{ 0, 0, 1 }, xDis / 2, 0.2f);
+				DirectX::XMFLOAT3 pos = { -22.5f + x * xDis, 0.0f, zDis * (2 - z) };
+
+				int v = map[z][x];
+
+				if (v == 0)
+				{
+					// 壁
+					physics.AddObb(pos, blockSize, 0.0f);
+				}
 				else
-					physics.AddObb({ -22.5f + j * xDis, 0.0f, -13.2f + i * zDis }, blockSize, 0);
-				
+				{
+					// ドアの方向
+					DirectX::XMFLOAT3 dir = { 0, 0, (float)v };
+
+					physics.AddDoorObb(pos,blockSize,0.0f,dir,debugDoorSize,3.05f
+					);
+				}
 			}
 		}
 
-		/*physics.AddDoorObb({ 2, 0, 2 }, { 2, 0, 2 }, 0, 
-			{ 0, 0, 1 }, 3.0f, 0.5f);*/
+		//通路塞ぐ壁
+		{
+			physics.AddObb({ -22.5f + 3 * xDis, 0.0f, zDis * 1.5f }, blockSize, 0.0f);
+			physics.AddObb({ -22.5f + 3 * xDis, 0.0f, zDis * 0.5f }, blockSize, 0.0f);
+
+			physics.AddObb({ -22.5f + 2 * xDis, 0.0f, zDis * -0.5f }, blockSize, 0.0f);
+			physics.AddObb({ 0.0f, 0.0f, 0.0f }, blockSize, 0.0f);
+		}
 	}
 	//マウス位置の取得とロック
 	Input::Instance().GetMouse().Lock();
@@ -160,23 +180,15 @@ void SceneGame::Update(float elapsedTime)
 			DirectX::XMFLOAT3 ang = activeBoard->GetAngle();
 
 			float frontDist = -3.0f;
-			float height = 1.5f;
+			float height = 1.0f;
 
 			float rad = ang.y;
 			float fx = sinf(rad);
 			float fz = cosf(rad);
 
-			DirectX::XMFLOAT3 eye = {
-				pos.x - fx * frontDist,
-				pos.y + height,
-				pos.z - fz * frontDist
-			};
+			DirectX::XMFLOAT3 eye = { pos.x - fx * frontDist,pos.y + height,pos.z - fz * frontDist };
 
-			DirectX::XMFLOAT3 tgt = {
-				pos.x,
-				pos.y + 1.0f,
-				pos.z
-			};
+			DirectX::XMFLOAT3 tgt = { pos.x, pos.y + 1.0f, pos.z };
 
 			Camera::Instance().SetLookAt(eye, tgt, { 0,1,0 });
 		}
@@ -288,21 +300,10 @@ void SceneGame::Render()
 		physics.RenderDebugPrimitive(rc, shapeRenderer);
 
 		//エネミーデバッグプリミティブ描画
-<<<<<<< HEAD
 		enemyslime->RenderDebugPrimitive(rc, shapeRenderer);
-		
-=======
-		//EnemyManager::Instance(); 
-		//.RenderDebugPrimitive(rc, shapeRenderer);
-
-		player->RenderDebugPrimitive(rc, shapeRenderer);
-
 
 		modelRenderer->RenderImGui(rc);
 
-		enemyslime->RenderDebugPrimitive(rc, shapeRenderer);
-
->>>>>>> master
 	}
 
 	// 2Dスプライト描画
@@ -321,7 +322,6 @@ void SceneGame::DrawGUI()
 	//プレーヤーデバッグ処理
 	player->DrawDebugGUI();
 
-<<<<<<< HEAD
 	//クイズ関連のデバッグ
 	ImGui::Begin("Boards Debug");
 
@@ -344,6 +344,9 @@ void SceneGame::DrawGUI()
 		ImGui::EndTabBar();
 	}
 
+	//ステージデバッグ描画
+	stage->RenderImGui();
+	ImGui::DragFloat("debugDoorSize%d", &debugDoorSize, 0.1f);
 	//if (ImGui::BeginTabBar("block"))
 	//{
 	//	ImGui::DragFloat("blockPos.x",  &xDis,0.02f, 30.0f, -30.0f);
@@ -354,7 +357,4 @@ void SceneGame::DrawGUI()
 	//}
 
 	ImGui::End();
-=======
-	stage->RenderImGui();
->>>>>>> master
 }
