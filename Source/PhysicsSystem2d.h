@@ -20,6 +20,11 @@ private:
     {
         std::vector<DirectX::XMFLOAT2>vertexPos;
         int doorNum = -1;
+
+        //内側判定の変数
+        DirectX::XMFLOAT2 center;
+        DirectX::XMFLOAT2 axis[2];
+        DirectX::XMFLOAT2 halfSize;
     };
 
     struct Circle
@@ -40,12 +45,14 @@ private:
 
     std::vector<Collider2dObb> obbs;
     std::vector<door> doorObbs;
+
 public:
     //視覚同士の当たり判定を使う場合この下の関数とCPPがわののコメントを外して下さい
    /* bool CheckOBB(const Collider2dObb& A, const Collider2dObb& B);*/
     bool CheckCircle2D(Circle c1, Circle c2);
     bool CheckCircleOBB(const Collider2dObb& A, const Circle& B, SegmentHitResult& hitResult);
     bool CheckCircleVsDoor(const door& A, const Circle& B, SegmentHitResult& hitResult);
+    bool IsInside(const door& d, const DirectX::XMFLOAT2& p);
 
 	DirectX::XMFLOAT3 PhysicsSystem2d::CircleVsDoor(DirectX::XMFLOAT3 pos, float size);
     DirectX::XMFLOAT3 CircleVsStage(DirectX::XMFLOAT3 pos, float size);
