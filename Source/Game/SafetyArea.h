@@ -6,13 +6,7 @@
 class SafetyArea : public Projectile
 {
 public:
-
-
-
-    SafetyArea(ProjectileManager* manager);
-  
-
-    
+	 SafetyArea(ProjectileManager* manager);
     ~SafetyArea();
 
     // Šù‘¶‚Ì‰¼‘zŠÖ”
@@ -29,10 +23,7 @@ public:
 
     bool IsInside(const DirectX::XMFLOAT3& p);
 
-<<<<<<< HEAD
     void SafetyArea::circleUpdateTransform();
-=======
->>>>>>> 02765a96f2fda4e84d8a43890c7703940332ad51
 
 private:
     struct SafetyAreaData
