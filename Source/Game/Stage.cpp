@@ -29,7 +29,7 @@ Stage::Stage()
 		TextureList.push_back(tex);
 	}
 
-	models.push_back(std::make_unique<Model>("Data/Model/Stage/smallroom.mdl"));
+	models.push_back(std::make_unique<Model>("Data/Model/Stage/smallroomY.mdl"));
 
 	{
 		LoadTextures tex;
@@ -38,7 +38,21 @@ Stage::Stage()
 		tex.LoadMetalness("Data/Model/Stage/Texture/object/walldata_Metalness.png");
 		TextureList.push_back(tex);
 	}
+
+    models.push_back(std::make_unique<Model>("Data/Model/Stage/objectall.mdl"));
+
+    {
+        LoadTextures tex;
+        tex.LoadNormal("Data/Model/Stage/Texture/komono_poul/objectall_lambert6_Normal_Utility - Raw.png");
+        tex.LoadRoughness("Data/Model/Stage/Texture/komono_poul/objectall_lambert6_Roughness_Utility - Raw.png");
+        tex.LoadMetalness("Data/Model/Stage/Texture/komono_poul/objectall_lambert6_Metallic_Utility - Raw.png");
+        tex.LoadEmisive("Data/Model/Stage/Texture/komono_poul/objectall_lambert6_Emissive_Utility - sRGB - Texture.png");
+        TextureList.push_back(tex);
+    }
 	
+    models.push_back(std::make_unique<Model>("Data/Model/Stage/saku.mdl"));
+
+
 	scale.x = scale.y = scale.z = 0.02f;
 	/*scale.x = scale.y = scale.z = 1.0f;*/
 
@@ -74,9 +88,20 @@ void Stage::Render(const RenderContext& rc, ModelRenderer* renderer)
 
 	for (size_t i = 0; i < models.size(); i++)
 	{
-		TextureList[i].Set(rc);
-		renderer->Render(rc, transform, models[i].get(), ShaderId::Lambert);
-		TextureList[i].Clear(rc);
+        // ① テクスチャがある場合だけ Set
+        if (i < TextureList.size())
+        {
+            TextureList[i].Set(rc);
+        }
+
+        // ② 描画
+        renderer->Render(rc, transform, models[i].get(), ShaderId::Lambert);
+
+        // ③ テクスチャがある場合だけ Clear
+        if (i < TextureList.size())
+        {
+            TextureList[i].Clear(rc);
+        }
 	}
 
 }

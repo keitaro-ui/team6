@@ -37,6 +37,8 @@ public:
 	//ˆÊ’uŽæ“¾
 	const DirectX::XMFLOAT3& GetPosition() const { return position; }
 
+	//const DirectX::XMFLOAT4& GetPosition4() const { return};
+
 	//•ûŒüŽæ“¾
 	const DirectX::XMFLOAT3& GetDirection() const { return direction; }
 

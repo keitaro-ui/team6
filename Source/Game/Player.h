@@ -108,9 +108,17 @@ public:
     int GetLastSafetyAreaIndex() const { return lastSafetyAreaIndex; }
     float GethitRadius() { return hitRadius; }
 
+    void FillSafetyAreaPosition(std::vector<DirectX::XMFLOAT4>& outPositions) const;
+
     const std::vector<SafetyArea*>& GetSafety()const { return safetyAreas; }
+
+    void SetRenderer(ModelRenderer* r) { renderer = r; }
    
     std::vector<SafetyArea*> safetyAreas;
+
+    std::vector<DirectX::XMFLOAT4> saPositions;
+    ModelRenderer* renderer = nullptr;
+
 private:
 
     //セーフティエリア制限個数
@@ -136,4 +144,5 @@ private:
     int lastSafetyAreaIndex = -1;
 
     bool putTrue = false;
+
 };

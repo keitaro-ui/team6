@@ -10,6 +10,7 @@ using namespace DirectX;
 
 SafetyArea::SafetyArea(ProjectileManager* manager) : Projectile(manager)
 {
+<<<<<<< HEAD
     //balloon
 	{
 	    balloonModel = new Model("Data/Model/Target/balloon.mdl");
@@ -26,6 +27,23 @@ SafetyArea::SafetyArea(ProjectileManager* manager) : Projectile(manager)
         sc = 0.05f;
         circleScale = {sc, 0.0001f, sc};
 	}
+=======
+    /*position = { 0.0f, 0.0f, 0.0f };
+    XMStoreFloat4x4(&transform, DirectX::XMMatrixIdentity());
+    balloonModel = new Model("Data/Model/Target/balloon.mdl");
+    scale = { 0.6f, 0.6f, 0.6f };
+    assert(balloonModel && "balloonModel ‚ª“Ç‚Ýž‚ß‚Ü‚¹‚ñ");
+    type = ProjectileType::Safetiy;*/
+    position = { 0.0f, 0.5f, 0.0f };
+    scale = { 0.02f,0.02f,0.02f };
+    radius = 5.0f;
+
+    XMStoreFloat4x4(&transform, DirectX::XMMatrixIdentity());
+
+    balloonModel = new Model("Data/Model/Target/flag.mdl");
+
+    //scale = { 1.0f, 1.0f, 1.0f };
+>>>>>>> 02765a96f2fda4e84d8a43890c7703940332ad51
 }
 
 
@@ -46,6 +64,12 @@ void SafetyArea::SetPosition(const XMFLOAT3& pos)
     UpdateTransform();
 }
 
+
+void SafetyArea::SetAngle(const XMFLOAT3& angle)
+{
+    direction = angle;
+    UpdateTransform();
+}
 bool SafetyArea::IsInside(const DirectX::XMFLOAT3& p)
 {
     float dx = p.x - position.x;

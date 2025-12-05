@@ -26,6 +26,16 @@ void SceneGame::Initialize()
 
 	//プレイヤー初期化
 	player = std::make_unique<Player>();
+	sprites.push_back(std::make_unique<Sprite>("Data/Sprite/Oxygen_gauge_frame.png"));
+	sprites.push_back(std::make_unique<Sprite>("Data/Sprite/Oxygen_gauge.png"));
+	//PlayerManager::Instance().Register(player.get());
+
+	Graphics& graphics = Graphics::Instance();
+	ModelRenderer* modelRenderer = graphics.GetModelRenderer();
+	player->SetRenderer(modelRenderer);
+
+	renderer = modelRenderer;
+
 	PlayerManager::Instance().Register(player.get());
 
 	enemyslime = std::make_unique<EnemySlime>();
@@ -47,7 +57,7 @@ void SceneGame::Initialize()
 
 	}
 	//カメラ初期設定
-	Graphics& graphics = Graphics::Instance();
+	//Graphics& graphics = Graphics::Instance();
 	Camera& camera = Camera::Instance();
 	camera.SetLookAt(
 		DirectX::XMFLOAT3(0, 10, -10),//視点
@@ -173,6 +183,10 @@ void SceneGame::Finalize()
 
 	delete balloon;
 
+
+
+	//boxなどのenemyを継承しているnewはdeleteしてはいけない。EnemyManagerごと消す
+
 	//エネミー終了化
 	EnemyManager::Instance().Clear();
 }
@@ -188,10 +202,27 @@ void SceneGame::Update(float elapsedTime)
 	
 	//プレイヤー更新処理
 	player->Update(elapsedTime);
+
+	if (renderer) {
+		std::vector<DirectX::XMFLOAT4> saPositions;
+		player->FillSafetyAreaPosition(saPositions);
+		renderer->UpdateSafetyAreaLights(saPositions);
+	}
+
 	player->SetPosition(physics.CircleVsStage(player->GetPosition(), player->GethitRadius()));
+
 
 	enemyslime->Update(elapsedTime);
 
+	Graphics& graphics = Graphics::Instance();
+	ID3D11DeviceContext* dc = graphics.GetDeviceContext();
+	ShapeRenderer* shapeRenderer = graphics.GetShapeRenderer();
+	ModelRenderer* modelRenderer = graphics.GetModelRenderer();
+
+	// 描画準備
+	RenderContext rc;
+	rc.deviceContext = dc;
+	renderer->RenderImGui(rc);
 	//ステージ更新処理
 	stage->Update(elapsedTime);
 
@@ -292,6 +323,9 @@ void SceneGame::Render()
 	rc.view = camera.GetView();
 	rc.projection = camera.GetProjection();
 
+	float screenWidth = static_cast<float>(graphics.GetScreenWidth());
+	float screenHeight = static_cast<float>(graphics.GetScreenHeight());
+
 	// 3Dモデル描画
 	{
 		//ステージ描画
@@ -317,12 +351,23 @@ void SceneGame::Render()
 		//エネミーデバッグプリミティブ描画
 		enemyslime->RenderDebugPrimitive(rc, shapeRenderer);
 
-		modelRenderer->RenderImGui(rc);
+		//modelRenderer->RenderImGui(rc);
 
 	}
 
 	// 2Dスプライト描画
 	{
+
+
+		for (size_t i = 0; i < sprites.size(); i++)
+		{
+			sprites[i]->Render(rc,
+				0, 0, 0,
+				screenWidth, screenHeight,
+				0,
+				1, 1, 1, 1);
+		}
+
 		float hpRate = std::clamp((float)player->hp / player->maxHP, 0.0f, 1.0f);
 
 		float texWidth = hpBarTex.GetWidth();
@@ -341,6 +386,7 @@ void SceneGame::Render()
 			0,
 			1, 1, 1, 1
 		);
+
 	}
 
 }
