@@ -26,8 +26,8 @@ void SceneGame::Initialize()
 
 	//プレイヤー初期化
 	player = std::make_unique<Player>();
-	sprites.push_back(std::make_unique<Sprite>("Data/Sprite/Oxygen_gauge_frame.png"));
-	sprites.push_back(std::make_unique<Sprite>("Data/Sprite/Oxygen_gauge.png"));
+	/*sprites.push_back(std::make_unique<Sprite>("Data/Sprite/Oxygen_gauge_frame.png"));
+	sprites.push_back(std::make_unique<Sprite>("Data/Sprite/Oxygen_gauge.png"));*/
 	//PlayerManager::Instance().Register(player.get());
 
 	Graphics& graphics = Graphics::Instance();
@@ -54,7 +54,8 @@ void SceneGame::Initialize()
 		spr = std::make_unique<Sprite>("Data/Sprite/LoadingIcon.png");
 		Graphics& graphics = Graphics::Instance();
 		//HPバー読み込み
-		hpBarTex = Sprite("Data/Sprite/hp_bar.png");
+		hpBarTex = Sprite("Data/Sprite/Oxygen_gauge_Single.png");
+		hpBarFrameTex = Sprite("Data/Sprite/Oxygen_gauge_frame.png");
 
 	}
 	//カメラ初期設定
@@ -404,19 +405,34 @@ void SceneGame::Render()
 	{
 
 
-		for (size_t i = 0; i < sprites.size(); i++)
+		/*for (size_t i = 0; i < sprites.size(); i++)
 		{
 			sprites[i]->Render(rc,
 				0, 0, 0,
 				screenWidth, screenHeight,
 				0,
 				1, 1, 1, 1);
-		}
+		}*/
 
 		float hpRate = std::clamp((float)player->hp / player->maxHP, 0.0f, 1.0f);
 
 		float texWidth = hpBarTex.GetWidth();
 		float texHeight = hpBarTex.GetHeight();
+
+		float texW = hpBarFrameTex.GetWidth();
+		float texH = hpBarFrameTex.GetHeight();
+
+		// HPバー枠描画
+		hpBarFrameTex.Render(
+			rc,
+			0.0f, 0.0f,
+			0,
+			texW * 0.5f, texH * 0.5f,
+			0, 0,
+			texW, texH,
+			0,
+			1, 1, 1, 1
+		);
 
 		float drawWidth = texWidth * hpRate;
 
@@ -425,11 +441,11 @@ void SceneGame::Render()
 			rc,
 			0, 0,
 			0,
-			drawWidth, texHeight,     // 画面上の幅
+			drawWidth * 0.5f, texHeight * 0.5f,     // 画面上の幅
 			0, 0,                     // 切り抜き開始位置
 			drawWidth, texHeight,        // 切り抜き高さ（ピクセル）
 			0,
-			1, 1, 1, 1
+			0.5, 0.5, 0.5, 1
 		);
 
 	}

@@ -41,6 +41,7 @@ public:
 	GoalPoint* goalPoint = nullptr;
 
 	Sprite hpBarTex;
+	Sprite hpBarFrameTex;
 
 
 private:
