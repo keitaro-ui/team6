@@ -97,10 +97,16 @@ public:
     bool GetputTrue() { return putTrue; }
     int GetLastSafetyAreaIndex() const { return lastSafetyAreaIndex; }
 
+    void FillSafetyAreaPosition(std::vector<DirectX::XMFLOAT4>& outPositions) const;
+
     const std::vector<SafetyArea*>& GetSafety()const { return safetyAreas; }
+
+    void SetRenderer(ModelRenderer* r) { renderer = r; }
    
 private:
     std::vector<SafetyArea*> safetyAreas;
+    std::vector<DirectX::XMFLOAT4> saPositions;
+    ModelRenderer* renderer = nullptr;
 
     //セーフティエリア制限個数
     int maxSafetyAreaCount = 5;
@@ -121,4 +127,5 @@ private:
     int lastSafetyAreaIndex = -1;
 
     bool putTrue = false;
+
 };

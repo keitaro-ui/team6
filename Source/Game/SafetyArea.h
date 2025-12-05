@@ -13,8 +13,8 @@ public:
     {
         position = { 0.0f, 0.0f, 0.0f };
         XMStoreFloat4x4(&transform, DirectX::XMMatrixIdentity());
-        balloonModel = new Model("Data/Model/Target/balloon.mdl");
-        scale={0.6f, 0.6f, 0.6f};
+        balloonModel = new Model("Data/Model/Target/flag.mdl");
+        scale={0.02f, 0.02f, 0.02f};
         assert(balloonModel && "balloonModel Ç™ì«Ç›çûÇﬂÇ‹ÇπÇÒ");
         type = ProjectileType::Safetiy;
     }
@@ -28,6 +28,8 @@ public:
 
     // SetPosition ÉÅÉ\ÉbÉhÇí«â¡
     void SetPosition(const DirectX::XMFLOAT3& pos);
+
+    void SetAngle(const DirectX::XMFLOAT3& angle);
 
 
 private:

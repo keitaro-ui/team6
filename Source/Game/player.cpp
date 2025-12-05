@@ -122,6 +122,16 @@ void Player::coolgun(float elpasedTime)
 	if (v_guntime <= 0)vibe_interval = true;
 }
 
+void Player::FillSafetyAreaPosition(std::vector<DirectX::XMFLOAT4>& outPositions) const
+{
+	outPositions.clear();
+	for (auto* sa : safetyAreas)
+	{
+		DirectX::XMFLOAT3 pos3 = sa->GetPosition();
+		outPositions.push_back({ pos3.x, pos3.y, pos3.z, 1.0f });
+	}
+}
+
 //デバッグ用GUI描画
 void Player::DrawDebugGUI()
 {
@@ -189,13 +199,22 @@ void Player::RenderDebugPrimitive(const RenderContext& rc, ShapeRenderer* render
 	{
 		if (!area) continue;
 
-		const DirectX::XMFLOAT3& center = {
-			area->GetPosition().x,
-			0.5f,
-			area->GetPosition().z
-		};
+		DirectX::XMFLOAT3 pos = area->GetPosition();
 
-		renderer->RenderCylinder(rc, center, radius,-height, { 0.2f, 1.0f, 0.2f, 1.0f });
+		float radius = area->GetRadius();   // SafetyArea が持ってる場合
+		float height = 0.1f;                // 地面に貼り付く薄さ
+
+		// 円柱の中心を少し浮かせて地面に接するように
+
+		pos.y += height;
+
+		renderer->RenderCylinder(
+			rc,
+			pos,
+			radius,
+			height,
+			{ 0.2f, 1.0f, 0.2f, 1.0f } // 半透明緑
+		);
 	}
 }
 
@@ -354,6 +373,8 @@ void Player::SStws()
 	w_pos = { STORE.x,STORE.y,STORE.z };
 }
 
+
+
 void Player::InputSafetrSrea()
 {
 	if (GetAsyncKeyState('R') & 1 && canPlaceSafeArea && maxSafetyAreaCount>0)
@@ -364,13 +385,16 @@ void Player::InputSafetrSrea()
 		float distance = 3.0f;
 		DirectX::XMFLOAT3 spawnPos = {
 		 CamPos.x + forward.x * distance,
-		4.0f,
+		1.0f,
 		CamPos.z + forward.z * distance
 		};
 
 		// ===== SafetyArea生成 =====
 		SafetyArea* area = new SafetyArea(&ProjectileManager::Instance());
 		area->SetPosition(spawnPos);
+		DirectX::XMFLOAT3 front = Camera::Instance().GetFront();
+		float yaw = std::atan2(front.x, front.z);
+		area->SetAngle({ 0, yaw, 0 });
 		maxSafetyAreaCount -= 1;
 		safetyAreas.push_back(area);
 		lastSafetyAreaIndex = safetyAreas.size() - 1;
@@ -384,7 +408,6 @@ void Player::InputSafetrSrea()
 			putTrue = true;
 		}*/
 	}
-
 
 }
 

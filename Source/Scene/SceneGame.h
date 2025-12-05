@@ -44,6 +44,8 @@ private:
 	CameraController* cameraController = nullptr;
 
 	Balloon* balloon = nullptr;
+
+	ModelRenderer* renderer = nullptr;
 	
 
 	//•¡”‚ÌBoard‚ğŠÇ—‚·‚é”z—ñ
@@ -53,5 +55,6 @@ private:
 	bool quizFlag = false;
 
 public:
+	std::vector<std::unique_ptr<Sprite>> sprites;
 	
 };

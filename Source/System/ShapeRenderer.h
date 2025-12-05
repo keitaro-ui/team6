@@ -50,6 +50,10 @@ public:
 		float radius,
 		const DirectX::XMFLOAT4& color) const;
 
+	void DrawQuad(const RenderContext& rc, float x, float y, float width, float height, const DirectX::XMFLOAT4& color);
+
+	void RenderPoint2D(const RenderContext& rc, float x, float y, float size, const DirectX::XMFLOAT4& color);
+
 private:
 	struct Mesh
 	{
@@ -80,6 +84,7 @@ private:
 
 	// ‰~’Œ
 	void CreateCylinderMesh(ID3D11Device* device, float radius1, float radius2, float start, float height, int subdivisions);
+
 
 private:
 	Mesh										boxMesh;

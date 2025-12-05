@@ -28,6 +28,12 @@ void SafetyArea::SetPosition(const XMFLOAT3& pos)
     UpdateTransform();
 }
 
+void SafetyArea::SetAngle(const XMFLOAT3& angle)
+{
+    direction = angle;
+    UpdateTransform();
+}
+
 //void SafetyArea::UpdateTransform()
 //{
 //    using namespace DirectX;

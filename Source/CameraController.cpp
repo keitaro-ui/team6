@@ -160,11 +160,11 @@ void CameraController::HandleNormal(float elapsedTime)
 	DirectX::XMFLOAT3 moveVec = { 0,0,0 };
 	float moveSpeed = 5.0f;
 
-	if (GetAsyncKeyState('W') & 0x8000) { moveVec.x += dir.x;  moveVec.z += dir.z; }
-	if (GetAsyncKeyState('S') & 0x8000) { moveVec.x -= dir.x;  moveVec.z -= dir.z; }
+	if (GetAsyncKeyState('W') & 0x8000) { moveVec.x += dir.x ;  moveVec.z += dir.z ; }
+	if (GetAsyncKeyState('S') & 0x8000) { moveVec.x -= dir.x ;  moveVec.z -= dir.z ; }
 
-	if (GetAsyncKeyState('D') & 0x8000) { moveVec.x += right.x;  moveVec.z += right.z; }
-	if (GetAsyncKeyState('A') & 0x8000) { moveVec.x -= right.x;  moveVec.z -= right.z; }
+	if (GetAsyncKeyState('D') & 0x8000) { moveVec.x += right.x;  moveVec.z += right.z ; }
+	if (GetAsyncKeyState('A') & 0x8000) { moveVec.x -= right.x;  moveVec.z -= right.z ; }
 
 	// à⁄ìÆó ê≥ãKâªÇµÇƒë¨ìxÇîΩâf
 	float moveLen = sqrt(moveVec.x * moveVec.x + moveVec.y * moveVec.y + moveVec.z * moveVec.z);
