@@ -115,12 +115,11 @@ public:
     void SetRenderer(ModelRenderer* r) { renderer = r; }
    
     std::vector<SafetyArea*> safetyAreas;
-<<<<<<< HEAD
+
     std::vector<DirectX::XMFLOAT4> saPositions;
     ModelRenderer* renderer = nullptr;
-=======
+
 private:
->>>>>>> master
 
     //セーフティエリア制限個数
     int maxSafetyAreaCount = 5;

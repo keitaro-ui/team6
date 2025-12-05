@@ -6,23 +6,12 @@
 class SafetyArea : public Projectile
 {
 public:
-<<<<<<< HEAD
-    SafetyArea(ProjectileManager* manager)
-        : Projectile(manager)
-        /*, position{0.0f, 0.0f, 0.0f}
-        , transform{1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1}*/
-    {
-        position = { 0.0f, 0.0f, 0.0f };
-        XMStoreFloat4x4(&transform, DirectX::XMMatrixIdentity());
-        balloonModel = new Model("Data/Model/Target/flag.mdl");
-        scale={0.02f, 0.02f, 0.02f};
-        assert(balloonModel && "balloonModel ‚ª“Ç‚İ‚ß‚Ü‚¹‚ñ");
-        type = ProjectileType::Safetiy;
-    }
-=======
+
+
+
     SafetyArea(ProjectileManager* manager);
   
->>>>>>> master
+
     
     ~SafetyArea();
 
@@ -34,12 +23,12 @@ public:
     // SetPosition ƒƒ\ƒbƒh‚ğ’Ç‰Á
     void SetPosition(const DirectX::XMFLOAT3& pos);
 
-<<<<<<< HEAD
+
     void SetAngle(const DirectX::XMFLOAT3& angle);
 
-=======
+
     bool IsInside(const DirectX::XMFLOAT3& p);
->>>>>>> master
+
 
 private:
     struct SafetyAreaData

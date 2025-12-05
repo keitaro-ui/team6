@@ -183,11 +183,10 @@ void SceneGame::Finalize()
 
 	delete balloon;
 
-<<<<<<< HEAD
+
 
 	//boxなどのenemyを継承しているnewはdeleteしてはいけない。EnemyManagerごと消す
-=======
->>>>>>> master
+
 	//エネミー終了化
 	EnemyManager::Instance().Clear();
 }
@@ -235,15 +234,15 @@ void SceneGame::Update(float elapsedTime)
 	
 	//プレイヤー更新処理
 	player->Update(elapsedTime);
-<<<<<<< HEAD
+
 	if (renderer) {
 		std::vector<DirectX::XMFLOAT4> saPositions;
 		player->FillSafetyAreaPosition(saPositions);
 		renderer->UpdateSafetyAreaLights(saPositions);
 	}
-=======
+
 	player->SetPosition(physics.CircleVsStage(player->GetPosition(), player->GethitRadius()));
->>>>>>> master
+
 
 	enemyslime->Update(elapsedTime);
 
@@ -390,7 +389,7 @@ void SceneGame::Render()
 
 	// 2Dスプライト描画
 	{
-<<<<<<< HEAD
+
 
 		for (size_t i = 0; i < sprites.size(); i++)
 		{
@@ -400,7 +399,7 @@ void SceneGame::Render()
 				0,
 				1, 1, 1, 1);
 		}
-=======
+
 		float hpRate = std::clamp((float)player->hp / player->maxHP, 0.0f, 1.0f);
 
 		float texWidth = hpBarTex.GetWidth();
@@ -419,7 +418,7 @@ void SceneGame::Render()
 			0,
 			1, 1, 1, 1
 		);
->>>>>>> master
+
 	}
 
 }

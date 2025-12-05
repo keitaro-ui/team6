@@ -17,13 +17,14 @@ SafetyArea::SafetyArea(ProjectileManager* manager) : Projectile(manager)
     assert(balloonModel && "balloonModel Ç™ì«Ç›çûÇﬂÇ‹ÇπÇÒ");
     type = ProjectileType::Safetiy;*/
     position = { 0.0f, 0.5f, 0.0f };
+    scale = { 0.02f,0.02f,0.02f };
     radius = 5.0f;
 
     XMStoreFloat4x4(&transform, DirectX::XMMatrixIdentity());
 
-    balloonModel = new Model("Data/Model/Target/balloon.mdl");
+    balloonModel = new Model("Data/Model/Target/flag.mdl");
 
-    scale = { 1.0f, 1.0f, 1.0f };
+    //scale = { 1.0f, 1.0f, 1.0f };
 }
 
 
@@ -42,12 +43,12 @@ void SafetyArea::SetPosition(const XMFLOAT3& pos)
     UpdateTransform();
 }
 
-<<<<<<< HEAD
+
 void SafetyArea::SetAngle(const XMFLOAT3& angle)
 {
     direction = angle;
     UpdateTransform();
-=======
+}
 bool SafetyArea::IsInside(const DirectX::XMFLOAT3& p)
 {
     float dx = p.x - position.x;
@@ -57,7 +58,6 @@ bool SafetyArea::IsInside(const DirectX::XMFLOAT3& p)
 
     return distSq < (radius * radius);
 
->>>>>>> master
 }
 
 //void SafetyArea::UpdateTransform()
