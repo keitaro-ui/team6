@@ -14,7 +14,8 @@ int result = -1, point = 0;
 void SceneResult::Initialize()
 {
 	//スプライト初期化
-	sprite = new Sprite("Data/Sprite/result.png");
+	clear_sprite = new Sprite("Data/Sprite/result1.png");
+	over_sprite = new Sprite("Data/Sprite/result2.png");
 	sprite_number = new Sprite("Data/Sprite/number.png");
 
 	//point = 0;
@@ -79,10 +80,16 @@ void SceneResult::Render()
 	{
 		float screenWidth = static_cast<float>(graphics.GetScreenWidth());
 		float screenHeight = static_cast<float>(graphics.GetScreenHeight());
-		sprite->Render(rc,
-			0, 0, 0, screenWidth, screenHeight,
-			0,
-			1, 1, 1, 1);
+		/*sprite->Render(rc,0, 0, 0, screenWidth, screenHeight,0,1, 1, 1, 1);*/
+
+		if (resultType == ResultType::GameClear)
+		{
+			clear_sprite->Render(rc,0, 0, 0, screenWidth, screenHeight, 0, 1, 1, 1, 1);
+		}
+		if (resultType == ResultType::GameOver)
+		{
+			over_sprite->Render(rc, 0, 0, 0, screenWidth, screenHeight, 0, 1, 1, 1, 1);
+		}
 
 
 		/*
@@ -96,39 +103,7 @@ void SceneResult::Render()
 	float r, float g, float b, float a	// 色
 	) const
 		*/
-
-		int n[2]{};
-		//n[0] = point / 100 % 10;
-		n[0] = point / 10 % 10;
-		n[1] = point % 10;
-		if (point <= 0)
-		{
-			for (int i = 0; i < 2; i++)
-			{
-				sprite_number->Render(rc,
-					32 * 2 * i + 570, 400,
-					0,
-					32 * 2, 32 * 2,
-					372.5 * n[0], 0,
-					372.5, 514,
-					0,
-					1, 1, 1, 1);
-			}
-		}
-		else
-		{
-			for (int i = 0; i < 2; i++)
-			{
-				sprite_number->Render(rc,
-					32 * 2 * i + 570, 400,
-					0,
-					32 * 2, 32 * 2,
-					372.5 * n[i], 0,
-					372.5, 514,
-					0,
-					1, 1, 1, 1);
-			}
-		}
+		
 	}
 }
 

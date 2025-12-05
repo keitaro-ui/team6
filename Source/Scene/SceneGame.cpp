@@ -32,10 +32,11 @@ void SceneGame::Initialize()
 	//enemyslime->player = player.get();
 
 	//スタート位置初期化
+	player->SetPosition({ 0.0f, 3.0f, -16.0f });
 
 
 	//ゴール位置初期化
-	goalPoint = new GoalPoint({ 0.0f, 0.0f, 16.0f });
+	goalPoint = new GoalPoint({ 0.0f, 3.0f, 16.0f });
 
 
 	//スプライト初期設定
@@ -154,6 +155,19 @@ void SceneGame::Initialize()
 			physics.AddObb({ 0.0f, 0.0f, 0.0f }, blockSize, 0.0f);
 		}
 	}
+
+	/*player->safetyAreas.push_back(new SafetyArea(&ProjectileManager::Instance()));
+	player->safetyAreas.back()->SetPosition({ -26, -1.0f, -16 });
+
+	player->safetyAreas.push_back(new SafetyArea(&ProjectileManager::Instance()));
+	player->safetyAreas.back()->SetPosition({ 26, -1.0f, -16 });
+
+	player->safetyAreas.push_back(new SafetyArea(&ProjectileManager::Instance()));
+	player->safetyAreas.back()->SetPosition({ -26, -1.0f,  16 });
+
+	player->safetyAreas.push_back(new SafetyArea(&ProjectileManager::Instance()));
+	player->safetyAreas.back()->SetPosition({ 26, -1.0f,  16 });*/
+
 	//マウス位置の取得とロック
 	Input::Instance().GetMouse().Lock();
 }
@@ -175,11 +189,31 @@ void SceneGame::Finalize()
 
 	//エネミー終了化
 	EnemyManager::Instance().Clear();
+
+	//SafetyArea終了化
+	for (auto& s : player->safetyAreas)
+	{
+		if (s)
+		{
+			delete s;
+			s = nullptr;
+		}
+	}
 }
 
 // 更新処理
 void SceneGame::Update(float elapsedTime)
 {
+	if (!player || !goalPoint)
+		return;
+
+	// --- HPチェック ---
+	if (player->hp <= 0.0f)
+	{
+		// SceneResultGameOver に切り替え
+		SceneManager::Instance().ChangeScene(new SceneResult(ResultType::GameOver));
+		return; // 以降の更新は行わない
+	}
 	//カメラコントローラー更新処理
 	if (quizFlag && activeBoard)
 	{
@@ -234,13 +268,7 @@ void SceneGame::Update(float elapsedTime)
 	const float stageDamagePerSec = 5.0f;
 	player->AddDamage(stageDamagePerSec * elapsedTime);
 
-	// --- HPチェック ---
-	if (player->hp == 0.0f)
-	{
-		// SceneResult に切り替え
-		SceneManager::Instance().ChangeScene(new SceneLoading(new SceneResult()));
-		return; // 以降の更新は行わない
-	}
+	
 
 
 	if (!player->safetyAreas.empty())
@@ -259,6 +287,21 @@ void SceneGame::Update(float elapsedTime)
 		}
 
 	}
+	//ゴール判定
+	
+		float dx = player->GetPosition().x - goalPoint->position.x;
+		float dy = player->GetPosition().y - goalPoint->position.y;
+		float dz = player->GetPosition().z - goalPoint->position.z;
+
+		float distSq = dx * dx + dy * dy + dz * dz;
+		float goalRadius = 1.5f;
+
+		if(distSq <= goalRadius * goalRadius)
+		{
+			SceneManager::Instance().ChangeScene(new SceneResult(ResultType::GameClear));
+		return;
+		}
+	
 
 
 	//クイズ処理
@@ -290,6 +333,8 @@ void SceneGame::Update(float elapsedTime)
 		fRenFlag = false;
 		activeBoard = nullptr;
 	}
+
+
 
 	//シーン遷移
 	//GamePad& gamePad = Input::Instance().GetGamePad();
