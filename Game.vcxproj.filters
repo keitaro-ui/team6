@@ -42,6 +42,7 @@
     <ClCompile Include="Source\Game\SearchAlgorithm.cpp" />
     <ClCompile Include="Source\Game\Stage.cpp" />
     <ClCompile Include="Source\Game\WayPoint.cpp" />
+    <ClCompile Include="Source\PhysicsSystem2d.cpp" />
     <ClCompile Include="Source\ProjectHoming.cpp" />
     <ClCompile Include="Source\Projectile.cpp" />
     <ClCompile Include="Source\ProjectileManager.cpp" />
@@ -57,6 +58,7 @@
     <ClCompile Include="Source\System\AudioResource.cpp" />
     <ClCompile Include="Source\System\AudioSource.cpp" />
     <ClCompile Include="Source\System\BasicShader.cpp" />
+    <ClCompile Include="Source\System\Character.cpp" />
     <ClCompile Include="Source\System\GamePad.cpp" />
     <ClCompile Include="Source\System\GpuResourceUtils.cpp" />
     <ClCompile Include="Source\System\Graphics.cpp" />
@@ -76,7 +78,6 @@
     <ClCompile Include="Source\System\ShadowMapShader.cpp" />
     <ClCompile Include="Source\System\ShapeRenderer.cpp" />
     <ClCompile Include="Source\System\Sprite.cpp" />
-    <ClCompile Include="Source\System\Character.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="External\imgui-docking\imconfig.h" />
@@ -113,6 +114,7 @@
     <ClInclude Include="Source\Game\SearchAlgorithm.h" />
     <ClInclude Include="Source\Game\Stage.h" />
     <ClInclude Include="Source\Game\WayPoint.h" />
+    <ClInclude Include="Source\PhysicsSystem2d.h" />
     <ClInclude Include="Source\ProjectHoming.h" />
     <ClInclude Include="Source\Projectile.h" />
     <ClInclude Include="Source\ProjectileManager.h" />
@@ -152,6 +154,8 @@
     <ClInclude Include="Source\System\ShadowMapShader.h" />
     <ClInclude Include="Source\System\ShapeRenderer.h" />
     <ClInclude Include="Source\System\Sprite.h" />
+    <ClInclude Include="Source\Game\GoalPoint.h" />
+    <ClInclude Include="Source\Game\StartPoint.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\Basic.hlsli" />

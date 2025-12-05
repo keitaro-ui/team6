@@ -6,6 +6,7 @@
 class SafetyArea : public Projectile
 {
 public:
+<<<<<<< HEAD
     SafetyArea(ProjectileManager* manager)
         : Projectile(manager)
         /*, position{0.0f, 0.0f, 0.0f}
@@ -18,6 +19,10 @@ public:
         assert(balloonModel && "balloonModel が読み込めません");
         type = ProjectileType::Safetiy;
     }
+=======
+    SafetyArea(ProjectileManager* manager);
+  
+>>>>>>> master
     
     ~SafetyArea();
 
@@ -29,8 +34,12 @@ public:
     // SetPosition メソッドを追加
     void SetPosition(const DirectX::XMFLOAT3& pos);
 
+<<<<<<< HEAD
     void SetAngle(const DirectX::XMFLOAT3& angle);
 
+=======
+    bool IsInside(const DirectX::XMFLOAT3& p);
+>>>>>>> master
 
 private:
     struct SafetyAreaData
@@ -41,6 +50,8 @@ private:
 
     Model* balloonModel = nullptr;
     float radius = 2.0f;   // 安全エリアの半径
+    std::vector<SafetyArea*> safetyAreas;
+
     /*DirectX::XMFLOAT3 position;
     DirectX::XMFLOAT3 scale = {1.0f, 1.0f, 1.0f};
     DirectX::XMFLOAT4X4 transform;

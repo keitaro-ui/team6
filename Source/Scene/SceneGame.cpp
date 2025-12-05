@@ -9,9 +9,14 @@
 #include "SceneTitle.h"
 #include "SceneGame.h"
 #include "SceneLoading.h"
+#include "SceneResult.h"
 #include "../Game/PlayerManager.h"
+#include "../Game/SafetyArea.h"
+#include "../Source/System/Sprite.h"
+#include "../Source/Game/Player.h"
+#include "../Game/StartPoint.h"
+#include "../Game/GoalPoint.h"
 
-//float game_timer;
 
 // 初期化
 void SceneGame::Initialize()
@@ -36,9 +41,20 @@ void SceneGame::Initialize()
 	enemyslime = std::make_unique<EnemySlime>();
 	//enemyslime->player = player.get();
 
+	//スタート位置初期化
+
+
+	//ゴール位置初期化
+	goalPoint = new GoalPoint({ 0.0f, 0.0f, 16.0f });
+
+
 	//スプライト初期設定
 	{
-		
+		spr = std::make_unique<Sprite>("Data/Sprite/LoadingIcon.png");
+		Graphics& graphics = Graphics::Instance();
+		//HPバー読み込み
+		hpBarTex = Sprite("Data/Sprite/hp_bar.png");
+
 	}
 	//カメラ初期設定
 	//Graphics& graphics = Graphics::Instance();
@@ -61,8 +77,9 @@ void SceneGame::Initialize()
 	player->cameraController = cameraController;
 
 	//エネミー初期化
-	int num = 0;		
-	int hei = 0;
+	/*int num = 0;		
+	int hei = 0;*/
+	fRenFlag = false;
 	EnemyManager& enemyManager = EnemyManager::Instance();
 	//for (int i = 0; i < 20; i++)
 	{
@@ -79,30 +96,72 @@ void SceneGame::Initialize()
 		balloon->SetAngle(DirectX::XMFLOAT3(0, DirectX::XM_PI, 0));
 		
 		//クイズ板の初期設定
+		for (int i = 0; i < 4; i++) 
 		{
-			/*Board* board_0 = new Board();
-			board_0->SetPosition(Board::boardPos[0]);
-			board_0->SetAngle(Board::boardAng[0]);
-			enemyManager.Instance().Register(board_0);
-			boards.push_back(board_0);
-			
-			Board* board_1 = new Board();
-			board_1->SetPosition(Board::boardPos[1]);
-			board_1->SetAngle(Board::boardAng[1]);
-			enemyManager.Instance().Register(board_1);
-			boards.push_back(board_1);
+			boards[i] = new Board(i);
+			EnemyManager::Instance().Register(boards[i]);
+		}
+	}
 
-			Board* board_2 = new Board();
-			board_2->SetPosition(Board::boardPos[2]);
-			board_2->SetAngle(Board::boardAng[2]);
-			enemyManager.Instance().Register(board_2);
-			boards.push_back(board_2);
+	//当たり判定
+	{
+		xDis = 9.0f;
+		zDis = 6.6f;
+		debugDoorSize = 2.5f;
+		blockSize = { 3.0f, 0.0f, 1.6f };
 
-			Board* board_3 = new Board();
-			board_3->SetPosition(Board::boardPos[3]);
-			board_3->SetAngle(Board::boardAng[3]);
-			enemyManager.Instance().Register(board_3);
-			boards.push_back(board_3);*/
+		//外枠
+		physics.AddObb({ 0, 0, 0 }, { 28.5f, 0, 17.7f }, 0);
+		
+		int map[5][6] =
+		{
+			// 1列目
+			{ 1, 1, 0, 1, 1, 1 },
+
+			// 2列目
+			{ 1, -1, 1, 0, 0, -1 },
+
+			// 3列目
+			{ 1, 1, 1, 0, 1, 1 },
+
+			// 4列目
+			{ -1, 0, -1, 1, 1, 0 },
+
+			// 5列目
+			{ 0, 1, 0, -1, 0, 1 }
+		};
+
+		for (int z = 0; z < 5; z++)
+		{
+			for (int x = 0; x < 6; x++)
+			{
+				DirectX::XMFLOAT3 pos = { -22.5f + x * xDis, 0.0f, zDis * (2 - z) };
+
+				int v = map[z][x];
+
+				if (v == 0)
+				{
+					// 壁
+					physics.AddObb(pos, blockSize, 0.0f);
+				}
+				else
+				{
+					// ドアの方向
+					DirectX::XMFLOAT3 dir = { 0, 0, (float)v };
+
+					physics.AddDoorObb(pos,blockSize,0.0f,dir,debugDoorSize,3.05f
+					);
+				}
+			}
+		}
+
+		//通路塞ぐ壁
+		{
+			physics.AddObb({ -22.5f + 3 * xDis, 0.0f, zDis * 1.5f }, blockSize, 0.0f);
+			physics.AddObb({ -22.5f + 3 * xDis, 0.0f, zDis * 0.5f }, blockSize, 0.0f);
+
+			physics.AddObb({ -22.5f + 2 * xDis, 0.0f, zDis * -0.5f }, blockSize, 0.0f);
+			physics.AddObb({ 0.0f, 0.0f, 0.0f }, blockSize, 0.0f);
 		}
 	}
 	//マウス位置の取得とロック
@@ -124,8 +183,11 @@ void SceneGame::Finalize()
 
 	delete balloon;
 
+<<<<<<< HEAD
 
 	//boxなどのenemyを継承しているnewはdeleteしてはいけない。EnemyManagerごと消す
+=======
+>>>>>>> master
 	//エネミー終了化
 	EnemyManager::Instance().Clear();
 }
@@ -134,21 +196,54 @@ void SceneGame::Finalize()
 void SceneGame::Update(float elapsedTime)
 {
 	//カメラコントローラー更新処理
-	DirectX::XMFLOAT3 target = player->GetPosition();
-	target.y += 0.5f;
-	cameraController->SetTarget(target);
+	if (quizFlag && activeBoard)
+	{
+		if (!activeBoard->IsQuizActive())
+		{
+			// クイズ終了処理
+			quizFlag = false;
+			activeBoard = nullptr;
+		}
+		else
+		{
+			// ---- クイズ中カメラ（コントローラを使わない） ----
+			DirectX::XMFLOAT3 pos = activeBoard->GetPosition();
+			DirectX::XMFLOAT3 ang = activeBoard->GetAngle();
 
+			float frontDist = -3.0f;
+			float height = 1.0f;
 
-	// カメラ更新
-	cameraController->Update(elapsedTime);
+			float rad = ang.y;
+			float fx = sinf(rad);
+			float fz = cosf(rad);
 
+			DirectX::XMFLOAT3 eye = { pos.x - fx * frontDist,pos.y + height,pos.z - fz * frontDist };
+
+			DirectX::XMFLOAT3 tgt = { pos.x, pos.y + 1.0f, pos.z };
+
+			Camera::Instance().SetLookAt(eye, tgt, { 0,1,0 });
+		}
+	}
+	else
+	{
+		// 通常カメラ
+		DirectX::XMFLOAT3 target = player->GetPosition();
+		target.y += 0.5f;
+		cameraController->SetTarget(target);
+		cameraController->Update(elapsedTime);
+	}
+	
 	//プレイヤー更新処理
 	player->Update(elapsedTime);
+<<<<<<< HEAD
 	if (renderer) {
 		std::vector<DirectX::XMFLOAT4> saPositions;
 		player->FillSafetyAreaPosition(saPositions);
 		renderer->UpdateSafetyAreaLights(saPositions);
 	}
+=======
+	player->SetPosition(physics.CircleVsStage(player->GetPosition(), player->GethitRadius()));
+>>>>>>> master
 
 	enemyslime->Update(elapsedTime);
 
@@ -167,22 +262,71 @@ void SceneGame::Update(float elapsedTime)
 	//エネミー更新処理
 	EnemyManager::Instance().Update(elapsedTime);
 
-	// プレイヤーがボードに近づいた時
-	for (auto& board : boards)
+	//ステージ継続ダメージ
+	const float stageDamagePerSec = 5.0f;
+	player->AddDamage(stageDamagePerSec * elapsedTime);
+
+	// --- HPチェック ---
+	if (player->hp == 0.0f)
 	{
-		if (board->CheckPlayerOnBoard(player.get()))
+		// SceneResult に切り替え
+		SceneManager::Instance().ChangeScene(new SceneLoading(new SceneResult()));
+		return; // 以降の更新は行わない
+	}
+
+
+	if (!player->safetyAreas.empty())
+	{
+		//SafetyArea内なら回復
+		for (auto& s : player->safetyAreas)
 		{
-			quizFlag = true;
-            board->StartQuiz(); // クイズ開始処理
-			break;
+			if (!s) continue;
+
+			if (s) s->Update(elapsedTime);
+			if (s && s->IsInside(player->GetPosition()))
+			{
+				player->Heal(5.0f * elapsedTime);
+				break;
+			}
+		}
+
+	}
+
+
+	//クイズ処理
+	if (!quizFlag)   // ←クイズ中は検知しない
+	{
+		for (auto& board : boards)
+		{
+			//quizFlag = false;
+			if (board->CheckNearBoard(player.get()))
+			{
+				fRenFlag = true;
+				auto& gamepad = Input::Instance().GetGamePad();
+				//if (gamepad.GetButtonDown() & GamePad::BTN_A)
+				if (GetAsyncKeyState('F') & 0x8000)
+				{
+					quizFlag = true;
+					activeBoard = board;
+					board->StartQuiz();
+					break;
+				}
+			}
 		}
 	}
 
-	//シーン遷移
-	GamePad& gamePad = Input::Instance().GetGamePad();
-	const GamePadButton anyButton = GamePad::BTN_START;
+	if (quizFlag && activeBoard && GetAsyncKeyState('F') & 0x8000)
+	{
+		activeBoard->EndQuiz();
+		quizFlag = false;
+		fRenFlag = false;
+		activeBoard = nullptr;
+	}
 
-	if (gamePad.GetButtonDown() & anyButton&&player->finish==true)
+	//シーン遷移
+	//GamePad& gamePad = Input::Instance().GetGamePad();
+	GamePad& gamePad = Input::Instance().GetGamePad();
+	if ((gamePad.GetButtonDown() & GamePad::BTN_START) && player->finish == true)
 	{
 		SceneManager::Instance().ChangeScene(new SceneLoading(new SceneGame));
 	}
@@ -222,7 +366,7 @@ void SceneGame::Render()
 		
 		//player->Render(rc, modelRenderer);
 
-		enemyslime->Render(rc, modelRenderer);
+		//enemyslime->Render(rc, modelRenderer);
 
 		ProjectileManager::Instance().Render(rc, modelRenderer);
 
@@ -232,23 +376,21 @@ void SceneGame::Render()
 	// 3Dデバッグ描画
 	{
 		//プレイヤーデバッグプリミティブ描画
-		//player->RenderDebugPrimitive(rc, shapeRenderer);
-
-		//エネミーデバッグプリミティブ描画
-		//EnemyManager::Instance(); 
-		//.RenderDebugPrimitive(rc, shapeRenderer);
-
 		player->RenderDebugPrimitive(rc, shapeRenderer);
 
+		//当たり判定デバッグプリミティブ描画
+		physics.RenderDebugPrimitive(rc, shapeRenderer);
+
+		//エネミーデバッグプリミティブ描画
+		enemyslime->RenderDebugPrimitive(rc, shapeRenderer);
 
 		//modelRenderer->RenderImGui(rc);
-
-		enemyslime->RenderDebugPrimitive(rc, shapeRenderer);
 
 	}
 
 	// 2Dスプライト描画
 	{
+<<<<<<< HEAD
 
 		for (size_t i = 0; i < sprites.size(); i++)
 		{
@@ -258,7 +400,28 @@ void SceneGame::Render()
 				0,
 				1, 1, 1, 1);
 		}
+=======
+		float hpRate = std::clamp((float)player->hp / player->maxHP, 0.0f, 1.0f);
+
+		float texWidth = hpBarTex.GetWidth();
+		float texHeight = hpBarTex.GetHeight();
+
+		float drawWidth = texWidth * hpRate;
+
+		// ピクセル指定でOK
+		hpBarTex.Render(
+			rc,
+			0, 0,
+			0,
+			drawWidth, texHeight,     // 画面上の幅
+			0, 0,                     // 切り抜き開始位置
+			drawWidth, texHeight,        // 切り抜き高さ（ピクセル）
+			0,
+			1, 1, 1, 1
+		);
+>>>>>>> master
 	}
+
 }
 
 // GUI描画
@@ -267,5 +430,39 @@ void SceneGame::DrawGUI()
 	//プレーヤーデバッグ処理
 	player->DrawDebugGUI();
 
+	//クイズ関連のデバッグ
+	ImGui::Begin("Boards Debug");
+
+	if (ImGui::BeginTabBar("Board Tabs"))
+	{
+		for (int i = 0; i < 4; i++)
+		{
+			if (boards[i])
+			{
+				std::string tabName = "Board " + std::to_string(boards[i]->GetQuizNum());
+				if (ImGui::BeginTabItem(tabName.c_str()))
+				{
+					// ← Board.cpp の GUI 値編集部分に任せる
+					boards[i]->DrawGUIValues();
+
+					ImGui::EndTabItem();
+				}
+			}
+		}
+		ImGui::EndTabBar();
+	}
+
+	//ステージデバッグ描画
 	stage->RenderImGui();
+	ImGui::DragFloat("debugDoorSize%d", &debugDoorSize, 0.1f);
+	//if (ImGui::BeginTabBar("block"))
+	//{
+	//	ImGui::DragFloat("blockPos.x",  &xDis,0.02f, 30.0f, -30.0f);
+	//	ImGui::DragFloat("blockPos.z",  &zDis,0.02f, 30.0f, -30.0f);
+	//	ImGui::DragFloat3("blockSize", &blockSize.x, 0.02f, 30.0f, -30.0f);
+
+	//	ImGui::EndTabBar();
+	//}
+
+	ImGui::End();
 }

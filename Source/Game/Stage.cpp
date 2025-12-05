@@ -74,6 +74,8 @@ void Stage::Update(float elapsedTime)
 {
 	UpdateTransform();
 
+	RenderImGui();
+	//DirectX::XMVector2LinePointDistance();
 	//RenderImGui();
 
 }

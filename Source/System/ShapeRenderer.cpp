@@ -33,6 +33,8 @@ ShapeRenderer::ShapeRenderer(ID3D11Device* device)
 		sizeof(CbMesh),
 		constantBuffer.GetAddressOf());
 
+	CreateLineMesh(device);
+
 	// 箱メッシュ生成
 	CreateBoxMesh(device, 1.0f, 1.0f, 1.0f);
 
@@ -44,6 +46,59 @@ ShapeRenderer::ShapeRenderer(ID3D11Device* device)
 
 	// 円柱メッシュ生成
 	CreateCylinderMesh(device, 1.0f, 1.0f, -0.5f, 1.0f, 32);
+}
+
+void ShapeRenderer::RenderLine(const RenderContext& rc, const DirectX::XMFLOAT3& start, const DirectX::XMFLOAT3& end,
+	const DirectX::XMFLOAT4& color) const
+{
+	using namespace DirectX;
+
+	// 方向ベクトル
+	XMVECTOR s = XMLoadFloat3(&start);
+	XMVECTOR e = XMLoadFloat3(&end);
+	XMVECTOR dir = XMVectorSubtract(e, s);
+
+	// 長さ
+	float len = XMVectorGetX(XMVector3Length(dir));
+	if (len <= 0.0001f) return; // 同一点なら描画しない
+
+	// 正規化方向
+	XMVECTOR forward = XMVector3Normalize(dir);
+
+	// Z(0,0,1) を forward に一致させる回転行列
+	XMVECTOR defaultDir = XMVectorSet(0, 0, 1, 0);
+	XMVECTOR axis = XMVector3Cross(defaultDir, forward);
+	float dot = XMVectorGetX(XMVector3Dot(defaultDir, forward));
+	float angle = acosf(dot);
+
+	// 回転
+	XMMATRIX rot;
+	if (XMVector3Length(axis).m128_f32[0] < 0.0001f)
+	{
+		// ほぼ同じ方向 or 逆向き
+		if (dot > 0.0f) {
+			rot = XMMatrixIdentity();       // 同じ方向
+		}
+		else {
+			rot = XMMatrixRotationX(XM_PI); // 逆向き
+		}
+	}
+	else
+	{
+		rot = XMMatrixRotationAxis(axis, angle);
+	}
+
+	// スケール（Z方向だけ伸ばす）
+	XMMATRIX scale = XMMatrixScaling(1, 1, len);
+
+	// 平行移動
+	XMMATRIX translate = XMMatrixTranslation(start.x, start.y, start.z);
+
+
+	DirectX::XMFLOAT4X4 transform;
+	DirectX::XMStoreFloat4x4(&transform, scale * rot * translate);
+
+	Render(rc, lineMesh, transform, color);
 }
 
 // 箱描画
@@ -211,6 +266,17 @@ void ShapeRenderer::CreateBoxMesh(ID3D11Device* device, float width, float heigh
 
 	// メッシュ生成
 	CreateMesh(device, vertices, boxMesh);
+}
+
+void ShapeRenderer::CreateLineMesh(ID3D11Device* device)
+{
+	std::vector<DirectX::XMFLOAT3>vertices;
+	DirectX::XMFLOAT3 v={0,0,0};
+	DirectX::XMFLOAT3 v2={0,0,1};
+	vertices.emplace_back(v);
+	vertices.emplace_back(v2);
+
+	CreateMesh(device, vertices, lineMesh);
 }
 
 // 球メッシュ作成

@@ -91,11 +91,22 @@ public:
     bool finish = false;
     //std::chrono::system_clock::time_point minutes;
 
+    float maxHP = 100.0f;
+    float hp = 100.0f;
+
+    void AddDamage(float amount);
+
+    void Heal(float amount);
+
+    DirectX::XMFLOAT3 GetPosition() const { return position; }
+
+
     void coolgun(float elapsedTime);
 
     float GetMaxSafeAreaCount() { return maxSafetyAreaCount; }
     bool GetputTrue() { return putTrue; }
     int GetLastSafetyAreaIndex() const { return lastSafetyAreaIndex; }
+    float GethitRadius() { return hitRadius; }
 
     void FillSafetyAreaPosition(std::vector<DirectX::XMFLOAT4>& outPositions) const;
 
@@ -103,10 +114,13 @@ public:
 
     void SetRenderer(ModelRenderer* r) { renderer = r; }
    
-private:
     std::vector<SafetyArea*> safetyAreas;
+<<<<<<< HEAD
     std::vector<DirectX::XMFLOAT4> saPositions;
     ModelRenderer* renderer = nullptr;
+=======
+private:
+>>>>>>> master
 
     //セーフティエリア制限個数
     int maxSafetyAreaCount = 5;
@@ -117,8 +131,12 @@ private:
 
     //デバックの半径
     float radius = 2.0f;
+
     //デバッグの高さ
     float height = 0.35f;
+
+    //当たり判定の大きさ
+    float hitRadius = 0.55f;
 
     float safeCooldown = 0.0f;        // 現在のクールタイム残り時間
     bool canPlaceSafeArea = true;     // 設置可能かどうか

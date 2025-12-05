@@ -3,15 +3,29 @@
 #include "Balloon.h"
 #include "Projectile.h"
 #include <DirectXMath.h>
+#include <imgui.h>
+
 
 using namespace DirectX;
 
-//SafetyArea::SafetyArea() : Projectile(manager)
-//{
-//	position = { 0.0f, 0.0f, 0.0f };
-//    XMStoreFloat4x4(&transform, DirectX::XMMatrixIdentity());
-//	balloonModel = new Model("Data/Model/Target/balloon.mdl");
-//}
+SafetyArea::SafetyArea(ProjectileManager* manager) : Projectile(manager)
+{
+    /*position = { 0.0f, 0.0f, 0.0f };
+    XMStoreFloat4x4(&transform, DirectX::XMMatrixIdentity());
+    balloonModel = new Model("Data/Model/Target/balloon.mdl");
+    scale = { 0.6f, 0.6f, 0.6f };
+    assert(balloonModel && "balloonModel Ç™ì«Ç›çûÇﬂÇ‹ÇπÇÒ");
+    type = ProjectileType::Safetiy;*/
+    position = { 0.0f, 0.5f, 0.0f };
+    radius = 5.0f;
+
+    XMStoreFloat4x4(&transform, DirectX::XMMatrixIdentity());
+
+    balloonModel = new Model("Data/Model/Target/balloon.mdl");
+
+    scale = { 1.0f, 1.0f, 1.0f };
+}
+
 
 SafetyArea::~SafetyArea()
 {
@@ -28,10 +42,22 @@ void SafetyArea::SetPosition(const XMFLOAT3& pos)
     UpdateTransform();
 }
 
+<<<<<<< HEAD
 void SafetyArea::SetAngle(const XMFLOAT3& angle)
 {
     direction = angle;
     UpdateTransform();
+=======
+bool SafetyArea::IsInside(const DirectX::XMFLOAT3& p)
+{
+    float dx = p.x - position.x;
+    float dz = p.z - position.z;
+
+    float distSq = dx * dx + dz * dz;
+
+    return distSq < (radius * radius);
+
+>>>>>>> master
 }
 
 //void SafetyArea::UpdateTransform()

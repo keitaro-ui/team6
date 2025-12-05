@@ -11,9 +11,6 @@
 #include "System/Audio.h"
 
 
-int answer = -1, count_1, count_2, count_3, count_4;
-
-
 //コンストラクタ
 Player::Player()
 {
@@ -21,7 +18,7 @@ Player::Player()
 
 	//モデルが大きいのでスケーリング
 	scale.x = scale.y = scale.z = 0.21f;
-	//sition.z = 3.0f;
+	position.y = 3.0f;
 }
 
 //デストラクタ
@@ -113,6 +110,25 @@ void Player::InputProjectile()
 
 }
 
+void Player::AddDamage(float amount)
+{
+	hp -= amount;
+	if (hp < 0.0f)
+	{
+		hp = 0.0f;
+	}
+}
+
+void Player::Heal(float amount)
+{
+	hp += amount;
+	if (hp > maxHP)
+	{
+		hp = maxHP;
+	}
+}
+
+
 void Player::coolgun(float elpasedTime)
 {
 	guntime -= elpasedTime;
@@ -137,7 +153,8 @@ void Player::DrawDebugGUI()
 {
 	ImGui::Begin("Player Debug");
 
-	ImGui::DragFloat3("pos", &position.x,0.01f);
+	ImGui::DragFloat3("pos", &position.x,0.1f);
+	ImGui::DragFloat("hitRadius", &hitRadius, 0.01f);
 	
 	// 最大数を調整
 	ImGui::DragInt("Max Safety Area Count", &maxSafetyAreaCount, 1, 1, 20);
@@ -146,6 +163,12 @@ void Player::DrawDebugGUI()
 	ImGui::Text("Current Count: %d / %d", (int)safetyAreas.size(), maxSafetyAreaCount);
 
 	//ImGui::DragFloat3("slime.pos", &EnemyManager::Instance().GetEnemy(0)->GetPosition().x, 0.01f);
+
+	ImGui::Text("Player this ptr: %p", (void*)this);
+	ImGui::Text("HP : %.2f / %.2f", hp, maxHP);
+	float hpRateDebug = (maxHP != 0.0f) ? (hp / maxHP) : 0.0f;
+	ImGui::Text("hpRate (calc) = %.4f", hpRateDebug);
+
 
 	if (ImGui::CollapsingHeader("Spawned SafetyAreas"))
 	{
@@ -290,7 +313,7 @@ void Player::CollisionPlayerVsEnemies()
 			outPosition))
 		{
 			//押し出し後の位置設定
-			enemy->SetPosition(outPosition);
+			//enemy->SetPosition(outPosition);
 		}
 	}
 }
@@ -322,7 +345,7 @@ void Player::CollisionProjectilesVsEnemies()
 				enemy->GetRadius(),
 				outPosition))
 			{
-				answer = enemy->model_index;
+				//answer = enemy->model_index;
 
 				//ダメージを与える
 				if (enemy->ApplyDamage(1, 0.5f))
