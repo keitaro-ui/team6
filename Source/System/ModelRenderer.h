@@ -9,6 +9,9 @@
 #include "Model.h"
 #include "Shader.h"
 #include "ShapeRenderer.h"
+#include <random>
+
+
 
 enum class ShaderId
 {
@@ -77,6 +80,8 @@ public:
 	//    （不透明 → 透明の順で描画するときに安全）
 	void ClearBinding(ID3D11DeviceContext* dc);
 	
+	//遊び
+	void UpdataLightsSS();
 private:
 	// VP行列・カメラ位置・ライト方向など
 	struct CbScene
@@ -190,9 +195,16 @@ private:
 	// カーソル記録
 	POINT cursor_position;
 
+	float time = 0;
+	std::mt19937 mt;
+
+	std::uniform_real_distribution<float> dist;
+
 public:
-	// ■ ポイントライト設定の外部公開
+	// ポイントライト設定
 	void SetPointLight(int index, const point_lights& light);
-	// ■ 環境光を外部から変更
+	// 環境光を設定
 	void SetAmbientColor(const DirectX::XMFLOAT4& color);
+
+	void UpdateSafetyAreaLights(const std::vector<DirectX::XMFLOAT4>& position);
 };

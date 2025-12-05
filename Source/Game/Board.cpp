@@ -27,10 +27,10 @@ namespace
 Board::Board(int index)
 {
     static const char* paths[] = {
-        "Data/Model/Boad/boad_1.mdl",
         "Data/Model/Boad/boad_2.mdl",
-        "Data/Model/Boad/boad_3.mdl",
-        "Data/Model/Boad/boad_4.mdl"
+        "Data/Model/Boad/boad_9.mdl",
+        "Data/Model/Boad/boad_18.mdl",
+        "Data/Model/Boad/boad_20.mdl"
     };
 
     model = std::make_unique<Model>(paths[index]);

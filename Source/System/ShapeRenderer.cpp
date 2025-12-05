@@ -1,6 +1,7 @@
 #include "Misc.h"
 #include "GpuResourceUtils.h"
 #include "ShapeRenderer.h"
+#include "Graphics.h"
 
 // コンストラクタ
 ShapeRenderer::ShapeRenderer(ID3D11Device* device)
@@ -436,6 +437,15 @@ void ShapeRenderer::CreateCylinderMesh(ID3D11Device* device, float radius1, floa
 	CreateMesh(device, vertices, cylinderMesh);
 }
 
+void ShapeRenderer::DrawQuad(const RenderContext& rc, float x, float y, float width, float height, const DirectX::XMFLOAT4& color)
+{
+	using namespace DirectX;
+	// 位置を3Dに変換（Z=0）
+	XMFLOAT3 pos(x + width * 0.5f, y + height * 0.5f, 0.0f);
+	XMFLOAT3 size(width, height, 1.0f);
+	RenderBox(rc, pos, { 0,0,0 }, size, color);
+}
+
 
 
 // 描画実行
@@ -509,5 +519,19 @@ void ShapeRenderer::RenderCircle(
 	DirectX::XMStoreFloat4x4(&transform, T);
 
 	Render(rc, tempMesh, transform, color);
+}
+
+void ShapeRenderer::RenderPoint2D(const RenderContext& rc, float x, float y, float size, const DirectX::XMFLOAT4& color)
+{
+	Graphics& g = Graphics::Instance();
+	float screenWidth = static_cast<float>(g.GetScreenWidth());
+	float screenHeight = static_cast<float>(g.GetScreenHeight());
+
+	// ピクセル座標 → -1～1 の正規化
+	float nx = (x / screenWidth) * 2.0f - 1.0f;
+	float ny = 1.0f - (y / screenHeight) * 2.0f; // Y反転
+	float ns = size / screenHeight; // 適当に正規化
+
+	DrawQuad(rc, nx, ny, ns, ns, color);
 }
 

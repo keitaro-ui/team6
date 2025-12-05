@@ -26,6 +26,16 @@ void SceneGame::Initialize()
 
 	//プレイヤー初期化
 	player = std::make_unique<Player>();
+	sprites.push_back(std::make_unique<Sprite>("Data/Sprite/Oxygen_gauge_frame.png"));
+	sprites.push_back(std::make_unique<Sprite>("Data/Sprite/Oxygen_gauge.png"));
+	//PlayerManager::Instance().Register(player.get());
+
+	Graphics& graphics = Graphics::Instance();
+	ModelRenderer* modelRenderer = graphics.GetModelRenderer();
+	player->SetRenderer(modelRenderer);
+
+	renderer = modelRenderer;
+
 	PlayerManager::Instance().Register(player.get());
 
 	enemyslime = std::make_unique<EnemySlime>();
@@ -48,7 +58,7 @@ void SceneGame::Initialize()
 
 	}
 	//カメラ初期設定
-	Graphics& graphics = Graphics::Instance();
+	//Graphics& graphics = Graphics::Instance();
 	Camera& camera = Camera::Instance();
 	camera.SetLookAt(
 		DirectX::XMFLOAT3(0, 10, -10),//視点
@@ -187,6 +197,10 @@ void SceneGame::Finalize()
 
 	delete balloon;
 
+
+
+	//boxなどのenemyを継承しているnewはdeleteしてはいけない。EnemyManagerごと消す
+
 	//エネミー終了化
 	EnemyManager::Instance().Clear();
 
@@ -215,49 +229,34 @@ void SceneGame::Update(float elapsedTime)
 		return; // 以降の更新は行わない
 	}
 	//カメラコントローラー更新処理
-	if (quizFlag && activeBoard)
-	{
-		if (!activeBoard->IsQuizActive())
-		{
-			// クイズ終了処理
-			quizFlag = false;
-			activeBoard = nullptr;
-		}
-		else
-		{
-			// ---- クイズ中カメラ（コントローラを使わない） ----
-			DirectX::XMFLOAT3 pos = activeBoard->GetPosition();
-			DirectX::XMFLOAT3 ang = activeBoard->GetAngle();
-
-			float frontDist = -3.0f;
-			float height = 1.0f;
-
-			float rad = ang.y;
-			float fx = sinf(rad);
-			float fz = cosf(rad);
-
-			DirectX::XMFLOAT3 eye = { pos.x - fx * frontDist,pos.y + height,pos.z - fz * frontDist };
-
-			DirectX::XMFLOAT3 tgt = { pos.x, pos.y + 1.0f, pos.z };
-
-			Camera::Instance().SetLookAt(eye, tgt, { 0,1,0 });
-		}
-	}
-	else
-	{
-		// 通常カメラ
-		DirectX::XMFLOAT3 target = player->GetPosition();
-		target.y += 0.5f;
-		cameraController->SetTarget(target);
-		cameraController->Update(elapsedTime);
-	}
+	DirectX::XMFLOAT3 target = player->GetPosition();
+	target.y += 0.5f;
+	cameraController->SetTarget(target);
+	cameraController->Update(elapsedTime);
 	
 	//プレイヤー更新処理
 	player->Update(elapsedTime);
+
+	if (renderer) {
+		std::vector<DirectX::XMFLOAT4> saPositions;
+		player->FillSafetyAreaPosition(saPositions);
+		renderer->UpdateSafetyAreaLights(saPositions);
+	}
+
 	player->SetPosition(physics.CircleVsStage(player->GetPosition(), player->GethitRadius()));
+
 
 	enemyslime->Update(elapsedTime);
 
+	Graphics& graphics = Graphics::Instance();
+	ID3D11DeviceContext* dc = graphics.GetDeviceContext();
+	ShapeRenderer* shapeRenderer = graphics.GetShapeRenderer();
+	ModelRenderer* modelRenderer = graphics.GetModelRenderer();
+
+	// 描画準備
+	RenderContext rc;
+	rc.deviceContext = dc;
+	renderer->RenderImGui(rc);
 	//ステージ更新処理
 	stage->Update(elapsedTime);
 
@@ -369,6 +368,9 @@ void SceneGame::Render()
 	rc.view = camera.GetView();
 	rc.projection = camera.GetProjection();
 
+	float screenWidth = static_cast<float>(graphics.GetScreenWidth());
+	float screenHeight = static_cast<float>(graphics.GetScreenHeight());
+
 	// 3Dモデル描画
 	{
 		//ステージ描画
@@ -394,12 +396,23 @@ void SceneGame::Render()
 		//エネミーデバッグプリミティブ描画
 		enemyslime->RenderDebugPrimitive(rc, shapeRenderer);
 
-		modelRenderer->RenderImGui(rc);
+		//modelRenderer->RenderImGui(rc);
 
 	}
 
 	// 2Dスプライト描画
 	{
+
+
+		for (size_t i = 0; i < sprites.size(); i++)
+		{
+			sprites[i]->Render(rc,
+				0, 0, 0,
+				screenWidth, screenHeight,
+				0,
+				1, 1, 1, 1);
+		}
+
 		float hpRate = std::clamp((float)player->hp / player->maxHP, 0.0f, 1.0f);
 
 		float texWidth = hpBarTex.GetWidth();
@@ -418,6 +431,7 @@ void SceneGame::Render()
 			0,
 			1, 1, 1, 1
 		);
+
 	}
 
 }

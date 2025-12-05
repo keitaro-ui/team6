@@ -128,6 +128,10 @@ void CameraController::HandleNormal(float elapsedTime)
 	DirectX::XMFLOAT3 front;
 	DirectX::XMStoreFloat3(&front, Front);
 
+	DirectX::XMVECTOR RightV = Transform.r[0];
+	DirectX::XMFLOAT3 right;
+	DirectX::XMStoreFloat3(&right, RightV);
+
 	eye = target;
 
 	// target は前方向ベクトルを足す
@@ -144,13 +148,27 @@ void CameraController::HandleNormal(float elapsedTime)
 	dir.y /= len;
 	dir.z /= len;
 
+	DirectX::XMFLOAT3 moveVec = { 0,0,0 };
+
 	bool isWalking = (GetAsyncKeyState('W') & 0x8000) ||
 		(GetAsyncKeyState('S') & 0x8000) ||
 		(GetAsyncKeyState('A') & 0x8000) ||
 		(GetAsyncKeyState('D') & 0x8000);
 
+
+	if (GetAsyncKeyState('W') & 0x8000) { moveVec.x += dir.x ;  moveVec.z += dir.z ; }
+	if (GetAsyncKeyState('S') & 0x8000) { moveVec.x -= dir.x ;  moveVec.z -= dir.z ; }
+
+	if (GetAsyncKeyState('D') & 0x8000) { moveVec.x += right.x;  moveVec.z += right.z ; }
+	if (GetAsyncKeyState('A') & 0x8000) { moveVec.x -= right.x;  moveVec.z -= right.z ; }
+
+	// 移動量正規化して速度を反映
+	float moveLen = sqrt(moveVec.x * moveVec.x + moveVec.y * moveVec.y + moveVec.z * moveVec.z);
+	if (moveLen > 0.0f)
+
 	// Bobタイマー更新
 	if (isWalking)
+
 	{
 		bobTimer += elapsedTime * bobSpeed;
 	}

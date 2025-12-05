@@ -215,6 +215,22 @@ bool PhysicsSystem2d::CheckCircleVsDoor(const door& A, const Circle& B, SegmentH
     return false;
 }
 
+bool PhysicsSystem2d::IsInside(const door& d, const DirectX::XMFLOAT2& p)
+{
+    DirectX::XMVECTOR P = XMLoadFloat2(&p);
+    DirectX::XMVECTOR C = XMLoadFloat2(&d.center);
+
+    DirectX::XMVECTOR dVec = DirectX::XMVectorSubtract(P, C);
+
+    DirectX::XMVECTOR ax = XMLoadFloat2(&d.axis[0]);
+    DirectX::XMVECTOR ay = XMLoadFloat2(&d.axis[1]);
+
+    float x = DirectX::XMVectorGetX(DirectX::XMVector2Dot(dVec, ax));
+    float y = DirectX::XMVectorGetX(DirectX::XMVector2Dot(dVec, ay));
+
+    return fabsf(x) <= d.halfSize.x && fabsf(y) <= d.halfSize.y;
+}
+
 bool PhysicsSystem2d::CheckCircle2D(
     Circle c1,
     Circle c2)
@@ -479,6 +495,12 @@ void PhysicsSystem2d::AddDoorObb(DirectX::XMFLOAT3 center, DirectX::XMFLOAT3 siz
         DirectX::XMStoreFloat2(&door.vertexPos[5], DirectX::XMVectorAdd(c2, DirectX::XMVectorScale(lineDir, doorDist + doorSize)));
 
     }
+
+    //“à‘¤”»’è‚Ì’†S{Ž²{”¼ƒTƒCƒY‚ð•Û‘¶
+    door.center = center2D;
+    door.axis[0] = axis0;
+    door.axis[1] = axis1;
+    door.halfSize = halfSize;
 
     doorObbs.push_back(door);
 }

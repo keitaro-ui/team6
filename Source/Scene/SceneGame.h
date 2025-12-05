@@ -59,6 +59,8 @@ private:
 	CameraController* cameraController = nullptr;
 
 	Balloon* balloon = nullptr;
+
+	ModelRenderer* renderer = nullptr;
 	
 
 	Board* boards[4];
@@ -77,5 +79,6 @@ private:
 	float debugDoorSize;
 	DirectX::XMFLOAT3 blockSize;
 public:
+	std::vector<std::unique_ptr<Sprite>> sprites;
 	
 };

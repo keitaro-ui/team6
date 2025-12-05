@@ -45,12 +45,16 @@ void Projectile::UpdateTransform()
 	//スケール行列を作成
 	DirectX::XMMATRIX S = DirectX::XMMatrixScaling(scale.x, scale.y, scale.z);
 
+	DirectX::XMMATRIX R =
+		DirectX::XMMatrixRotationRollPitchYaw(direction.x, direction.y, direction.z);
+
+
 	//回転行列を作成
 	//DirectX::XMMATRIX R = DirectX::XMMatrixRotationRollPitchYaw(angle.x,angle.y,angle.z);
 	DirectX::XMMATRIX Rx = DirectX::XMMatrixRotationX(0);
 	DirectX::XMMATRIX Ry = DirectX::XMMatrixRotationY(0);
 	DirectX::XMMATRIX Rz = DirectX::XMMatrixRotationZ(0);
-	DirectX::XMMATRIX R = Rz * Ry * Rx;
+	//DirectX::XMMATRIX R = Rz * Ry * Rx;
 	//DirectX::XMMATRIX R = Rx;
 
 	//位置行列を作成
