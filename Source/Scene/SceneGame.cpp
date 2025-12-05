@@ -181,42 +181,10 @@ void SceneGame::Finalize()
 void SceneGame::Update(float elapsedTime)
 {
 	//カメラコントローラー更新処理
-	if (quizFlag && activeBoard)
-	{
-		if (!activeBoard->IsQuizActive())
-		{
-			// クイズ終了処理
-			quizFlag = false;
-			activeBoard = nullptr;
-		}
-		else
-		{
-			// ---- クイズ中カメラ（コントローラを使わない） ----
-			DirectX::XMFLOAT3 pos = activeBoard->GetPosition();
-			DirectX::XMFLOAT3 ang = activeBoard->GetAngle();
-
-			float frontDist = -3.0f;
-			float height = 1.0f;
-
-			float rad = ang.y;
-			float fx = sinf(rad);
-			float fz = cosf(rad);
-
-			DirectX::XMFLOAT3 eye = { pos.x - fx * frontDist,pos.y + height,pos.z - fz * frontDist };
-
-			DirectX::XMFLOAT3 tgt = { pos.x, pos.y + 1.0f, pos.z };
-
-			Camera::Instance().SetLookAt(eye, tgt, { 0,1,0 });
-		}
-	}
-	else
-	{
-		// 通常カメラ
-		DirectX::XMFLOAT3 target = player->GetPosition();
-		target.y += 0.5f;
-		cameraController->SetTarget(target);
-		cameraController->Update(elapsedTime);
-	}
+	DirectX::XMFLOAT3 target = player->GetPosition();
+	target.y += 0.5f;
+	cameraController->SetTarget(target);
+	cameraController->Update(elapsedTime);
 	
 	//プレイヤー更新処理
 	player->Update(elapsedTime);

@@ -21,6 +21,8 @@ public:
 
     bool IsInside(const DirectX::XMFLOAT3& p);
 
+    void SafetyArea::circleUpdateTransform();
+
 private:
     struct SafetyAreaData
     {
@@ -31,6 +33,19 @@ private:
     Model* balloonModel = nullptr;
     float radius = 2.0f;   // ˆÀ‘SƒGƒŠƒA‚Ì”¼Œa
     std::vector<SafetyArea*> safetyAreas;
+
+    std::unique_ptr<Model>  circle;
+    DirectX::XMFLOAT3		circlePosition = { 0, 0, 0 };
+    DirectX::XMFLOAT3		circleDirection = { 0, 0, 0 };
+    DirectX::XMFLOAT3		circleScale = { 1, 1, 1 };
+    DirectX::XMFLOAT4X4		circleTransform =
+    {
+        1,0,0,0,
+        0,1,0,0,
+        0,0,1,0,
+        0,0,0,1 
+    };
+    float sc;
 
     /*DirectX::XMFLOAT3 position;
     DirectX::XMFLOAT3 scale = {1.0f, 1.0f, 1.0f};
