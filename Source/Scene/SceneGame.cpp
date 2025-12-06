@@ -27,7 +27,12 @@ void SceneGame::Initialize()
 
 	//プレイヤー初期化
 	player = std::make_unique<Player>();
-	
+	/*sprites.push_back(std::make_unique<Sprite>("Data/Sprite/Oxygen_gauge_frame.png"));
+	sprites.push_back(std::make_unique<Sprite>("Data/Sprite/Oxygen_gauge.png"));*/
+	//PlayerManager::Instance().Register(player.get());
+
+
+
 	PlayerManager::Instance().Register(player.get());
 
 	enemyslime = std::make_unique<EnemySlime>();
@@ -57,7 +62,7 @@ void SceneGame::Initialize()
 	}
 	passwordScene = new ScenePassword("3132");
 	//カメラ初期設定
-	
+	//Graphics& graphics = Graphics::Instance();
 	Camera& camera = Camera::Instance();
 	camera.SetLookAt(
 		DirectX::XMFLOAT3(0, 10, -10),//視点
@@ -165,6 +170,14 @@ void SceneGame::Initialize()
 	player->safetyAreas.push_back(new SafetyArea(&ProjectileManager::Instance()));
 	player->safetyAreas.back()->SetPosition({ 0, -1.0f, -17.5 });
 
+	/*player->safetyAreas.push_back(new SafetyArea(&ProjectileManager::Instance()));
+	player->safetyAreas.back()->SetPosition({ 26, -1.0f, -16 });
+
+	player->safetyAreas.push_back(new SafetyArea(&ProjectileManager::Instance()));
+	player->safetyAreas.back()->SetPosition({ -26, -1.0f,  16 });
+
+	player->safetyAreas.push_back(new SafetyArea(&ProjectileManager::Instance()));
+	player->safetyAreas.back()->SetPosition({ 26, -1.0f,  16 });*/
 
 	//マウス位置の取得とロック
 	Input::Instance().GetMouse().Lock();
@@ -202,7 +215,14 @@ void SceneGame::Finalize()
 		delete passwordScene;
 		passwordScene = nullptr;
 	}
-	
+	//for(int i=0;i<4;i++)
+	//{
+	//	if (boards[i]!=nullptr)
+	//	{
+	//		delete boards[i];
+	//		boards[i] = nullptr;
+	//	}
+	//}
 
 	delete balloon;
 
@@ -218,6 +238,18 @@ void SceneGame::Finalize()
 	//エネミー終了化
 	EnemyManager::Instance().Clear();
 
+	
+
+
+	////SafetyArea終了化
+	//for (auto& s : player->safetyAreas)
+	//{
+	//	if (s)
+	//	{
+	//		delete s;
+	//		s = nullptr;
+	//	}
+	//}
 }
 
 // 更新処理
@@ -283,6 +315,7 @@ void SceneGame::Update(float elapsedTime)
 		// 描画準備
 		RenderContext rc;
 		rc.deviceContext = dc;
+		renderer->RenderImGui(rc);
 		//ステージ更新処理
 		stage->Update(elapsedTime);
 
@@ -292,6 +325,9 @@ void SceneGame::Update(float elapsedTime)
 		//ステージ継続ダメージ
 		const float stageDamagePerSec = 3.0f;
 		player->AddDamage(stageDamagePerSec * elapsedTime);
+
+
+
 
 		if (!player->safetyAreas.empty())
 		{
@@ -303,7 +339,7 @@ void SceneGame::Update(float elapsedTime)
 				if (s) s->Update(elapsedTime);
 				if (s && s->IsInside(player->GetPosition()))
 				{
-					player->Heal(3.0f * elapsedTime);
+					player->Heal(5.0f * elapsedTime);
 					break;
 				}
 			}
@@ -367,6 +403,10 @@ void SceneGame::Render()
 		//ステージ描画
 		stage->Render(rc, modelRenderer);
 		
+		//player->Render(rc, modelRenderer);
+
+		//enemyslime->Render(rc, modelRenderer);
+
 		ProjectileManager::Instance().Render(rc, modelRenderer);
 
 		EnemyManager::Instance().Render(rc, modelRenderer);
@@ -382,6 +422,11 @@ void SceneGame::Render()
 
 		//エネミーデバッグプリミティブ描画
 		enemyslime->RenderDebugPrimitive(rc, shapeRenderer);
+
+		//modelRenderer->RenderImGui(rc);
+
+
+
 
 	}
 
@@ -456,5 +501,33 @@ void SceneGame::Render()
 // GUI描画
 void SceneGame::DrawGUI()
 {
+	//プレーヤーデバッグ処理
+	player->DrawDebugGUI();
+
+	//クイズ関連のデバッグ
+	ImGui::Begin("Boards Debug");
+
+	if (ImGui::BeginTabBar("Board Tabs"))
+	{
+		for (int i = 0; i < 4; i++)
+		{
+			if (boards[i])
+			{
+				std::string tabName = "Board " + std::to_string(boards[i]->GetQuizNum());
+				if (ImGui::BeginTabItem(tabName.c_str()))
+				{
+					// ← Board.cpp の GUI 値編集部分に任せる
+					boards[i]->DrawGUIValues();
+
+					ImGui::EndTabItem();
+				}
+			}
+		}
+		ImGui::EndTabBar();
+	}
+
+	//ステージデバッグ描画
+	stage->RenderImGui();
 	
+	ImGui::End();
 }

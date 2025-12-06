@@ -50,9 +50,13 @@ void Projectile::UpdateTransform()
 
 
 	//âÒì]çsóÒÇçÏê¨
+	//DirectX::XMMATRIX R = DirectX::XMMatrixRotationRollPitchYaw(angle.x,angle.y,angle.z);
 	DirectX::XMMATRIX Rx = DirectX::XMMatrixRotationX(0);
 	DirectX::XMMATRIX Ry = DirectX::XMMatrixRotationY(0);
 	DirectX::XMMATRIX Rz = DirectX::XMMatrixRotationZ(0);
+	//DirectX::XMMATRIX R = Rz * Ry * Rx;
+	//DirectX::XMMATRIX R = Rx;
+
 	//à íuçsóÒÇçÏê¨
 	DirectX::XMMATRIX T = DirectX::XMMatrixTranslation(position.x, position.y, position.z);
 

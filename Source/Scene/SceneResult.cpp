@@ -95,6 +95,7 @@ void SceneResult::Render()
 	{
 		float screenWidth = static_cast<float>(graphics.GetScreenWidth());
 		float screenHeight = static_cast<float>(graphics.GetScreenHeight());
+		/*sprite->Render(rc,0, 0, 0, screenWidth, screenHeight,0,1, 1, 1, 1);*/
 
 		if (resultType == ResultType::GameClear)
 		{
@@ -105,15 +106,64 @@ void SceneResult::Render()
 			over_sprite->Render(rc, 0, 0, 0, screenWidth, screenHeight, 0, 1, 1, 1, 1);
 		}
 
+
+		/*
+	void Sprite::Render(const RenderContext& rc,
+	float dx, float dy,					// 左上位置
+	float dz,							// 奥行
+	float dw, float dh,					// 幅、高さ
+	float sx, float sy,					// 画像切り抜き位置
+	float sw, float sh,					// 画像切り抜きサイズ
+	float angle,						// 角度
+	float r, float g, float b, float a	// 色
+	) const
+		*/
+		
 	}
 }
 
 //GUI描画
 void SceneResult::DrawGUI()
 {
-	
+	/*ImGui::Text("result = %d", result+1);
+	ImGui::Text("point = %d", point);
+	ImGui::Text("boad_answer = &d", board_answer);*/
 }
 
 void SceneResult::answerCheck()
 {
+	//if (board_answer == 1 || board_answer == 4 || board_answer == 5 || board_answer == 20)
+	//	result = 0;
+
+	// if (board_answer == 2 || board_answer == 8 || board_answer == 10 || board_answer == 12 ||
+	//board_answer == 15 || board_answer == 17 || board_answer == 19)
+	//result = 1;
+
+	// if (board_answer == 9 || board_answer == 11 || board_answer == 14 || board_answer == 18)
+	//result = 2;
+
+	// if (board_answer == 3 || board_answer == 6 || board_answer == 7 || board_answer == 13 ||
+	//	board_answer == 16)
+	//	result = 3;
+
+	////最終ポイント
+	//if (result == 0)
+	//{
+	//	point = count_1 * 2 - count_2 - count_3 - count_4;
+	//}
+	//else if (result == 1)
+	//{
+	//	point = count_2 * 2 - count_1 - count_3 - count_4;
+	//}
+	//else if (result == 2)
+	//{
+	//	point = count_3 * 2 - count_2 - count_1 - count_4;
+	//}
+	//else if (result == 3)
+	//{
+	//	point = count_4 * 2 - count_2 - count_3 - count_1;
+	//}
+
+	//board_answer = -1;
+
 }

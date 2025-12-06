@@ -56,7 +56,8 @@ void ScenePassword::Update(float elapsedTime)
     const GamePadButton anyButton = GamePad::BTN_START;
     if (anyButton)
     {
-       
+        // SceneGame ‚É–ß‚·
+       //SceneManager::Instance().ChangeScene(new SceneGame);
     }
 
 

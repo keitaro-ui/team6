@@ -181,6 +181,15 @@ void CameraController::HandleNormal(float elapsedTime)
 	float bobOffsetY = sinf(bobTimer) * bobAmountY;
 	float bobOffsetX = cosf(bobTimer * 0.5f) * bobAmountX;
 
+	//eye.y = 4.0f;
+	
+	// Bobタイマー更新
+	/*bool isWalking = moveLen > 0.0f;
+	if (isWalking)
+		bobTimer += elapsedTime * bobSpeed;
+	else
+		bobTimer = 0.0f;*/
+
 
 	// カメラ位置に反映
 	DirectX::XMFLOAT3 bobbedEye = eye;
@@ -282,5 +291,19 @@ void CameraController::HandleFreeCam(float elapsedTime)
 
 void CameraController::RenderImGui()
 {
+	if (ImGui::Begin("Camera Controller"))
+	{
+		ImGui::Text("Eye: %.2f, %.2f, %.2f", eye.x, eye.y, eye.z);
+		ImGui::Text("Target: %.2f, %.2f, %.2f", target.x, target.y, target.z);
+
+		ImGui::Separator();
+
+		// 各値の調整
+		ImGui::DragFloat3("Angle (rad)", &angle.x, 0.01f, -DirectX::XM_PI, DirectX::XM_PI);
+		ImGui::DragFloat("Bob Amount X", &bobAmountX, 0.01f, 0.0f, 0.05f);
+		ImGui::DragFloat("Bob Amount Y", &bobAmountY, 0.01f, 0.0f, 0.05f);
+
+	}
+	ImGui::End();
 }
 

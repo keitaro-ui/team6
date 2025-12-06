@@ -10,7 +10,9 @@
 EnemySlime::EnemySlime()
 {
 	model = new Model("Data/EnemySlime/BlueSlime.mdl");
+	//model = new Model("Data/Model/Target/balloon.mdl");
 	//モデルが大きいのでスケーリング
+	//scale.x = scale.y = scale.z = 0.1f;
 	scale = { 0.02f, 0.02f, 0.02f };
 	//幅、高さ設定
 	radius = 0.2f;
@@ -103,6 +105,12 @@ void EnemySlime::RenderDebugPrimitive(const RenderContext& rc, ShapeRenderer* re
 
 void EnemySlime::DrawGUI()
 {
+	if (ImGui::Begin("EnemySlime Debug"))
+	{
+		std::string name = activeNode ? activeNode->GetName() : "None";
+		ImGui::Text("Behavior: %s", name.c_str());
+	}
+	ImGui::End();
 }
 
 void EnemySlime::SetTerritory(const DirectX::XMFLOAT3& origin, float range)

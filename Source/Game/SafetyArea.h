@@ -49,4 +49,9 @@ private:
     };
     float sc;
 
+    /*DirectX::XMFLOAT3 position;
+    DirectX::XMFLOAT3 scale = {1.0f, 1.0f, 1.0f};
+    DirectX::XMFLOAT4X4 transform;
+    void UpdateTransform();
+    void Destroy();*/
 };

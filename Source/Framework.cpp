@@ -29,7 +29,7 @@ Framework::Framework(HWND hWnd)
 
 	// グラフィックス初期化
 	Graphics::Instance().Initialize(hWnd);
-	Graphics::Instance().SetFullScreen(true);
+	//Graphics::Instance().SetFullScreen(true);
 
 	// IMGUI初期化
 	ImGuiRenderer::Initialize(hWnd, Graphics::Instance().GetDevice(), Graphics::Instance().GetDeviceContext());
