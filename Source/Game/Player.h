@@ -42,6 +42,7 @@ private:
     Model* model = nullptr;
 
     //ˆÚ“®“ü—Íˆ—
+    
     void InputMove(float elapsedTime);
 
     //’eŠÛ“ü—Íˆ—

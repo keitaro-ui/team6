@@ -76,7 +76,6 @@ void Framework::Render(float elapsedTime)
 	// レンダーターゲット設定
 	Graphics::Instance().SetRenderTargets();
 
-
 	// シーン描画処理
 	SceneManager::Instance().Render();
 
