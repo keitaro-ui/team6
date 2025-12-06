@@ -4,13 +4,20 @@
 #include "../Game/Player.h"
 #include "CameraController.h"
 #include "DirectXMath.h"
+#include "PhysicsSystem2d.h"
 #include "System/Sprite.h"
 #include "Scene.h"
 #include "../Game/Balloon.h"
 #include "../Game/Board.h"
 #include "../Game/Box.h"
 #include "../Game/EnemySlime.h"
+<<<<<<< HEAD
 #include "../Game/Object.h"
+=======
+#include "../Source/System/Sprite.h"
+#include "../Game/StartPoint.h"
+#include "../Game/GoalPoint.h"
+>>>>>>> master
 
 // ゲームシーン
 class SceneGame : public Scene
@@ -34,6 +41,13 @@ public:
 	// GUI描画
 	void DrawGUI() override;
 
+	StartPoint* startPoint = nullptr;
+	GoalPoint* goalPoint = nullptr;
+
+	Sprite hpBarTex;
+	Sprite hpBarFrameTex;
+
+
 private:
 	//ポインタ宣言
 	std::unique_ptr<Stage> stage = nullptr;
@@ -42,21 +56,38 @@ private:
 
 	std::unique_ptr<EnemySlime> enemyslime = nullptr;
 
+<<<<<<< HEAD
 	std::unique_ptr<Start>start = nullptr;
 
 	std::unique_ptr<Goal>goal = nullptr;
+=======
+	std::unique_ptr<StartPoint> startpoint = nullptr;
+
+	std::unique_ptr<GoalPoint> goalpoint = nullptr;
+
+>>>>>>> master
 
 	CameraController* cameraController = nullptr;
 
 	Balloon* balloon = nullptr;
+
+	ModelRenderer* renderer = nullptr;
 	
 
-	//複数のBoardを管理する配列
-	std::vector<Board*> boards;
+	Board* boards[4];
+
+	std::unique_ptr<Sprite> spr = nullptr;
 
 	//変数宣言
-	bool quizFlag = false;
+	PhysicsSystem2d physics;
+	Board* activeBoard = nullptr;
+	float playerSize;
 
+	float xDis;
+	float zDis;
+	float debugDoorSize;
+	DirectX::XMFLOAT3 blockSize;
+	bool playerIsInside = false;
 public:
-	
+	std::vector<std::unique_ptr<Sprite>> sprites;
 };

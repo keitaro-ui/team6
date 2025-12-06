@@ -7,17 +7,44 @@
 #include "System/Mouse.h"
 #include "../Game/Player.h"
 #include "../Scene/SceneTutorial.h"
+#include "SceneRule.h"
+
+
 
 //初期化
 void SceneTitle::Initialize()
 {
-	//スプライト初期化
-	sprite = new Sprite("Data/Sprite/title.png");
-    sprite2 = new Sprite("Data/Sprite/start.png");
-    sprite3 = new Sprite("Data/Sprite/tutorial.png");
+    Graphics& graphics = Graphics::Instance();
+    screenWidth = static_cast<float>(graphics.GetScreenWidth());
+    screenHeight = static_cast<float>(graphics.GetScreenHeight());
+
+    // 背景スプライト
+    background = std::make_unique<Sprite>("Data/Sprite/title_.png");
+
+    // スタートボタン
+    UIButton startBtn;
+    startBtn.sprite = std::make_unique<Sprite>("Data/Sprite/start_.png");
+    startBtn.type = UIButtonType::Start;
+    startBtn.Wpos = 0.5f;
+    startBtn.Hpos = 0.39f;
+    startBtn.spacing = 0.0f;
+
+    // ルールボタン
+    UIButton ruleBtn;
+    ruleBtn.sprite = std::make_unique<Sprite>("Data/Sprite/rule_.png");
+    ruleBtn.type = UIButtonType::Rule;
+    ruleBtn.Wpos = 0.5f;
+    ruleBtn.Hpos = 0.39f;
+    ruleBtn.spacing = 100.0f;
+
+
+    buttons.push_back(std::move(startBtn));
+    buttons.push_back(std::move(ruleBtn));
 
     ShowCursor(true);
-    //extern int count_1=0,count_2=0,count_3=0,count_4=0
+
+    startTime = std::chrono::steady_clock::now();
+
 }
 
 extern POINT cursorPos;
@@ -25,25 +52,7 @@ extern POINT cursorPos;
 //終了化
 void SceneTitle::Finalize()
 {
-	//スプライト終了化
-	if (sprite != nullptr)
-	{
-		delete sprite;
-		sprite = nullptr;
-	}
-    if (sprite2 != nullptr)
-    {
-        delete sprite2;
-        sprite2 = nullptr;
-    }
-    if (sprite3 != nullptr)
-    {
-        delete sprite3;
-        sprite3 = nullptr;
-    }
-
     ShowCursor(false);
-	
 }
 
 //更新処理
@@ -55,27 +64,32 @@ void SceneTitle::Update(float elapsedTime)
 
     Mouse& mouse = Input::Instance().GetMouse();
 
+    UpdateLayout();
 
-    //左クリックで画面遷移
-    //スタート
+    for (auto& btn : buttons)
+        btn.Checkhover(cursorPos.x, cursorPos.y);
+
+    auto now = std::chrono::steady_clock::now();
+    float deltaTime = std::chrono::duration<float>(now - lastTime).count();
+    lastTime = now;
+
+    updateFlash(elapsedTime);
+
     if (mouse.GetButtonDown() & Mouse::BTN_LEFT)
     {
-        if (cursorPos.x >= 505 && cursorPos.x <= 765)
+        for (auto& btn : buttons)
         {
-            if (cursorPos.y >= 520 && cursorPos.y <= 585)
+            if (btn.hovered)
             {
-                SceneManager::Instance().ChangeScene(new SceneLoading(new SceneGame));
-            }
-        }
-    }
-    //チュートリアル
-    if (mouse.GetButtonDown() & Mouse::BTN_LEFT)
-    {
-        if (cursorPos.x >= 505 && cursorPos.x <= 765)
-        {
-            if (cursorPos.y >= 600 && cursorPos.y <= 670)
-            {
-                SceneManager::Instance().ChangeScene(new SceneLoading(new SceneTutorial));
+                if (btn.type == UIButtonType::Start)
+                {
+                    SceneManager::Instance().ChangeScene(new SceneLoading(new SceneGame));
+                }
+                else if (btn.type == UIButtonType::Rule)
+                {
+                    SceneManager::Instance().ChangeScene(new SceneLoading(new SceneRule));
+                }
+                return;
             }
         }
     }
@@ -84,80 +98,64 @@ void SceneTitle::Update(float elapsedTime)
 //描画処理
 void SceneTitle::Render()
 {
-	Graphics& graphics = Graphics::Instance();
-	ID3D11DeviceContext* dc = graphics.GetDeviceContext();
-	RenderState* renderState = graphics.GetRenderState();
+    Graphics& graphics = Graphics::Instance();
+    screenWidth = static_cast<float>(graphics.GetScreenWidth());
+    screenHeight = static_cast<float>(graphics.GetScreenHeight());
 
-	//描画準備
-	RenderContext rc;
-	rc.deviceContext = dc;
-	rc.renderState = graphics.GetRenderState();
+    RenderContext rc;
+    rc.deviceContext = graphics.GetDeviceContext();
+    rc.renderState = graphics.GetRenderState();
 
-	//2Dスプライト描画
-	{
-		float screenWidth = static_cast<float>(graphics.GetScreenWidth());
-		float screenHeight = static_cast<float>(graphics.GetScreenHeight());
-        sprite->Render(rc,
-            0, 0, 0, screenWidth, screenHeight,
-            0,
-            1, 1, 1, 1);
-            //スタートとチュートリアルの描画と拡大
-            if (cursorPos.x >= 505 && cursorPos.x <= 765)
-            {
-                //スタート
-                if (cursorPos.y >= 520 && cursorPos.y <= 585)
-                {
-                    //拡大
-                    sprite2->Render(rc,
-                        60, 25, 0, 1200, 700,
-                        0,
-                        1, 1, 1, 1);
-                }
-                else
-                {
-                    sprite2->Render(rc,
-                        150, 100, 0, 1000, 600,
-                        0,
-                        1, 1, 1, 1);
-                }
+    RenderBackGround(rc);
 
-                //チュートリアル
-                if (cursorPos.y >= 600 && cursorPos.y <= 670)
-                {
-                    //拡大
-                    sprite3->Render(rc,
-                        60, 20, 0, 1200, 700,
-                        0,
-                        1, 1, 1, 1);
-                }
-                else
-                {
-                    sprite3->Render(rc,
-                        150, 100, 0, 1000, 600,
-                        0,
-                        1, 1, 1, 1);
-                }
-            }
-            else
-            {
-                //通常時の描画
-                sprite2->Render(rc,
-                    150, 100, 0, 1000, 600,
-                    0,
-                    1, 1, 1, 1);
+    auto now = std::chrono::steady_clock::now();
+    float elapsedTime = std::chrono::duration<float>(now - startTime).count();
 
-                sprite3->Render(rc,
-                    150, 100, 0, 1000, 600,
-                    0,
-                    1, 1, 1, 1);
-            }
-
-
-	}
+    for (auto& btn : buttons)
+    {
+        btn.Render(rc, darkAmount,elapsedTime);
+    }
 }
 
 //GUI描画
 void SceneTitle::DrawGUI()
 {
-
 }
+
+void SceneTitle::RenderBackGround(RenderContext& rc)
+{
+    darkAmount = 1.0f;
+    if (flashActive)
+    {
+        darkAmount = 0.2f + static_cast<float>(rand() % 30) / 100.0f;
+    }
+
+    if (background)
+        background->Render(rc, 0, 0, 0, screenWidth, screenHeight, 0,
+            darkAmount, darkAmount, darkAmount, 1.0f);
+}
+
+void SceneTitle::UpdateLayout()
+{
+    for (size_t i = 0; i < buttons.size(); ++i)
+    {
+        buttons[i].Update(screenWidth, screenHeight, static_cast<int>(i));
+    }
+}
+
+void SceneTitle::updateFlash(float elapsedTime)
+{
+    if (!flashActive && (rand() % 1000) < 2)
+    {
+        flashActive = true;
+        flashTimer = flashDuration;
+    }
+
+    if (flashActive)
+    {
+        flashTimer -= elapsedTime;
+        if (flashTimer <= 0.0f)
+            flashActive = false;
+    }
+}
+

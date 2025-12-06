@@ -29,6 +29,7 @@ Framework::Framework(HWND hWnd)
 
 	// グラフィックス初期化
 	Graphics::Instance().Initialize(hWnd);
+	//Graphics::Instance().SetFullScreen(true);
 
 	// IMGUI初期化
 	ImGuiRenderer::Initialize(hWnd, Graphics::Instance().GetDevice(), Graphics::Instance().GetDeviceContext());
@@ -71,8 +72,12 @@ void Framework::Render(float elapsedTime)
 	ID3D11DeviceContext* dc = Graphics::Instance().GetDeviceContext();
 
 	// 画面クリア
+<<<<<<< HEAD
 	Graphics::Instance().Clear(1,0,0 , 1);
 
+=======
+	Graphics::Instance().Clear(0, 0, 0, 1);
+>>>>>>> master
 	// レンダーターゲット設定
 	Graphics::Instance().SetRenderTargets();
 
@@ -123,6 +128,7 @@ void Framework::CalculateFrameStats()
 // アプリケーションループ
 int Framework::Run()
 {
+
 	MSG msg = {};
 
 	while (WM_QUIT != msg.message)

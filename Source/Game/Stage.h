@@ -1,8 +1,22 @@
 #pragma once
 
+#include <vector>
+
 #include "System/ModelRenderer.h";
 #include "Character.h"
+#include <DirectXMath.h>
 #include "imgui.h"
+#include "System/LoadTextures.h"
+
+struct TextureSet
+{
+	std::string normal;
+	std::string roughness;
+	std::string metalness;
+	std::string emissive;
+	std::string occlusion;
+};
+
 #include "WayPoint.h"
 #include <vector>
 #include <memory>
@@ -10,6 +24,7 @@
 #define ROW_COUNT 7		//横
 #define COLUM_COUNT 6	//縦
 //#define MAX_WAY_POINT 200
+
 
 //ステージ
 class Stage : public Character
@@ -50,6 +65,7 @@ public:
 	//WayPoint* wayPoint[MAX_WAY_POINT];
 private:
 	Model* model = nullptr;
+<<<<<<< HEAD
 	int wayPointCount = 0;
 
 	// これはがウェイポイント配列の本体
@@ -83,6 +99,15 @@ public:
 	const std::vector<int>& GetPath() const { return path; }
 	//エネミー全削除
 	void Clear();
+=======
+
+	LoadTextures loadTextures;
+
+	std::vector<std::unique_ptr<Model>> models;
+	std::vector<LoadTextures> TextureList;
+	
+	std::unique_ptr<ModelRenderer> modelRenderer;
+>>>>>>> master
 };
 
 

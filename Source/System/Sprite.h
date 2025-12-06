@@ -41,6 +41,9 @@ public:
 		float r, float g, float b, float a	// 色
 	) const;
 
+	// 画像サイズを取得する Getter
+	int GetWidth() const { return textureWidth; }
+	int GetHeight() const { return textureHeight; }
 private:
 	Microsoft::WRL::ComPtr<ID3D11VertexShader>			vertexShader;
 	Microsoft::WRL::ComPtr<ID3D11PixelShader>			pixelShader;
@@ -48,6 +51,7 @@ private:
 
 	Microsoft::WRL::ComPtr<ID3D11Buffer>				vertexBuffer;
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>	shaderResourceView;
+
 
 	float textureWidth = 0;
 	float textureHeight = 0;

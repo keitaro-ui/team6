@@ -26,11 +26,10 @@ void ProjectileManager::Update(float elapsedTime)
 	{
 		//if (projectile && !projectile->IsDead())
 		{
+			
 			projectile->Update(elapsedTime);
 		}
 	}
-
-
 
 	//”jŠüˆ—
 	for (Projectile * projectile : removes)

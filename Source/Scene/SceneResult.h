@@ -3,11 +3,17 @@
 #include "System/Sprite.h"
 #include "Scene.h"
 
+enum class ResultType
+{
+	GameClear,
+	GameOver
+};
+
 //タイトルシーン
 class SceneResult :public Scene
 {
 public:
-	SceneResult() {}
+	SceneResult(ResultType type) { resultType = type; }
 	~SceneResult() override {}
 
 	//初期化
@@ -28,6 +34,9 @@ public:
 	void answerCheck();
 
 private:
+	ResultType resultType;
 	Sprite* sprite = nullptr;
+	Sprite* clear_sprite;
+	Sprite* over_sprite;
 	Sprite* sprite_number = nullptr;
 };

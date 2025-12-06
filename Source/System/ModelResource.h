@@ -61,6 +61,7 @@ public:
 		DirectX::XMFLOAT3	position = { 0, 0, 0 };
 		DirectX::XMFLOAT3	normal = { 0, 0, 0 };
 		DirectX::XMFLOAT3	tangent = { 0, 0, 0 };
+		DirectX::XMFLOAT3	bitangent = { 0,0,0 };
 		DirectX::XMFLOAT2	texcoord = { 0, 0 };
 		DirectX::XMFLOAT4	color = { 1, 1, 1, 1 };
 		DirectX::XMFLOAT4	boneWeight = { 1, 0, 0, 0 };

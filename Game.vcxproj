@@ -135,6 +135,7 @@
     <ClInclude Include="Source\Game\Enemy.h" />
     <ClInclude Include="Source\Game\EnemyManager.h" />
     <ClInclude Include="Source\Game\EnemySlime.h" />
+    <ClInclude Include="Source\Game\GoalPoint.h" />
     <ClInclude Include="Source\Game\JudgmentBase.h" />
     <ClInclude Include="Source\Game\JudgmentDerived.h" />
     <ClInclude Include="Source\Game\NodeBase.h" />
@@ -144,7 +145,9 @@
     <ClInclude Include="Source\Game\SafetyArea.h" />
     <ClInclude Include="Source\Game\SearchAlgorithm.h" />
     <ClInclude Include="Source\Game\Stage.h" />
+    <ClInclude Include="Source\Game\StartPoint.h" />
     <ClInclude Include="Source\Game\WayPoint.h" />
+    <ClInclude Include="Source\PhysicsSystem2d.h" />
     <ClInclude Include="Source\ProjectHoming.h" />
     <ClInclude Include="Source\Projectile.h" />
     <ClInclude Include="Source\ProjectileManager.h" />
@@ -154,6 +157,7 @@
     <ClInclude Include="Source\Scene\SceneLoading.h" />
     <ClInclude Include="Source\Scene\SceneManager.h" />
     <ClInclude Include="Source\Scene\SceneResult.h" />
+    <ClInclude Include="Source\Scene\SceneRule.h" />
     <ClInclude Include="Source\Scene\SceneTitle.h" />
     <ClInclude Include="Source\Scene\SceneTutorial.h" />
     <ClInclude Include="Source\System\Audio.h" />
@@ -167,6 +171,7 @@
     <ClInclude Include="Source\System\ImGuiRenderer.h" />
     <ClInclude Include="Source\System\Input.h" />
     <ClInclude Include="Source\System\LambertShader.h" />
+    <ClInclude Include="Source\System\LoadTextures.h" />
     <ClInclude Include="Source\System\LineRenderer.h" />
     <ClInclude Include="Source\System\Mathf.h" />
     <ClInclude Include="Source\System\Misc.h" />
@@ -215,6 +220,7 @@
     <ClCompile Include="Source\Game\SearchAlgorithm.cpp" />
     <ClCompile Include="Source\Game\Stage.cpp" />
     <ClCompile Include="Source\Game\WayPoint.cpp" />
+    <ClCompile Include="Source\PhysicsSystem2d.cpp" />
     <ClCompile Include="Source\ProjectHoming.cpp" />
     <ClCompile Include="Source\Projectile.cpp" />
     <ClCompile Include="Source\ProjectileManager.cpp" />
@@ -224,18 +230,21 @@
     <ClCompile Include="Source\Scene\SceneLoading.cpp" />
     <ClCompile Include="Source\Scene\SceneManager.cpp" />
     <ClCompile Include="Source\Scene\SceneResult.cpp" />
+    <ClCompile Include="Source\Scene\SceneRule.cpp" />
     <ClCompile Include="Source\Scene\SceneTitle.cpp" />
     <ClCompile Include="Source\Scene\SceneTutorial.cpp" />
     <ClCompile Include="Source\System\Audio.cpp" />
     <ClCompile Include="Source\System\AudioResource.cpp" />
     <ClCompile Include="Source\System\AudioSource.cpp" />
     <ClCompile Include="Source\System\BasicShader.cpp" />
+    <ClCompile Include="Source\System\Character.cpp" />
     <ClCompile Include="Source\System\GamePad.cpp" />
     <ClCompile Include="Source\System\GpuResourceUtils.cpp" />
     <ClCompile Include="Source\System\Graphics.cpp" />
     <ClCompile Include="Source\System\ImGuiRenderer.cpp" />
     <ClCompile Include="Source\System\Input.cpp" />
     <ClCompile Include="Source\System\LambertShader.cpp" />
+    <ClCompile Include="Source\System\LoadTextures.cpp" />
     <ClCompile Include="Source\System\LineRenderer.cpp" />
     <ClCompile Include="Source\System\Mathf.cpp" />
     <ClCompile Include="Source\System\Model.cpp" />

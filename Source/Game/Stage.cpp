@@ -8,6 +8,7 @@
 //„Ç≥„É≥„Çπ„Éà„É©„ÇØ„Çø
 Stage::Stage()
 {
+<<<<<<< HEAD
     //„Çπ„ÉÜ„Éº„Ç∏„É¢„Éá„É´„ÇíË™≠„ÅøËæº„Åø
     model = new Model("Data/Model/Stage/syusei.mdl");
     //model = new Model("Data/Model/Stage/StageT.mdl");
@@ -114,6 +115,63 @@ Stage::Stage()
         }
         ConnectWayPoints(windex);
     }
+=======
+	//ÉXÉeÅ[ÉWÉÇÉfÉãÇì«Ç›çûÇ›
+	//model = new Model("Data/Model/Stage/smallroom.mdl");
+	model = new Model("Data/Model/Stage/doorT.mdl");
+
+
+	//loadTextures.LoadNormal("Data/Model/Stage/Texture/Small room/aiStandardSurface2_Normal_Utility - Raw.png");
+	//loadTextures.LoadRoughness("Data/Model/Stage/Texture/Small room/aiStandardSurface2_Roughness_Utility - Raw.png");
+	//loadTextures.LoadMetalness("Data/Model/Stage/Texture/Small room/aiStandardSurface2_Metallic_Utility - Raw.png");
+	//loadTextures.LoadEmisive("Data/Model/Stage/Texture/Small room/aiStandardSurface2_Emissive_Utility - sRGB - Texture.png");
+
+	loadTextures.LoadNormal("Data/Model/Stage/Texture/wall/wallceilings_standardSurface1_Normal_Utility - Raw.png");
+	loadTextures.LoadRoughness("Data/Model/Stage/Texture/wall/wallceilings_standardSurface1_Roughness_Utility - Raw.png");
+	loadTextures.LoadMetalness("Data/Model/Stage/Texture/wall/wallceilings_standardSurface1_Metallic_Utility - Raw.png");
+
+	models.push_back(std::make_unique<Model>("Data/Model/Stage/wallceiling.mdl"));
+
+	{
+		LoadTextures tex;
+		tex.LoadNormal("Data/Model/Stage/Texture/wall/wallceilings_standardSurface1_Normal_Utility - Raw.png");
+		tex.LoadRoughness("Data/Model/Stage/Texture/wall/wallceilings_standardSurface1_Roughness_Utility - Raw.png");
+		tex.LoadMetalness("Data/Model/Stage/Texture/wall/wallceilings_standardSurface1_Metallic_Utility - Raw.png");
+		TextureList.push_back(tex);
+	}
+
+	models.push_back(std::make_unique<Model>("Data/Model/Stage/smallroomY.mdl"));
+
+	{
+		LoadTextures tex;
+		tex.LoadNormal("Data/Model/Stage/Texture/object/walldata_Normal.png");
+		tex.LoadRoughness("Data/Model/Stage/Texture/object/walldata_Roughness.png");
+		tex.LoadMetalness("Data/Model/Stage/Texture/object/walldata_Metalness.png");
+		TextureList.push_back(tex);
+	}
+
+    models.push_back(std::make_unique<Model>("Data/Model/Stage/objectall.mdl"));
+
+    {
+        LoadTextures tex;
+        tex.LoadNormal("Data/Model/Stage/Texture/komono_poul/objectall_lambert6_Normal_Utility - Raw.png");
+        tex.LoadRoughness("Data/Model/Stage/Texture/komono_poul/objectall_lambert6_Roughness_Utility - Raw.png");
+        tex.LoadMetalness("Data/Model/Stage/Texture/komono_poul/objectall_lambert6_Metallic_Utility - Raw.png");
+        tex.LoadEmisive("Data/Model/Stage/Texture/komono_poul/objectall_lambert6_Emissive_Utility - sRGB - Texture.png");
+        TextureList.push_back(tex);
+    }
+	
+    models.push_back(std::make_unique<Model>("Data/Model/Stage/saku.mdl"));
+
+   
+	scale.x = scale.y = scale.z = 0.02f;
+	/*scale.x = scale.y = scale.z = 1.0f;*/
+
+	//position.y = 4.0f;
+
+ 
+
+>>>>>>> master
 }
 
 
@@ -121,8 +179,12 @@ Stage::~Stage()
 {
 	//„Çπ„ÉÜ„Éº„Ç∏„É¢„Éá„É´„ÇíÁ†¥Ê£Ñ
 	delete model;
+<<<<<<< HEAD
     
    // Clear();
+=======
+	
+>>>>>>> master
 }
 
 //Êõ¥Êñ∞Âá¶ÁêÜ
@@ -131,6 +193,9 @@ void Stage::Update(float elapsedTime)
 	UpdateTransform();
 
 	RenderImGui();
+	//DirectX::XMVector2LinePointDistance();
+	//RenderImGui();
+
 }
 
 //ÊèèÁîªÂá¶ÁêÜ
@@ -149,8 +214,30 @@ void Stage::Render(const RenderContext& rc, ModelRenderer* renderer)
 	//DirectX::XMFLOAT4X4 transform;
 	//DirectX::XMStoreFloat4x4(&transform, DirectX::XMMatrixIdentity());
 
+<<<<<<< HEAD
 	//„É¨„É≥„ÉÄ„É©„É¢„Éá„É´„Å´ÊèèÁîª„Åó„Å¶„ÇÇ„Çâ„ÅÜ
 	//renderer->Render(rc, transform, model, ShaderId::Lambert);
+=======
+	for (size_t i = 0; i < models.size(); i++)
+	{
+        // á@ ÉeÉNÉXÉ`ÉÉÇ™Ç†ÇÈèÍçáÇæÇØ Set
+        if (i < TextureList.size())
+        {
+            TextureList[i].Set(rc);
+        }
+
+        // áA ï`âÊ
+        renderer->Render(rc, transform, models[i].get(), ShaderId::Lambert);
+
+        // áB ÉeÉNÉXÉ`ÉÉÇ™Ç†ÇÈèÍçáÇæÇØ Clear
+        if (i < TextureList.size())
+        {
+            TextureList[i].Clear(rc);
+        }
+	}
+
+
+>>>>>>> master
 }
 
 //void Stage::RenderDebugPrimitive(const RenderContext& rc, ShapeRenderer* renderer)

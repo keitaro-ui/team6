@@ -12,6 +12,13 @@ public:
 	ShapeRenderer(ID3D11Device* device);
 	~ShapeRenderer() {}
 
+	void RenderLine(
+		const RenderContext& rc,
+		const DirectX::XMFLOAT3& start,
+		const DirectX::XMFLOAT3& end,
+		const DirectX::XMFLOAT4& color
+	)const;
+
 	// 箱描画
 	void RenderBox(
 		const RenderContext& rc,
@@ -50,6 +57,10 @@ public:
 		float radius,
 		const DirectX::XMFLOAT4& color) const;
 
+	void DrawQuad(const RenderContext& rc, float x, float y, float width, float height, const DirectX::XMFLOAT4& color);
+
+	void RenderPoint2D(const RenderContext& rc, float x, float y, float size, const DirectX::XMFLOAT4& color);
+
 private:
 	struct Mesh
 	{
@@ -72,6 +83,9 @@ private:
 	// 箱メッシュ作成
 	void CreateBoxMesh(ID3D11Device* device, float width, float height, float depth);
 
+	// 線作成
+	void CreateLineMesh(ID3D11Device* device);
+
 	// 球メッシュ作成
 	void CreateSphereMesh(ID3D11Device* device, float radius, int subdivisions);
 
@@ -81,7 +95,9 @@ private:
 	// 円柱
 	void CreateCylinderMesh(ID3D11Device* device, float radius1, float radius2, float start, float height, int subdivisions);
 
+
 private:
+	Mesh										lineMesh;
 	Mesh										boxMesh;
 	Mesh										sphereMesh;
 	Mesh										halfSphereMesh;

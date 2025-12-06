@@ -3,6 +3,7 @@
 #include "SceneManager.h"
 #include "SceneLoading.h"
 
+
 void SceneLoading::Initialize()
 {
 	//スプライト初期化

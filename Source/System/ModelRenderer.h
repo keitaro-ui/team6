@@ -9,6 +9,10 @@
 #include "Model.h"
 #include "Shader.h"
 #include "ShapeRenderer.h"
+#include "Camera.h"
+#include <random>
+
+
 
 enum class ShaderId
 {
@@ -77,6 +81,10 @@ public:
 	//    （不透明 → 透明の順で描画するときに安全）
 	void ClearBinding(ID3D11DeviceContext* dc);
 	
+	void UpdateLightSwitch();
+
+	//遊び
+	void UpdataLightsSS();
 private:
 	// VP行列・カメラ位置・ライト方向など
 	struct CbScene
@@ -86,7 +94,8 @@ private:
 		DirectX::XMFLOAT4		cameraPosition;		// カメラ座標
 		float lightingMultiplier{ 0.0f };			// ライト強度調整
 		float useLighting{ 1.0f };					// ライトON/OFF用
-		float padding[2];							// 16バイト境界揃え
+		float LightSwitch{ 0.0f };
+		float SpotLightSwitch{ 1.0f };
 	};
 	CbScene sceneConstantBufferData;
 
@@ -190,9 +199,29 @@ private:
 	// カーソル記録
 	POINT cursor_position;
 
+	float time = 0;
+	std::mt19937 mt;
+
+	std::uniform_real_distribution<float> dist;
+
+	float accumulatedDistanceT = 0.0f;
+	DirectX::XMFLOAT3 lastPos;
+	bool Event = false;
+	float dx, dy, dz;
+
+	float horrorTimer = 0.0f;
+	int horrorFrame = 0;
+	int horrorPhase = -1;
+
+	bool first = true;
+
 public:
-	// ■ ポイントライト設定の外部公開
+	// ポイントライト設定
 	void SetPointLight(int index, const point_lights& light);
-	// ■ 環境光を外部から変更
+	// 環境光を設定
 	void SetAmbientColor(const DirectX::XMFLOAT4& color);
+
+	void UpdateSafetyAreaLights(const std::vector<DirectX::XMFLOAT4>& position);
+
+	int GetHorrorPhase() { return horrorPhase; }
 };

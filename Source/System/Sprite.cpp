@@ -1,8 +1,17 @@
+
 #include <fstream>
 #include "System/Graphics.h"
 #include "Sprite.h"
 #include "Misc.h"
 #include "GpuResourceUtils.h"
+
+// ---- HRESULT チェック用マクロ ----
+#define HR_ASSERT(hr) \
+    if (FAILED(hr)) { \
+        OutputDebugStringW(HRTrace(hr)); \
+        _ASSERT_EXPR(false, L"HRESULT FAILED"); \
+    }
+
 
 // コンストラクタ
 Sprite::Sprite()
@@ -29,7 +38,7 @@ Sprite::Sprite(const char* filename)
 		buffer_desc.StructureByteStride = 0;
 		// 頂点バッファオブジェクトの生成
 		hr = device->CreateBuffer(&buffer_desc, nullptr, vertexBuffer.GetAddressOf());
-		_ASSERT_EXPR(SUCCEEDED(hr), HRTrace(hr));
+		HR_ASSERT(hr);
 	}
 
 	// 頂点シェーダー
@@ -48,7 +57,7 @@ Sprite::Sprite(const char* filename)
 			ARRAYSIZE(inputElementDesc),
 			inputLayout.GetAddressOf(),
 			vertexShader.GetAddressOf());
-		_ASSERT_EXPR(SUCCEEDED(hr), HRTrace(hr));
+		HR_ASSERT(hr);
 
 	}
 
@@ -58,7 +67,7 @@ Sprite::Sprite(const char* filename)
 			device,
 			"Data/Shader/SpritePS.cso",
 			pixelShader.GetAddressOf());
-		_ASSERT_EXPR(SUCCEEDED(hr), HRTrace(hr));
+		HR_ASSERT(hr);
 	}
 
 	// テクスチャの生成	
@@ -67,7 +76,7 @@ Sprite::Sprite(const char* filename)
 		// テクスチャファイル読み込み
 		D3D11_TEXTURE2D_DESC desc;
 		hr = GpuResourceUtils::LoadTexture(device, filename, shaderResourceView.GetAddressOf(), &desc);
-		_ASSERT_EXPR(SUCCEEDED(hr), HRTrace(hr));
+		HR_ASSERT(hr);
 
 		textureWidth = static_cast<float>(desc.Width);
 		textureHeight = static_cast<float>(desc.Height);
@@ -78,7 +87,7 @@ Sprite::Sprite(const char* filename)
 		D3D11_TEXTURE2D_DESC desc;
 		hr = GpuResourceUtils::CreateDummyTexture(device, 0xFFFFFFFF, shaderResourceView.GetAddressOf(),
 			&desc);
-		_ASSERT_EXPR(SUCCEEDED(hr), HRTrace(hr));
+		HR_ASSERT(hr);
 
 		textureWidth = static_cast<float>(desc.Width);
 		textureHeight = static_cast<float>(desc.Height);
@@ -94,7 +103,7 @@ void Sprite::Render(const RenderContext& rc,
 	float sw, float sh,					// 画像切り抜きサイズ
 	float angle,						// 角度
 	float r, float g, float b, float a	// 色
-	) const
+) const
 {
 	ID3D11DeviceContext* dc = rc.deviceContext;
 
@@ -207,7 +216,7 @@ void Sprite::Render(const RenderContext& rc,
 	float dw, float dh,					// 幅、高さ
 	float angle,						// 角度
 	float r, float g, float b, float a	// 色
-	) const
+) const
 {
 	Render(rc, dx, dy, dz, dw, dh, 0, 0, textureWidth, textureHeight, angle, r, g, b, a);
 }

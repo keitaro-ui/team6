@@ -112,3 +112,58 @@ float4 CalcFog(in float4 color, float4 fog_color, float2 fog_range, float eye_le
     float fogAlpha = saturate((eye_length - fog_range.x) / (fog_range.y - fog_range.x));
     return lerp(color, fog_color, fogAlpha);
 }
+
+//--------------------------------------------
+// PBR: 拡散反射
+//--------------------------------------------
+float3 DiffuseBRDF(float VdotH, float3 F0, float3 albedo)
+{
+    // Schlick フレネル
+    float3 F = F0 + (1.0 - F0) * pow(1.0 - VdotH, 5.0);
+
+    // エネルギー保存のため、（1 - F）係数をかける
+    return albedo * (1.0f - F) / 3.14159265;
+}
+
+//--------------------------------------------
+// PBR: 鏡面反射（GGX系簡易版）
+//--------------------------------------------
+float3 SpecularBRDF(float NdotV, float NdotL, float NdotH, float VdotH, float3 F0, float roughness)
+{
+    //float alpha = roughness * roughness;
+    //float alpha2 = alpha * alpha;
+
+    //// Beckmann分布
+    //float D = alpha2 / (3.14159265 * pow(NdotH * NdotH * (alpha2 - 1) + 1, 2));
+
+    //// Geometry（Schlick-GGX簡易版）
+    //float k = alpha / 2;
+    //float G = NdotL / (NdotL * (1 - k) + k);
+    //G *= NdotV / (NdotV * (1 - k) + k);
+
+    //// フレネル
+    //float3 F = F0 + (1.0 - F0) * pow(1.0 - VdotH, 5.0);
+
+    //return D * G * F / (4 * NdotL * NdotV + 1e-5);
+    
+    float alpha = roughness * roughness;
+    float alpha2 = alpha * alpha;
+
+    // === Normal Distribution (GGX) ===
+    float denom = (NdotH * NdotH) * (alpha2 - 1.0) + 1.0;
+    float D = alpha2 / (3.14159265 * denom * denom);
+
+    // === Geometry (Schlick-GGX) ===
+    float k = alpha * 0.5; // 元コードの形に合わせて簡易化
+    float Gv = NdotV / (NdotV * (1.0 - k) + k);
+    float Gl = NdotL / (NdotL * (1.0 - k) + k);
+    float G = Gv * Gl;
+
+    // === Fresnel (Schlick) ===
+    float3 F = F0 + (1.0 - F0) * pow(1.0 - VdotH, 5.0);
+
+    // === 元の構造を維持して改善 ===
+    return (D * G * F) / max(4 * NdotL * NdotV, 1e-4);
+    
+    
+}

@@ -9,9 +9,7 @@
 #include "ProjectHoming.h"
 #include "../System/Graphics.h"
 #include "System/Audio.h"
-
-
-int answer = -1, count_1, count_2, count_3, count_4;
+#include "Scene/SceneGame.h"
 
 
 //コンストラクタ
@@ -21,8 +19,13 @@ Player::Player()
 
 	//モデルが大きいのでスケーリング
 	scale.x = scale.y = scale.z = 0.21f;
+<<<<<<< HEAD
 	//sition.z = 3.0f;
 
+=======
+	position.y = 3.0f;
+	position = { 0.0f, 3.0f, -16.0f };
+>>>>>>> master
 }
 
 //デストラクタ
@@ -40,8 +43,11 @@ void Player::Update(float elapsedTime)
 {
 	shottimer++;
 
-	////移動入力処理
-	InputMove(elapsedTime);
+	if (renderer->GetHorrorPhase() == -1 || renderer->GetHorrorPhase() == 3)
+	{
+		////移動入力処理
+		InputMove(elapsedTime);
+	}
 
 	////ジャンプ入力処理
 	//InputJump();
@@ -114,6 +120,25 @@ void Player::InputProjectile()
 
 }
 
+void Player::AddDamage(float amount)
+{
+	hp -= amount;
+	if (hp < 0.0f)
+	{
+		hp = 0.0f;
+	}
+}
+
+void Player::Heal(float amount)
+{
+	hp += amount;
+	if (hp > maxHP)
+	{
+		hp = maxHP;
+	}
+}
+
+
 void Player::coolgun(float elpasedTime)
 {
 	guntime -= elpasedTime;
@@ -123,12 +148,23 @@ void Player::coolgun(float elpasedTime)
 	if (v_guntime <= 0)vibe_interval = true;
 }
 
+void Player::FillSafetyAreaPosition(std::vector<DirectX::XMFLOAT4>& outPositions) const
+{
+	outPositions.clear();
+	for (auto* sa : safetyAreas)
+	{
+		DirectX::XMFLOAT3 pos3 = sa->GetPosition();
+		outPositions.push_back({ pos3.x, pos3.y, pos3.z, 1.0f });
+	}
+}
+
 //デバッグ用GUI描画
 void Player::DrawDebugGUI()
 {
 	ImGui::Begin("Player Debug");
 
-	ImGui::DragFloat3("pos", &position.x,0.01f);
+	ImGui::DragFloat3("pos", &position.x,0.1f);
+	ImGui::DragFloat("hitRadius", &hitRadius, 0.01f);
 	
 	// 最大数を調整
 	ImGui::DragInt("Max Safety Area Count", &maxSafetyAreaCount, 1, 1, 20);
@@ -137,6 +173,12 @@ void Player::DrawDebugGUI()
 	ImGui::Text("Current Count: %d / %d", (int)safetyAreas.size(), maxSafetyAreaCount);
 
 	//ImGui::DragFloat3("slime.pos", &EnemyManager::Instance().GetEnemy(0)->GetPosition().x, 0.01f);
+
+	ImGui::Text("Player this ptr: %p", (void*)this);
+	ImGui::Text("HP : %.2f / %.2f", hp, maxHP);
+	float hpRateDebug = (maxHP != 0.0f) ? (hp / maxHP) : 0.0f;
+	ImGui::Text("hpRate (calc) = %.4f", hpRateDebug);
+
 
 	if (ImGui::CollapsingHeader("Spawned SafetyAreas"))
 	{
@@ -190,13 +232,22 @@ void Player::RenderDebugPrimitive(const RenderContext& rc, ShapeRenderer* render
 	{
 		if (!area) continue;
 
-		const DirectX::XMFLOAT3& center = {
-			area->GetPosition().x,
-			0.5f,
-			area->GetPosition().z
-		};
+		DirectX::XMFLOAT3 pos = area->GetPosition();
 
-		renderer->RenderCylinder(rc, center, radius,-height, { 0.2f, 1.0f, 0.2f, 1.0f });
+		float radius = area->GetRadius();   // SafetyArea が持ってる場合
+		float height = 0.1f;                // 地面に貼り付く薄さ
+
+		// 円柱の中心を少し浮かせて地面に接するように
+
+		pos.y += height;
+
+		renderer->RenderCylinder(
+			rc,
+			pos,
+			radius,
+			height,
+			{ 0.2f, 1.0f, 0.2f, 1.0f } // 半透明緑
+		);
 	}
 }
 
@@ -272,7 +323,7 @@ void Player::CollisionPlayerVsEnemies()
 			outPosition))
 		{
 			//押し出し後の位置設定
-			enemy->SetPosition(outPosition);
+			//enemy->SetPosition(outPosition);
 		}
 	}
 }
@@ -304,7 +355,7 @@ void Player::CollisionProjectilesVsEnemies()
 				enemy->GetRadius(),
 				outPosition))
 			{
-				answer = enemy->model_index;
+				//answer = enemy->model_index;
 
 				//ダメージを与える
 				if (enemy->ApplyDamage(1, 0.5f))
@@ -355,21 +406,28 @@ void Player::SStws()
 	w_pos = { STORE.x,STORE.y,STORE.z };
 }
 
+
+
 void Player::InputSafetrSrea()
 {
-	if (GetAsyncKeyState('R') & 1 && canPlaceSafeArea && maxSafetyAreaCount>0)
+	if (GetAsyncKeyState('R') & 1 && canPlaceSafeArea && maxSafetyAreaCount>0 && GetPlayerInside())
 	{
+		DirectX::XMFLOAT3 CamPos = Camera::Instance().GetEye();
 		DirectX::XMFLOAT3 forward = Camera::Instance().GetFront();
 
+		float distance = 3.0f;
 		DirectX::XMFLOAT3 spawnPos = {
-		  position.x + forward.x,
-		  position.y + 1.0f,
-		  position.z + forward.z 
+		 CamPos.x + forward.x * distance,
+		1.0f,
+		CamPos.z + forward.z * distance
 		};
 
 		// ===== SafetyArea生成 =====
 		SafetyArea* area = new SafetyArea(&ProjectileManager::Instance());
 		area->SetPosition(spawnPos);
+		DirectX::XMFLOAT3 front = Camera::Instance().GetFront();
+		float yaw = std::atan2(front.x, front.z);
+		area->SetAngle({ 0, yaw, 0 });
 		maxSafetyAreaCount -= 1;
 		safetyAreas.push_back(area);
 		lastSafetyAreaIndex = safetyAreas.size() - 1;
@@ -383,7 +441,6 @@ void Player::InputSafetrSrea()
 			putTrue = true;
 		}*/
 	}
-
 
 }
 

@@ -14,13 +14,23 @@
 
 void ModelRenderer::SetPointLight(int index, const point_lights& light)
 {
-	if (index < 0 || index >= 8) return;
+	if (index < 0 || index >= 16) return;
 	point_light[index] = light;
 }
 
 void ModelRenderer::SetAmbientColor(const DirectX::XMFLOAT4& color)
 {
 	ambient_color = color;
+}
+
+void ModelRenderer::UpdateSafetyAreaLights(const std::vector<DirectX::XMFLOAT4>& position)
+{
+	for (size_t i = 0; i < position.size() && i < 16; ++i)
+	{
+		point_light[i].position = position[i];
+		point_light[i].range = 15.0f;       // 適当な範囲
+		point_light[i].color = { 1, 1, 1, 1 }; // 光の色
+	}
 }
 
 // コンストラクタ
@@ -50,6 +60,11 @@ ModelRenderer::ModelRenderer(ID3D11Device* device)
 	//ライトの初期化
 	InitLights();
 
+	mt = std::mt19937(std::random_device{}());
+	dist = std::uniform_real_distribution<float>(0.0f, 1.0f);
+
+	lastPos = Camera::Instance().GetEye();
+
 	// シェーダー生成
 	shaders[static_cast<int>(ShaderId::Basic)] = std::make_unique<BasicShader>(device);
 	shaders[static_cast<int>(ShaderId::Lambert)] = std::make_unique<LambertShader>(device);
@@ -63,7 +78,7 @@ void ModelRenderer::InitLights()
 	ZeroMemory(point_light, sizeof(point_light));
 	ZeroMemory(spot_light, sizeof(spot_light));
 
-	point_light[0].position = { 0.0f, -2.0f, 5.0f, 1.0f };
+	point_light[0].position = { 0.0f, 4.0f, 5.0f, 1.0f };
 	point_light[0].range = 0.0;
 	point_light[0].color = { 1, 1, 1, 1 };
 
@@ -97,9 +112,10 @@ void ModelRenderer::InitLights()
 
 	// スポットライトは空（カメラ追従で埋める）
 	ZeroMemory(&spot_light[0], sizeof(spot_lights) * 8);
-	spot_light[0].range = 15.0f;
-	spot_light[0].innerCorn = cosf(DirectX::XMConvertToRadians(6.5f));
-	spot_light[0].outerCorn = cosf(DirectX::XMConvertToRadians(20.5f));
+	spot_light[0].color = { 1.0f, 1.0f, 1.0f, 1.0f };
+	spot_light[0].range = 20.0;
+	spot_light[0].innerCorn = cosf(DirectX::XMConvertToRadians(30.0f));
+	spot_light[0].outerCorn = cosf(DirectX::XMConvertToRadians(40.0f));
 }
 
 // 描画実行
@@ -110,8 +126,32 @@ void ModelRenderer::Render(const RenderContext& rc,
 {
 	ID3D11DeviceContext* dc = rc.deviceContext;
 
-	// ImGui でライトUI表示 ＆ ライト可視化
-	RenderImGui(rc);
+	DirectX::XMFLOAT3 nowPos = Camera::Instance().GetEye();
+	if (first)
+	{
+		lastPos = nowPos;  // 初回だけ同期
+		first = false;
+	}
+
+	dx = nowPos.x - lastPos.x;
+	dy = nowPos.y - lastPos.y;
+	dz = nowPos.z - lastPos.z;
+
+	float moved = sqrtf(dx * dx + dy * dy + dz * dz);
+	accumulatedDistanceT += moved;
+
+	lastPos = nowPos;
+
+	if (accumulatedDistanceT > 8.0f&&!Event)
+	{
+		horrorTimer = 0.0f;
+		horrorPhase = 0;
+		Event = true;
+	}
+
+	UpdateLightSwitch();
+
+	UpdataLightsSS();
 
 	// カメラ位置にスポットライトを追従
 	UpdateSpotLightFromCamera();
@@ -156,7 +196,7 @@ void ModelRenderer::RenderImGui(const RenderContext& rc)
 		// ポイントライト可視化
 		if (ImGui::CollapsingHeader("Point Lights"))
 		{
-			for (int i = 0; i < 16; ++i)
+			for (int i = 0; i < 8; ++i)
 			{
 				std::string label = "PointLight " + std::to_string(i);
 				if (ImGui::TreeNode(label.c_str()))
@@ -268,7 +308,7 @@ void ModelRenderer::UpdateSpotLightFromCamera()
 
 	spot_light[0].position = { lightPos.x, lightPos.y, lightPos.z, 1.0f };
 	spot_light[0].direction = { lightDir.x, lightDir.y, lightDir.z, 0.0f };
-	spot_light[0].color = { 1.0f, 0.95f, 0.8f, 1.0f };
+
 
 }
 
@@ -306,6 +346,8 @@ void ModelRenderer::UpdateSceneConstantBuffer(ID3D11DeviceContext* dc, const Ren
 
 	cbScene.lightingMultiplier = sceneConstantBufferData.lightingMultiplier;
 	cbScene.useLighting = sceneConstantBufferData.useLighting;
+	cbScene.LightSwitch = sceneConstantBufferData.LightSwitch;
+	cbScene.SpotLightSwitch = sceneConstantBufferData.SpotLightSwitch;
 
 	dc->UpdateSubresource(sceneConstantBuffer.Get(), 0, 0, &cbScene, 0, 0);
 }
@@ -429,4 +471,144 @@ void ModelRenderer::ClearBinding(ID3D11DeviceContext* dc)
 	// サンプラー解除
 	ID3D11SamplerState* nullSamplers[5] = { nullptr };
 	dc->PSSetSamplers(0, 5, nullSamplers);
+}
+
+void ModelRenderer::UpdateLightSwitch()
+{
+	if (horrorPhase < 0) return;
+
+	// フレームカウント
+	horrorFrame++;
+	
+
+	// ---- フェーズ0：全体ライトがチカチカ ----
+	if (horrorPhase == 0)
+	{
+		if (horrorFrame < 300)
+		{
+			// ---- (1) 高速チカチカ ----
+			int cycle = horrorFrame % 8;
+			if (cycle < 3)
+				sceneConstantBufferData.LightSwitch = 1.0f; // OFF
+			else
+				sceneConstantBufferData.LightSwitch = 0.0f; // ON
+		}
+		else if (horrorFrame < 450)
+		{
+			// ---- (2) 不規則チカチカ ----
+			// ランダムで暗くなる明るくなるを繰り返す
+			int r = rand() % 100;
+
+			if (r < 10)
+			{
+				// 完全OFF（バチッと消える）
+				sceneConstantBufferData.LightSwitch = 1.0f;
+			}
+			else if (r < 40)
+			{
+				// 弱い点灯（ちらっと光る）
+				sceneConstantBufferData.LightSwitch = 0.7f;
+			}
+			else
+			{
+				// 通常ON
+				sceneConstantBufferData.LightSwitch = 0.0f;
+			}
+		}
+		else
+		{
+			// ---- (3) 最後のバチッ ----
+			sceneConstantBufferData.LightSwitch = 1.0f;
+			
+
+			// 少しだけ暗闇を維持したあと次へ
+			if (horrorFrame > 500)
+			{
+				
+				horrorPhase = 1;
+				horrorFrame = 0;
+			}
+		}
+	}
+
+	// ---- フェーズ1：真っ暗 ----
+	else if (horrorPhase == 1)
+	{
+		sceneConstantBufferData.LightSwitch = 1.0f; // 
+
+		// 0.7秒 → 約42フレーム
+		if (horrorFrame > 570)
+		{
+			horrorPhase = 2;
+			horrorFrame = 0;
+		}
+	}
+
+	// ---- フェーズ2：スポットライトON ----
+	else if (horrorPhase == 2)
+	{
+		sceneConstantBufferData.LightSwitch = 1.0f;
+		sceneConstantBufferData.SpotLightSwitch = 0.0f;
+
+		// 以降ずっとスポットライト
+		horrorPhase = 3;
+	}
+
+	else if (horrorPhase >= 3)
+	{
+		static int SpotLightFlickerFrames = 0;
+		const int MaxFlickerFrames = 100;
+
+		// 基本点灯（HLSL側で0.0 = 最大点灯）
+		sceneConstantBufferData.SpotLightSwitch = 0.0f;
+
+		if (SpotLightFlickerFrames < MaxFlickerFrames)
+		{
+			// 最初の数フレームだけチカチカ
+			sceneConstantBufferData.SpotLightSwitch = 0.2f + static_cast<float>(rand() % 30) / 100.0f; // 0.20?0.49
+			SpotLightFlickerFrames++;
+		}
+	}
+}
+
+void ModelRenderer::UpdataLightsSS()
+{
+	float dt = 1.0f / 144.0f;
+
+	static float intensity = 0.9f;
+	static float flickerTimer = 0.0f;
+	static int state = 2; // 0=OFF, 1=弱, 2=Normal
+	static std::mt19937 mt(std::random_device{}());
+	static std::uniform_real_distribution<float> dist(0.0f, 1.0f);
+
+	flickerTimer -= dt;
+
+	if (flickerTimer <= 0.0f)
+	{
+		float r = dist(mt);
+		if (r < 0.05f) {
+			state = 0;  // 一瞬OFF
+			flickerTimer = 0.1f + dist(mt) * 0.2f;
+		}
+		else if (r < 0.2f) {
+			state = 1;  // 弱め
+			flickerTimer = 0.05f + dist(mt) * 0.3f;
+		}
+		else {
+			state = 2;  // 通常
+			flickerTimer = 0.2f + dist(mt) * 0.5f;
+		}
+	}
+
+	float targetIntensity = (state == 0) ? 0.2f : (state == 1) ? 0.5f :0.9f;
+
+	// 滑らか補間
+	float lerpSpeed = 3.0f;
+	intensity += (targetIntensity - intensity) * lerpSpeed * dt;
+
+	// 微小ノイズ
+	float noise = (dist(mt) - 0.5f) * 0.1f;
+	float finalIntensity = std::clamp(intensity + noise, 0.0f, 1.0f);
+
+	spot_light[0].color.w = finalIntensity;
 }
