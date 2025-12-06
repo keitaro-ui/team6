@@ -9,6 +9,7 @@
 #include "ProjectHoming.h"
 #include "../System/Graphics.h"
 #include "System/Audio.h"
+#include "Scene/SceneGame.h"
 
 
 //コンストラクタ
@@ -19,6 +20,7 @@ Player::Player()
 	//モデルが大きいのでスケーリング
 	scale.x = scale.y = scale.z = 0.21f;
 	position.y = 3.0f;
+	position = { 0.0f, 3.0f, -16.0f };
 }
 
 //デストラクタ
@@ -37,8 +39,11 @@ void Player::Update(float elapsedTime)
 {
 	shottimer++;
 
-	////移動入力処理
-	InputMove(elapsedTime);
+	if (renderer->GetHorrorPhase() == -1 || renderer->GetHorrorPhase() == 3)
+	{
+		////移動入力処理
+		InputMove(elapsedTime);
+	}
 
 	////ジャンプ入力処理
 	//InputJump();
@@ -401,7 +406,7 @@ void Player::SStws()
 
 void Player::InputSafetrSrea()
 {
-	if (GetAsyncKeyState('R') & 1 && canPlaceSafeArea && maxSafetyAreaCount>0)
+	if (GetAsyncKeyState('R') & 1 && canPlaceSafeArea && maxSafetyAreaCount>0 && GetPlayerInside())
 	{
 		DirectX::XMFLOAT3 CamPos = Camera::Instance().GetEye();
 		DirectX::XMFLOAT3 forward = Camera::Instance().GetFront();

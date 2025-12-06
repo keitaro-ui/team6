@@ -15,7 +15,7 @@ void SceneResult::Initialize()
 {
 	//スプライト初期化
 	clear_sprite = new Sprite("Data/Sprite/result1.png");
-	over_sprite = new Sprite("Data/Sprite/result2.png");
+	over_sprite = new Sprite("Data/Sprite/gameover.png");
 	sprite_number = new Sprite("Data/Sprite/number.png");
 
 	//point = 0;

@@ -31,11 +31,7 @@ void SceneGame::Initialize()
 	sprites.push_back(std::make_unique<Sprite>("Data/Sprite/Oxygen_gauge.png"));*/
 	//PlayerManager::Instance().Register(player.get());
 
-	Graphics& graphics = Graphics::Instance();
-	ModelRenderer* modelRenderer = graphics.GetModelRenderer();
-	player->SetRenderer(modelRenderer);
 
-	renderer = modelRenderer;
 
 	PlayerManager::Instance().Register(player.get());
 
@@ -44,7 +40,11 @@ void SceneGame::Initialize()
 
 	//スタート位置初期化
 	player->SetPosition({ 0.0f, 3.0f, -16.0f });
+	Graphics& graphics = Graphics::Instance();
+	ModelRenderer* modelRenderer = graphics.GetModelRenderer();
+	player->SetRenderer(modelRenderer);
 
+	renderer = modelRenderer;
 
 	//ゴール位置初期化
 	goalPoint = new GoalPoint({ 0.0f, 3.0f, 17.0f });
@@ -82,9 +82,6 @@ void SceneGame::Initialize()
 	player->cameraController = cameraController;
 
 	//エネミー初期化
-	/*int num = 0;		
-	int hei = 0;*/
-	fRenFlag = false;
 	EnemyManager& enemyManager = EnemyManager::Instance();
 	//for (int i = 0; i < 20; i++)
 	{
@@ -261,12 +258,82 @@ void SceneGame::Update(float elapsedTime)
 	if (!player || !goalPoint)
 		return;
 
+<<<<<<< HEAD
+=======
+	// --- HPチェック ---
+	if (player->hp <= 0.0f)
+	{
+		// SceneResultGameOver に切り替え
+		SceneManager::Instance().ChangeScene(new SceneResult(ResultType::GameOver));
+		return; // 以降の更新は行わない
+	}
+	//カメラコントローラー更新処理
+	DirectX::XMFLOAT3 target = player->GetPosition();
+	target.y += 0.5f;
+	cameraController->SetTarget(target);
+	cameraController->Update(elapsedTime);
+	
+	//プレイヤー更新処理
+	player->Update(elapsedTime);
+
+	if (renderer) {
+		std::vector<DirectX::XMFLOAT4> saPositions;
+		player->FillSafetyAreaPosition(saPositions);
+		renderer->UpdateSafetyAreaLights(saPositions);
+	}
+
+	player->SetPosition(physics.CircleVsStage(player->GetPosition(), player->GethitRadius()));
+
+
+	enemyslime->Update(elapsedTime);
+
+	Graphics& graphics = Graphics::Instance();
+	ID3D11DeviceContext* dc = graphics.GetDeviceContext();
+	ShapeRenderer* shapeRenderer = graphics.GetShapeRenderer();
+	ModelRenderer* modelRenderer = graphics.GetModelRenderer();
+
+	// 描画準備
+	RenderContext rc;
+	rc.deviceContext = dc;
+	renderer->RenderImGui(rc);
+	//ステージ更新処理
+	stage->Update(elapsedTime);
+
+	//エネミー更新処理
+	EnemyManager::Instance().Update(elapsedTime);
+
+	if (renderer->GetHorrorPhase() == 3)
+	{
+		//ステージ継続ダメージ
+		const float stageDamagePerSec = 5.0f;
+		player->AddDamage(stageDamagePerSec * elapsedTime);
+	}
+
+	
+
+	if (!player->safetyAreas.empty())
+	{
+		//SafetyArea内なら回復
+		for (auto& s : player->safetyAreas)
+		{
+			if (!s) continue;
+
+			if (s) s->Update(elapsedTime);
+			if (s && s->IsInside(player->GetPosition()))
+			{
+				player->Heal(5.0f * elapsedTime);
+				break;
+			}
+		}
+	}
+>>>>>>> master
 	//ゴール判定
 
 	float dx = player->GetPosition().x - goalPoint->position.x;
 	float dy = player->GetPosition().y - goalPoint->position.y;
 	float dz = player->GetPosition().z - goalPoint->position.z;
 
+<<<<<<< HEAD
 	float distSq = dx * dx + dy * dy + dz * dz;
 	float goalRadius = 0.4f;
 	GamePadButton button = Input::Instance().GetGamePad().GetButtonDown();
@@ -349,6 +416,57 @@ void SceneGame::Update(float elapsedTime)
 			}
 
 		}
+=======
+		if(distSq <= goalRadius * goalRadius)
+		{
+			SceneManager::Instance().ChangeScene(new SceneResult(ResultType::GameClear));
+		return;
+		}
+	
+
+	bool inside = false;
+
+	for (const auto& d : physics.GetDoorObbs())
+	{
+		if (physics.IsInside(d, { player->GetPosition().x, player->GetPosition().z }))
+		{
+			inside = true;
+			break;
+		}
+	}
+
+	player->SetPlayerInside(inside);
+
+	//クイズ処理
+	//if (!quizFlag)   // ←クイズ中は検知しない
+	//{
+	//	for (auto& board : boards)
+	//	{
+	//		//quizFlag = false;
+	//		if (board->CheckNearBoard(player.get()))
+	//		{
+	//			fRenFlag = true;
+	//			auto& gamepad = Input::Instance().GetGamePad();
+	//			//if (gamepad.GetButtonDown() & GamePad::BTN_A)
+	//			if (GetAsyncKeyState('F') & 0x8000)
+	//			{
+	//				quizFlag = true;
+	//				activeBoard = board;
+	//				board->StartQuiz();
+	//				break;
+	//			}
+	//		}
+	//	}
+	//}
+
+	//if (quizFlag && activeBoard && GetAsyncKeyState('F') & 0x8000)
+	//{
+	//	activeBoard->EndQuiz();
+	//	quizFlag = false;
+	//	fRenFlag = false;
+	//	activeBoard = nullptr;
+	//}
+>>>>>>> master
 
 
 
@@ -554,15 +672,6 @@ void SceneGame::DrawGUI()
 
 	//ステージデバッグ描画
 	stage->RenderImGui();
-	ImGui::DragFloat("debugDoorSize%d", &debugDoorSize, 0.1f);
-	//if (ImGui::BeginTabBar("block"))
-	//{
-	//	ImGui::DragFloat("blockPos.x",  &xDis,0.02f, 30.0f, -30.0f);
-	//	ImGui::DragFloat("blockPos.z",  &zDis,0.02f, 30.0f, -30.0f);
-	//	ImGui::DragFloat3("blockSize", &blockSize.x, 0.02f, 30.0f, -30.0f);
-
-	//	ImGui::EndTabBar();
-	//}
-
+	
 	ImGui::End();
 }

@@ -48,6 +48,7 @@ struct UIButton
 	{
 		//オフセットY
 		offsetY = screenHeight / 5.5; 
+		spacing = screenHeight * Spacescale;
 
 		// ボタン幅
 		w = screenWidth * WHscale; 
@@ -96,11 +97,12 @@ struct UIButton
 		float time = elapsedTime;
 
 		float scale = 1.0f;
+		float colorR = 0.0f;
 		float angle = baseAngle;
 		if (hovered)
 		{
-			// ホラー系に少し揺れるような拡大
 			scale = scale = 1.05f + 0.02f * sin(time * 6.0f);
+			colorR = colorR = 0.5f + 0.2f * sin(time * 6.0f);
 			angle = 100;
 		}
 
@@ -119,11 +121,11 @@ struct UIButton
 		{
 			sprite->Render(
 				rc,
-				drawX-offsetX,
-				drawY + offsetY-offsetY_local,
+				drawX,
+				drawY + offsetY,
 				0,
-				w* scale,
-				h* scale,
+				w,
+				h,
 				DirectX::XMConvertToRadians(angle),
 				rgb, rgb, rgb, 1.0f
 			);
@@ -132,11 +134,11 @@ struct UIButton
 		{
 			sprite->Render(
 				rc,
-				drawX-offsetX,
-				drawY + offsetY + spacing-offsetY_local,
+				drawX,
+				drawY + offsetY + spacing,
 				0,
-				w* scale,
-				h* scale,
+				w,
+				h,
 				DirectX::XMConvertToRadians(angle),
 				rgb, rgb, rgb, 1.0f
 			);

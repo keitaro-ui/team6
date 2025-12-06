@@ -158,6 +158,7 @@
     <ClInclude Include="Source\Scene\SceneManager.h" />
     <ClInclude Include="Source\Scene\ScenePassword.h" />
     <ClInclude Include="Source\Scene\SceneResult.h" />
+    <ClInclude Include="Source\Scene\SceneRule.h" />
     <ClInclude Include="Source\Scene\SceneTitle.h" />
     <ClInclude Include="Source\Scene\SceneTutorial.h" />
     <ClInclude Include="Source\System\Audio.h" />
@@ -230,6 +231,7 @@
     <ClCompile Include="Source\Scene\SceneManager.cpp" />
     <ClCompile Include="Source\Scene\ScenePassword.cpp" />
     <ClCompile Include="Source\Scene\SceneResult.cpp" />
+    <ClCompile Include="Source\Scene\SceneRule.cpp" />
     <ClCompile Include="Source\Scene\SceneTitle.cpp" />
     <ClCompile Include="Source\Scene\SceneTutorial.cpp" />
     <ClCompile Include="Source\System\Audio.cpp" />

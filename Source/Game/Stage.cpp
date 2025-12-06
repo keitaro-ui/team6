@@ -7,7 +7,7 @@ Stage::Stage()
 {
 	//ステージモデルを読み込み
 	//model = new Model("Data/Model/Stage/smallroom.mdl");
-	model = new Model("Data/Model/Stage/wallceiling.mdl");
+	model = new Model("Data/Model/Stage/doorT.mdl");
 
 
 	//loadTextures.LoadNormal("Data/Model/Stage/Texture/Small room/aiStandardSurface2_Normal_Utility - Raw.png");
@@ -52,9 +52,13 @@ Stage::Stage()
 	
     models.push_back(std::make_unique<Model>("Data/Model/Stage/saku.mdl"));
 
+<<<<<<< HEAD
     
     //door.model = std::make_unique<Model>("Data/Model/Stage/door.mdl");
     door = std::make_unique<Model>("Data/Model/Stage/door.mdl");
+=======
+   
+>>>>>>> master
 	scale.x = scale.y = scale.z = 0.02f;
 	/*scale.x = scale.y = scale.z = 1.0f;*/
     doorPos.x = 0.0f;
@@ -114,8 +118,11 @@ void Stage::Render(const RenderContext& rc, ModelRenderer* renderer)
 	}
 
 
+<<<<<<< HEAD
     renderer->Render(rc, transformDoor, door.get(), ShaderId::Lambert);
 
+=======
+>>>>>>> master
 }
 
 void Stage::DestinationPointSet(int index)

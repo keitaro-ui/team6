@@ -42,6 +42,7 @@ private:
     Model* model = nullptr;
 
     //ˆÚ“®“ü—Íˆ—
+    
     void InputMove(float elapsedTime);
 
     //’eŠÛ“ü—Íˆ—
@@ -119,6 +120,9 @@ public:
     std::vector<DirectX::XMFLOAT4> saPositions;
     ModelRenderer* renderer = nullptr;
 
+    //inside”»’è
+    void SetPlayerInside(bool v) { playerInside = v; }
+    bool GetPlayerInside() const { return playerInside; }
 private:
 
     SafetyArea* area;
@@ -146,4 +150,5 @@ private:
 
     bool putTrue = false;
 
+    bool playerInside;
 };
