@@ -25,8 +25,12 @@ public:
 
 	// Ž€–S”»’è
 	virtual bool IsDead() const { return health <= 0; }
+	
+	
 
 private:
 	Model* model = nullptr;
+
+
 
 };

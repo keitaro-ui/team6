@@ -1,6 +1,6 @@
 #include "./System/Graphics.h"
 #include "SearchAlgorithm.h"
-#include"EnemyManager.h"
+#include "EnemyManager.h"
 
 SearchAlgorithm::SearchAlgorithm()
 {
@@ -15,7 +15,8 @@ SearchAlgorithm::~SearchAlgorithm()
 	searchEdge.clear();
 }
 
-bool SearchAlgorithm::DijkstraSearch(Stage* stage, bool heuristicFlg)
+
+bool SearchAlgorithm::DijkstraSearch(Stage* stage,int StartIndex,int GoalIndex, bool heuristicFlg)
 {
 	// 過去の探索データをクリア
 	SearchClear(stage);
@@ -27,75 +28,117 @@ bool SearchAlgorithm::DijkstraSearch(Stage* stage, bool heuristicFlg)
 	Edge* edge = debug_new Edge();
 
 	//ダミーエッジは接続元と接続先は開始地点にしておく。
-	edge->destinationPoint = stage->NearWayPointIndex(Start::Instance().GetPosition());
-	edge->originPoint = edge->destinationPoint;
-	// コスト0を指定(折り返しでスタート地点に戻らないようにするため)
-	stage->wayPoint[edge->originPoint]->costFromStart = 0.0f;
-	//前準備としてダミーエッジデータをセット
-	Edge* nowEdge = edge;
+	/*edge->destinationPoint = stage->NearWayPointIndex(Start::Instance().GetPosition());
+	edge->originPoint = edge->destinationPoint;*/
 
-	// DijkstraSseachアルゴリズム
-	while (true)
-	{
-		//サーチしたEdgeの記録(実行結果の表示用）
-		findRoot[nowEdge->destinationPoint] = nowEdge->originPoint;
+	edge->destinationPoint = StartIndex;
+	edge->originPoint = StartIndex;
 
-		//もし、次のnowEdgeのdistnationNodeがゴールだったらtrueでreturnする。
-		if (nowEdge->destinationPoint == stage->NearWayPointIndex((Goal::Instance().GetPosition())))
+	stage->GetWayPoint(StartIndex)->costFromStart = 0.0f;
+	
+		// コスト0を指定(折り返しでスタート地点に戻らないようにするため)
+		StageManager::Instance().GetStage()->GetWayPoint(edge->originPoint)->costFromStart = 0.0f;
+		//前準備としてダミーエッジデータをセット
+		Edge* nowEdge = edge;
+
+		// DijkstraSseachアルゴリズム
+		while (true)
 		{
-			delete edge;
-			return true;
-		}
+			//サーチしたEdgeの記録(実行結果の表示用）	どこから来たか記憶
+			findRoot[nowEdge->destinationPoint] = nowEdge->originPoint;
 
-		//nowEdgeの先のノードを取得する。(今いるノード)
-		WayPoint* wayPoint = stage->wayPoint[nowEdge->destinationPoint];
+			//もし、次のnowEdgeのdistnationNodeがゴールだったらtrueでreturnする。
+			//if (nowEdge->destinationPoint == stage->NearWayPointIndex((Goal::Instance().GetPosition())))
+			if(nowEdge->destinationPoint==GoalIndex)
+			{
+				delete edge;
+				return true;
+			}
 
-		//nowEdgeの先のノードに登録してある８本のエッジをサーチするループ
-		for (int i = 0; i < EdgeNo; i++) {
+			//nowEdgeの先のノードを取得する。(今いるノード)
+			WayPoint* wayPoint = StageManager::Instance().GetStage()->GetWayPoint(nowEdge->destinationPoint);
 
-			Edge* nextEdge = wayPoint->edge[i];
+			//nowEdgeの先のノードに登録してある4本のエッジをサーチするループ
+			//for (int i = 1; i <= wayPoint->GetEdgeNo(); i++) 
+			for (int i = 0; i < 4; i++)
+			{
 
-			// サーチするエッジが有効のとき
-			if (nextEdge->destinationPoint >= 0 && nextEdge->destinationPoint < 400) {
+				Edge* nextEdge = wayPoint->edge[i];
 
-				//進み先のノード
-				WayPoint* nextPoint = stage->wayPoint[nextEdge->destinationPoint];
+				// サーチするエッジが有効のとき
+				if (nextEdge->destinationPoint >= 0 && nextEdge->destinationPoint < 400) {
 
-				// TODO 07_01
-				// 進み先のノードまでのコストを計算
-				float newCost = wayPoint->costFromStart + nextEdge->cost;
+					//進み先のノード
+					WayPoint* nextPoint = StageManager::Instance().GetStage()->GetWayPoint(nextEdge->destinationPoint);
 
-				// TODO 07_02
-				// 進み先のコストがまだ計算されていないか、新しいコストの方が低ければ
-				// フロンティアツリーに登録
-				// (計算されていないときコストには-1.0が入っている)
-				if (nextPoint->costFromStart < 0.0f || newCost < nextPoint->costFromStart)
-				{
-					// コストを更新
-					nextPoint->costFromStart = newCost;
+					// TODO 07_01
+					// 進み先のノードまでのコストを計算
+					float newCost = wayPoint->costFromStart + nextEdge->cost;
 
-					// フロンティア用のエッジを複製（元のnextEdgeを使うと上書きの恐れあり）
-					Edge* newEdge = debug_new Edge(*nextEdge);
-					frontier.push_back(newEdge);
+					// TODO 07_02
+					// 進み先のコストがまだ計算されていないか、新しいコストの方が低ければ
+					// フロンティアツリーに登録
+					// (計算されていないときコストには-1.0が入っている)
+					if (nextPoint->costFromStart < 0.0f || newCost < nextPoint->costFromStart)
+					{
+						// コストを更新
+						nextPoint->costFromStart = newCost;
+
+						// フロンティア用のエッジを複製（元のnextEdgeを使うと上書きの恐れあり）
+						Edge* newEdge = debug_new Edge(*nextEdge);
+						frontier.push_back(newEdge);
+					}
+
 				}
 
 			}
 
+			nowEdge = searchMinCostEdge(frontier, stage, heuristicFlg);
+
+			if (nowEdge == nullptr)
+			{
+				delete nowEdge;
+				return false;
+			}
+		
+
+		//何も見つからなければfalse;
+			if (nowEdge == nullptr)
+				return false;
 		}
 
-		nowEdge = searchMinCostEdge(frontier, stage, heuristicFlg);
+}
 
-		if (nowEdge == nullptr)
-		{
-			delete nowEdge;
-			return false;
-		}
+// Dijkstra 探索後に経路を復元して Path を作る関数
+std::vector<int> SearchAlgorithm::BuildPath(Stage* stage,int startIndex,int goalIndex)
+{
+	path.clear();
+
+	// ゴール地点の WayPoint インデックスを取得
+	/*int goalIndex = stage->NearWayPointIndex(Goal::Instance().GetPosition());
+	int startIndex = stage->NearWayPointIndex(Start::Instance().GetPosition());*/
+
+	// findRoot に情報がなければ空を返す
+	/*if (findRoot.find(goalIndex) == findRoot.end())
+		return path;*/
+
+	// ゴールからスタートまで逆に辿る
+	int current = goalIndex;
+	while (current != startIndex)
+	{
+		path.push_back(current);
+		current = findRoot[current];
 	}
 
-	//何も見つからなければfalse;
-	delete nowEdge;
-	return false;
+	// スタートも追加
+	path.push_back(startIndex);
+
+	// スタート→ゴールの順に並べ替え
+	std::reverse(path.begin(), path.end());
+
+	return path;
 }
+
 
 Edge* SearchAlgorithm::searchMinCostEdge(std::vector<Edge*>& frontier, Stage* stage, bool heuristicFlg)
 {
@@ -110,12 +153,12 @@ Edge* SearchAlgorithm::searchMinCostEdge(std::vector<Edge*>& frontier, Stage* st
 		// TODO 07_03
 		// コスト計算
 		// totalCostに接続元の「スタート位置からのコスト」（costFromStart）＋エッジ自体が持つコスト（cost）を入れる
-		float totalCost = stage->wayPoint[edge->originPoint]->costFromStart + edge->cost;
+		float totalCost = StageManager::Instance().GetStage()->GetWayPoint(edge->originPoint)->costFromStart + edge->cost;
 
 		// TODO 07_04
 		// コスト取り出し
 		//接続先の「スタート位置からのコスト」をfrontCostに取り出す(まだ登録されていないなら０となる)
-		float frontCost = stage->wayPoint[edge->destinationPoint]->costFromStart;
+		float frontCost = StageManager::Instance().GetStage()->GetWayPoint(edge->destinationPoint)->costFromStart;
 
 		// TODO 07_05
 		// コストの比較
@@ -124,7 +167,7 @@ Edge* SearchAlgorithm::searchMinCostEdge(std::vector<Edge*>& frontier, Stage* st
 		// frontCostもtotalCostに更新。
 		if (frontCost <= 0.0f || totalCost < frontCost)
 		{
-			stage->wayPoint[edge->destinationPoint]->costFromStart = totalCost;
+			StageManager::Instance().GetStage()->GetWayPoint(edge->destinationPoint)->costFromStart = totalCost;
 			frontCost = totalCost;
 		}
 
@@ -134,10 +177,10 @@ Edge* SearchAlgorithm::searchMinCostEdge(std::vector<Edge*>& frontier, Stage* st
 			// frontCostに見積コストの加算
 			// 見積コストの計算にはheuristicCulc関数を使用しても良い
 			// ゴール地点の WayPoint を取得
-			WayPoint* goal = stage->wayPoint[stage->NearWayPointIndex(Goal::Instance().GetPosition())];
+			WayPoint* goal = StageManager::Instance().GetStage()->GetWayPoint(stage->NearWayPointIndex(Goal::Instance().GetPosition()));
 
 			// 現在処理中のエッジの進み先ノードを取得
-			WayPoint* nextPoint = stage->wayPoint[edge->destinationPoint];
+			WayPoint* nextPoint = StageManager::Instance().GetStage()->GetWayPoint(edge->destinationPoint);
 
 			// 見積コスト（ヒューリスティック値）を計算して frontCost に加算
 			frontCost += heuristicCulc(nextPoint, goal);
@@ -196,13 +239,13 @@ void SearchAlgorithm::SearchRender(ID3D11DeviceContext* dc, const DirectX::XMFLO
 	for (const auto edge : searchEdge)
 	{
 		// 探索したエッジを描画
-		lineRenderer->AddVertex(DirectX::XMFLOAT3(stage->wayPoint[edge->originPoint]->position.x,
-			stage->wayPoint[edge->originPoint]->position.y + 2.0f,
-			stage->wayPoint[edge->originPoint]->position.z),
+		lineRenderer->AddVertex(DirectX::XMFLOAT3(StageManager::Instance().GetStage()->GetWayPoint(edge->originPoint)->position.x,
+			StageManager::Instance().GetStage()->GetWayPoint(edge->originPoint)->position.y + 2.0f,
+			StageManager::Instance().GetStage()->GetWayPoint(edge->originPoint)->position.z),
 			DirectX::XMFLOAT4(0.8f, 0.8f, 0.8f, 1.0f));
-		lineRenderer->AddVertex(DirectX::XMFLOAT3(stage->wayPoint[edge->destinationPoint]->position.x,
-			stage->wayPoint[edge->destinationPoint]->position.y + 2.0f,
-			stage->wayPoint[edge->destinationPoint]->position.z),
+		lineRenderer->AddVertex(DirectX::XMFLOAT3(StageManager::Instance().GetStage()->GetWayPoint(edge->destinationPoint)->position.x,
+			StageManager::Instance().GetStage()->GetWayPoint(edge->destinationPoint)->position.y + 2.0f,
+			StageManager::Instance().GetStage()->GetWayPoint(edge->destinationPoint)->position.z),
 			DirectX::XMFLOAT4(0.8f, 0.8f, 0.8f, 1.0f));
 
 	}
@@ -253,8 +296,8 @@ void SearchAlgorithm::SearchClear(Stage* stage)
 
 	//サーチ済みのFGをリセット
 	for (int i = 0; i < MAX_WAY_POINT; i++) {
-		stage->wayPoint[i]->searchFg = false;
-		stage->wayPoint[i]->costFromStart = -1.0f;
+		StageManager::Instance().GetStage()->GetWayPoint(i)->searchFg = false;
+		StageManager::Instance().GetStage()->GetWayPoint(i)->costFromStart = -1.0f;
 		findRoot[i] = -1;
 	}
 }
@@ -268,9 +311,9 @@ void SearchAlgorithm::AddAnswerArrow(Stage* stage)
 		if (edge->destinationPoint < 0) continue;
 
 		// originPoint
-		DirectX::XMFLOAT3 p0 = stage->wayPoint[edge->originPoint]->position;
+		DirectX::XMFLOAT3 p0 = StageManager::Instance().GetStage()->GetWayPoint(edge->originPoint)->position;
 		// destinationPoint
-		DirectX::XMFLOAT3 p1 = stage->wayPoint[edge->destinationPoint]->position;
+		DirectX::XMFLOAT3 p1 = StageManager::Instance().GetStage()->GetWayPoint(edge->destinationPoint)->position;
 
 		// 少し浮かせる（任意）
 		p0.y += 2.0f;
@@ -293,3 +336,4 @@ void SearchAlgorithm::GoldenPathSpawn(Stage* stage, DirectX::XMFLOAT3 startPosit
 	// 表示している敵を消す
 	EnemyManager::Instance().Clear();
 }
+

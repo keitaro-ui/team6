@@ -1,11 +1,20 @@
 #pragma once
 #include <DirectXMath.h>
 #include "Edge.h"
-#define ROW_COUNT 20
-#define COLUM_COUNT 20
-#define MAX_WAY_POINT 400
+#include "System/ModelRenderer.h"
+#include "System/ShapeRenderer.h"
+#include <vector>
 
-const int EdgeNo = 8;
+#define MAX_WAY_POINT 42
+
+
+enum class AreaAttribute
+{
+	AreaA,
+	AreaB,
+	AreaC,
+	AreaD,
+};
 
 // ウェイポイント用クラス(いわゆるノード)
 class WayPoint
@@ -15,7 +24,20 @@ public:
 	WayPoint();
 
 	~WayPoint();
+	void Render(const RenderContext& rc, ModelRenderer* renderer);
 	bool searchFg = false;
-	Edge* edge[8]; // 各ノードをつなげるエッジ
+	
 	float costFromStart = -1.0f;
+
+	AreaAttribute area;
+
+private:
+	int EdgeNo = 4;
+	std::vector<WayPoint*>		wayPoints;
+	std::unique_ptr<ShapeRenderer> shape = nullptr;
+
+
+public:
+	Edge* edge[4]; // 各ノードをつなげるエッジ
+	int GetEdgeNo() { return EdgeNo; }
 };

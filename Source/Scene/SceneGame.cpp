@@ -18,6 +18,7 @@ void SceneGame::Initialize()
 {
 	//ステージ初期化
 	stage = std::make_unique<Stage>();
+	StageManager::Instance().Regist(stage.get());
 
 	//プレイヤー初期化
 	player = std::make_unique<Player>();
@@ -25,6 +26,10 @@ void SceneGame::Initialize()
 
 	enemyslime = std::make_unique<EnemySlime>();
 	//enemyslime->player = player.get();
+
+	start = std::make_unique<Start>();
+
+	goal = std::make_unique<Goal>();
 
 	//スプライト初期設定
 	{
@@ -116,7 +121,7 @@ void SceneGame::Finalize()
 
 	//boxなどのenemyを継承しているnewはdeleteしてはいけない。EnemyManagerごと消す
 	//エネミー終了化
-	EnemyManager::Instance().Clear();
+	//EnemyManager::Instance().Clear();
 }
 
 // 更新処理
@@ -209,9 +214,13 @@ void SceneGame::Render()
 		//エネミーデバッグプリミティブ描画
 		//EnemyManager::Instance(); 
 		//.RenderDebugPrimitive(rc, shapeRenderer);
+		// ラインレンダラ描画実行
+		//graphics.GetLineRenderer()->Render(rc.deviceContext, rc.view, rc.projection);
 
 		player->RenderDebugPrimitive(rc, shapeRenderer);
 		enemyslime->RenderDebugPrimitive(rc, shapeRenderer);
+
+		stage->RenderDebugPrimitive(rc, shapeRenderer);
 	}
 
 	// 2Dスプライト描画

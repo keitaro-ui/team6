@@ -243,6 +243,9 @@
     <ClInclude Include="Source\System\LineRenderer.h">
       <Filter>Source\System</Filter>
     </ClInclude>
+    <ClInclude Include="Source\System\Raycast.h">
+      <Filter>Source\System</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="External\imgui-docking\imgui.cpp">
@@ -429,6 +432,9 @@
       <Filter>Source\Game</Filter>
     </ClCompile>
     <ClCompile Include="Source\System\LineRenderer.cpp">
+      <Filter>Source\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\System\Raycast.cpp">
       <Filter>Source\System</Filter>
     </ClCompile>
   </ItemGroup>

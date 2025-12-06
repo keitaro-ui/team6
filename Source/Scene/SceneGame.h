@@ -10,6 +10,7 @@
 #include "../Game/Board.h"
 #include "../Game/Box.h"
 #include "../Game/EnemySlime.h"
+#include "../Game/Object.h"
 
 // ÉQÅ[ÉÄÉVÅ[Éì
 class SceneGame : public Scene
@@ -40,6 +41,10 @@ private:
 	std::unique_ptr<Player> player = nullptr;
 
 	std::unique_ptr<EnemySlime> enemyslime = nullptr;
+
+	std::unique_ptr<Start>start = nullptr;
+
+	std::unique_ptr<Goal>goal = nullptr;
 
 	CameraController* cameraController = nullptr;
 
