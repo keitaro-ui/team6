@@ -77,9 +77,6 @@ void SceneGame::Initialize()
 	player->cameraController = cameraController;
 
 	//エネミー初期化
-	/*int num = 0;		
-	int hei = 0;*/
-	fRenFlag = false;
 	EnemyManager& enemyManager = EnemyManager::Instance();
 	//for (int i = 0; i < 20; i++)
 	{
@@ -241,7 +238,6 @@ void SceneGame::Update(float elapsedTime)
 		return; // 以降の更新は行わない
 	}
 
-
 	if (!player->safetyAreas.empty())
 	{
 		//SafetyArea内なら回復
@@ -256,39 +252,50 @@ void SceneGame::Update(float elapsedTime)
 				break;
 			}
 		}
-
 	}
 
+	bool inside = false;
 
-	//クイズ処理
-	if (!quizFlag)   // ←クイズ中は検知しない
+	for (const auto& d : physics.GetDoorObbs())
 	{
-		for (auto& board : boards)
+		if (physics.IsInside(d, { player->GetPosition().x, player->GetPosition().z }))
 		{
-			//quizFlag = false;
-			if (board->CheckNearBoard(player.get()))
-			{
-				fRenFlag = true;
-				auto& gamepad = Input::Instance().GetGamePad();
-				//if (gamepad.GetButtonDown() & GamePad::BTN_A)
-				if (GetAsyncKeyState('F') & 0x8000)
-				{
-					quizFlag = true;
-					activeBoard = board;
-					board->StartQuiz();
-					break;
-				}
-			}
+			inside = true;
+			break;
 		}
 	}
 
-	if (quizFlag && activeBoard && GetAsyncKeyState('F') & 0x8000)
-	{
-		activeBoard->EndQuiz();
-		quizFlag = false;
-		fRenFlag = false;
-		activeBoard = nullptr;
-	}
+	player->SetPlayerInside(inside);
+
+	//クイズ処理
+	//if (!quizFlag)   // ←クイズ中は検知しない
+	//{
+	//	for (auto& board : boards)
+	//	{
+	//		//quizFlag = false;
+	//		if (board->CheckNearBoard(player.get()))
+	//		{
+	//			fRenFlag = true;
+	//			auto& gamepad = Input::Instance().GetGamePad();
+	//			//if (gamepad.GetButtonDown() & GamePad::BTN_A)
+	//			if (GetAsyncKeyState('F') & 0x8000)
+	//			{
+	//				quizFlag = true;
+	//				activeBoard = board;
+	//				board->StartQuiz();
+	//				break;
+	//			}
+	//		}
+	//	}
+	//}
+
+	//if (quizFlag && activeBoard && GetAsyncKeyState('F') & 0x8000)
+	//{
+	//	activeBoard->EndQuiz();
+	//	quizFlag = false;
+	//	fRenFlag = false;
+	//	activeBoard = nullptr;
+	//}
 
 	//シーン遷移
 	//GamePad& gamePad = Input::Instance().GetGamePad();
@@ -421,15 +428,6 @@ void SceneGame::DrawGUI()
 
 	//ステージデバッグ描画
 	stage->RenderImGui();
-	ImGui::DragFloat("debugDoorSize%d", &debugDoorSize, 0.1f);
-	//if (ImGui::BeginTabBar("block"))
-	//{
-	//	ImGui::DragFloat("blockPos.x",  &xDis,0.02f, 30.0f, -30.0f);
-	//	ImGui::DragFloat("blockPos.z",  &zDis,0.02f, 30.0f, -30.0f);
-	//	ImGui::DragFloat3("blockSize", &blockSize.x, 0.02f, 30.0f, -30.0f);
-
-	//	ImGui::EndTabBar();
-	//}
-
+	
 	ImGui::End();
 }

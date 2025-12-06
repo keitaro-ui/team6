@@ -60,6 +60,9 @@ public:
     void AddObb(DirectX::XMFLOAT3 center, DirectX::XMFLOAT3 size, float ang); //sizeはy=0でxz二つのみで計算させる
     void AddDoorObb(DirectX::XMFLOAT3 center, DirectX::XMFLOAT3 size, float ang, DirectX::XMFLOAT3 doorDir, float doorSize,float doorDist);
 
+    //内部判定で使うゲッター
+    const std::vector<door>& GetDoorObbs() const { return doorObbs; }
+
     //デバッグプリミティブ描画
     void RenderDebugPrimitive(const RenderContext& rc, ShapeRenderer* renderer);
 };

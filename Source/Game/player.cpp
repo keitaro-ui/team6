@@ -9,6 +9,7 @@
 #include "ProjectHoming.h"
 #include "../System/Graphics.h"
 #include "System/Audio.h"
+#include "Scene/SceneGame.h"
 
 
 //コンストラクタ
@@ -400,7 +401,7 @@ void Player::SStws()
 
 void Player::InputSafetrSrea()
 {
-	if (GetAsyncKeyState('R') & 1 && canPlaceSafeArea && maxSafetyAreaCount>0)
+	if (GetAsyncKeyState('R') & 1 && canPlaceSafeArea && maxSafetyAreaCount>0 && GetPlayerInside())
 	{
 		DirectX::XMFLOAT3 CamPos = Camera::Instance().GetEye();
 		DirectX::XMFLOAT3 forward = Camera::Instance().GetFront();

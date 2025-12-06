@@ -119,6 +119,9 @@ public:
     std::vector<DirectX::XMFLOAT4> saPositions;
     ModelRenderer* renderer = nullptr;
 
+    //inside判定
+    void SetPlayerInside(bool v) { playerInside = v; }
+    bool GetPlayerInside() const { return playerInside; }
 private:
 
     //セーフティエリア制限個数
@@ -145,4 +148,5 @@ private:
 
     bool putTrue = false;
 
+    bool playerInside;
 };
