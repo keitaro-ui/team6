@@ -11,27 +11,13 @@ Stage::Stage()
 
     //ステージモデルを読み込み
     model = new Model("Data/Model/Stage/syusei.mdl");
-    //model = new Model("Data/Model/Stage/StageT.mdl");
-    //model = new Model("Data/Model/Stage/ExampleStage.mdl");
-
+    
     scale.x = scale.y = scale.z = 0.02f;
-    /*scale.x = scale.y = scale.z = 1.0f;*/
-    //position.y = 4.0f;
+   
 
     wayPointCount = 0;
 
-    //for (int j = 0; j < wayPoints.size(); j++)
-    //{
-    //    // インデックス番号計算
-    //    int index = j;
-    //    //WayPoint生成
-    //    //wayPoints[index] = new WayPoint();
-    //    wayPoints[index] = std::make_unique<WayPoint>();
-
-    //    // WayPointの座標決定
-    //    //wayPoints[index]->position = DirectX::XMFLOAT3(i + 0.5f, 0.0f, j + 0.5f);
-
-       
+    
 
     // 手動で必要なノードを追加
    /* AddWayPoint({ -27.1f, -1.7f, 16.3f });
@@ -147,15 +133,10 @@ Stage::Stage()
     }
 
 	//ステージデータを読み込む
-	//model = new Model("Data/Model/Stage/smallroom.mdl");
 	model = new Model("Data/Model/Stage/doorT.mdl");
 
 
-	//loadTextures.LoadNormal("Data/Model/Stage/Texture/Small room/aiStandardSurface2_Normal_Utility - Raw.png");
-	//loadTextures.LoadRoughness("Data/Model/Stage/Texture/Small room/aiStandardSurface2_Roughness_Utility - Raw.png");
-	//loadTextures.LoadMetalness("Data/Model/Stage/Texture/Small room/aiStandardSurface2_Metallic_Utility - Raw.png");
-	//loadTextures.LoadEmisive("Data/Model/Stage/Texture/Small room/aiStandardSurface2_Emissive_Utility - sRGB - Texture.png");
-
+	
 	loadTextures.LoadNormal("Data/Model/Stage/Texture/wall/wallceilings_standardSurface1_Normal_Utility - Raw.png");
 	loadTextures.LoadRoughness("Data/Model/Stage/Texture/wall/wallceilings_standardSurface1_Roughness_Utility - Raw.png");
 	loadTextures.LoadMetalness("Data/Model/Stage/Texture/wall/wallceilings_standardSurface1_Metallic_Utility - Raw.png");
@@ -239,23 +220,20 @@ void Stage::Update(float elapsedTime)
 //描画処理
 void Stage::Render(const RenderContext& rc, ModelRenderer* renderer)
 {
-    //消す
-    // ウェイポイントの描画処理
-    for (int i = 0; i <= MAX_WAY_POINT; i++)
-    {
-        // MAX_WAY_POINTよりwayPointsの要素が少ない場合範囲外アクセスでエラーが発生
+    ////消す
+    //// ウェイポイントの描画処理
+    //for (int i = 0; i <= MAX_WAY_POINT; i++)
+    //{
+    //    // MAX_WAY_POINTよりwayPointsの要素が少ない場合範囲外アクセスでエラーが発生
 
-        // wayPointsのサイズより大きい場合にアクセスしないように制限
-        if (i < wayPoints.size())
-            wayPoints[i]->Render(rc, renderer);
-    }
-	//DirectX::XMFLOAT4X4 transform;
-	//DirectX::XMStoreFloat4x4(&transform, DirectX::XMMatrixIdentity());
-
+    //    // wayPointsのサイズより大きい場合にアクセスしないように制限
+    //    if (i < wayPoints.size())
+    //        wayPoints[i]->Render(rc, renderer);
+    //}
+	
 
 	//レンダラモデルに描画してもらう
-	//renderer->Render(rc, transform, model, ShaderId::Lambert);
-
+	
 	for (size_t i = 0; i < models.size(); i++)
 	{
         // �@ �e�N�X�`��������ꍇ���� Set
@@ -279,166 +257,16 @@ void Stage::Render(const RenderContext& rc, ModelRenderer* renderer)
 
 }
 
-//void Stage::RenderDebugPrimitive(const RenderContext& rc, ShapeRenderer* renderer)
-//{
-//    
-//}
-
 
 
 void Stage::DestinationPointSet(int index)
 {
-#if 0
-    //edge[0] = 上（12時）
-    //edge[1] = 右（3時）
-    //edge[2] = 下（6時）
-    //edge[3] = 左（9時)
 
-    int x = index % COLUM_COUNT;
-
-    // 0: 12時（上）
-    int point = index - COLUM_COUNT;
-    if (point >= 0)
-    {
-        wayPoint[index]->edge[0]->destinationPoint = point;
-
-        DirectX::XMVECTOR dest = DirectX::XMLoadFloat3(&wayPoint[point]->position);
-        DirectX::XMVECTOR orig = DirectX::XMLoadFloat3(&wayPoint[index]->position);
-        DirectX::XMVECTOR len = DirectX::XMVector3Length(DirectX::XMVectorSubtract(dest, orig));
-
-        wayPoint[index]->edge[0]->cost = DirectX::XMVectorGetX(len);
-    }
-    else
-    {
-        wayPoint[index]->edge[0]->destinationPoint = -1;
-        wayPoint[index]->edge[0]->cost = FLT_MAX;
-    }
-
-
-    // 1: 3時（右）
-    point = index + 1;
-    if ((x + 1) < COLUM_COUNT)
-    {
-        wayPoint[index]->edge[1]->destinationPoint = point;
-
-        DirectX::XMVECTOR dest = DirectX::XMLoadFloat3(&wayPoint[point]->position);
-        DirectX::XMVECTOR orig = DirectX::XMLoadFloat3(&wayPoint[index]->position);
-        DirectX::XMVECTOR len = DirectX::XMVector3Length(DirectX::XMVectorSubtract(dest, orig));
-
-        wayPoint[index]->edge[1]->cost = DirectX::XMVectorGetX(len);
-    }
-    else
-    {
-        wayPoint[index]->edge[1]->destinationPoint = -1;
-        wayPoint[index]->edge[1]->cost = FLT_MAX;
-    }
-
-
-    // 2: 6時（下）
-    point = index + COLUM_COUNT;
-    if (point < MAX_WAY_POINT)
-    {
-        wayPoint[index]->edge[2]->destinationPoint = point;
-
-        DirectX::XMVECTOR dest = DirectX::XMLoadFloat3(&wayPoint[point]->position);
-        DirectX::XMVECTOR orig = DirectX::XMLoadFloat3(&wayPoint[index]->position);
-        DirectX::XMVECTOR len = DirectX::XMVector3Length(DirectX::XMVectorSubtract(dest, orig));
-
-        wayPoint[index]->edge[2]->cost = DirectX::XMVectorGetX(len);
-    }
-    else
-    {
-        wayPoint[index]->edge[2]->destinationPoint = -1;
-        wayPoint[index]->edge[2]->cost = FLT_MAX;
-    }
-
-
-    // 3: 9時（左）
-    point = index - 1;
-    if (x > 0)
-    {
-        wayPoint[index]->edge[3]->destinationPoint = point;
-
-        DirectX::XMVECTOR dest = DirectX::XMLoadFloat3(&wayPoint[point]->position);
-        DirectX::XMVECTOR orig = DirectX::XMLoadFloat3(&wayPoint[index]->position);
-        DirectX::XMVECTOR len = DirectX::XMVector3Length(DirectX::XMVectorSubtract(dest, orig));
-
-        wayPoint[index]->edge[3]->cost = DirectX::XMVectorGetX(len);
-    }
-    else
-    {
-        wayPoint[index]->edge[3]->destinationPoint = -1;
-        wayPoint[index]->edge[3]->cost = FLT_MAX;
-    }
-
-    //余った４～７個を無効にする
-    for (int i = 4; i < 8; i++)
-    {
-        wayPoint[index]->edge[i]->destinationPoint = -1;
-        wayPoint[index]->edge[i]->cost = FLT_MAX;
-    }
-#endif
 }
 
 void Stage::AddWayPoint(const DirectX::XMFLOAT3& pos)
 {
-    //for (int j = 0; j < COLUM_COUNT; ++j)
-    //{
-    //    //if (wayPointCount >= MAX_WAY_POINT)
-    //    //{
-    //    //    OutputDebugStringA("ERROR: MAX_WAY_POINT overflow!\n");
-    //    //    return;
-    //    //}
-
-    //    //// ここでウェイポイント生成する
-    //    std::unique_ptr<WayPoint> w = std::make_unique<WayPoint>();
-
-    //    ////WayPoint w = *wayPoint[wayPointCount];
-    //    w->position = pos;
-
-
-    //    // インデックス番号計算
-    //    int index = /*COLUM_COUNT **/ j;
-
-
-
-    //    //// Edge を初期化
-    //    //for (int i = 0; i < w->GetEdgeNo(); i++)
-    //    //    w->edge[i] = nullptr;
-
-    //    ////wayPoints についか
-    //    //wayPoints.emplace_back(std::move(w));
-
-    //    //wayPointCount++;
-
-    //    if (wayPointCount >= MAX_WAY_POINT)
-    //    {
-    //        OutputDebugStringA("ERROR: MAX_WAY_POINT overflow!\n");
-    //        return;
-    //    }
-
-    //    //// 新しい WayPoint を生成
-    //    //std::unique_ptr<WayPoint> w = std::make_unique<WayPoint>();
-
-    //    // 位置セット
-    //    w->position = pos;
-
-    //    // Edge 初期化（8方向 or 4方向など固定長）
-    //    for (int i = 0; i < 4; i++)
-    //    {
-    //        w->edge[i] = nullptr;
-    //    }
-
-    //    // vector に追加
-    //    wayPoints.emplace_back(std::move(w));
-
-    //    // originPoint を正しく設定するために
-    //    // vector の実 index を WayPoint に渡す
-    //    //wayPoints[wayPointCount]->index = wayPointCount;  // こういうメンバを追加すると良い
-    //    wayPoints[index]->position = wayPoints[index]->position;
-
-    //}
-    //wayPointCount++;
+   
 
         if (wayPointCount >= MAX_WAY_POINT)
         {
@@ -600,47 +428,8 @@ void Stage::RenderImGui()
 	DirectX::XMConvertToDegrees(angle.y),
 	DirectX::XMConvertToDegrees(angle.z)
 	};
-	if (ImGui::Begin("Stage Transform"))
-	{
-		ImGui::Text("Stage");
-		ImGui::Separator();
-		
-		// 各Transform要素を操作
-		ImGui::DragFloat3("Position", &position.x, 0.1f, -1000.0f, 1000.0f);
-		if (ImGui::DragFloat3("Rotation (deg)", &angleDeg.x, 1.0f, -360.0f, 360.0f))
-		{
-			// 変更された場合のみラジアンに戻す
-			angle.x = DirectX::XMConvertToRadians(angleDeg.x);
-			angle.y = DirectX::XMConvertToRadians(angleDeg.y);
-			angle.z = DirectX::XMConvertToRadians(angleDeg.z);
-		}
-		ImGui::DragFloat3("Scale", &scale.x, 0.01f, 0.001f, 10.0f);
-	}
-	ImGui::End();
-
-    if (ImGui::Begin("WayPoint Editor"))
-    {
-        ImGui::Text("WayPoint Count : %d", wayPointCount);
-
-        if (ImGui::Button("Add WayPoint"))
-        {
-            AddWayPoint({ 0, 0, 0 });
-        }
-
-        ImGui::Separator();
-
-        for (int i = 0; i < wayPointCount; i++)
-        {
-            ImGui::PushID(i);
-
-            ImGui::Text("WP %d", i);
-            ImGui::DragFloat3("Position", &wayPoints[i]->position.x, 0.1f);
-
-            ImGui::Separator();
-            ImGui::PopID();
-        }
-    }
-    ImGui::End();
+	
+    
 }
 
 // インデックス番号からウェイポイントの座標を取得
@@ -678,25 +467,5 @@ int Stage::NearWayPointIndex(DirectX::XMFLOAT3 target)
     }
     return index;
 
-   /* float minDistSq = FLT_MAX;
-    int bestIndex = -1;
-
-    DirectX::XMFLOAT3 a = target;
-
-    for (int dest : neighborIndexes)
-    {
-        DirectX::XMFLOAT3 b = StageManager::Instance().GetStage()->wayPoints[dest]->position;
-
-        float dx = a.x - b.x;
-        float dy = a.y - b.y;
-        float dz = a.z - b.z;
-
-        float distSq = dx * dx + dy * dy + dz * dz;
-
-        if (distSq < minDistSq)
-        {
-            minDistSq = distSq;
-            bestIndex = dest;
-        }
-    }*/
+  
 }

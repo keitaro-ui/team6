@@ -63,17 +63,14 @@ bool Raycast::RayCast(const DirectX::XMFLOAT3& start, const DirectX::XMFLOAT3& e
 						// メッシュのローカル空間での法線ベクトルをワールド空間に変換する
 						DirectX::XMVECTOR WorldHitNormal = DirectX::XMVector3TransformNormal(LocalHitNormal, WorldTransform);
 						// 三角形の裏表判定（内積の結果がマイナスならば表向き）
-						//DirectX::XMVECTOR Dot = DirectX::XMVector3Dot(LocalRayDirection, LocalHitNormal);
-						//float dot = DirectX::XMVectorGetX(Dot);
-						//if (dot < 0)
-						//{
+						
 							// 交差したのでヒット情報を格納
 						DirectX::XMStoreFloat3(&hitNormal, DirectX::XMVector3Normalize(WorldHitNormal));
 						DirectX::XMStoreFloat3(&hitPosition, WorldHitPosition);
 						// 交点までの距離を更新する
 						nearestDist = worldHitDist;
 						hit = true;
-						//}
+						
 					}
 				}
 			}

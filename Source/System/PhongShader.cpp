@@ -4,21 +4,7 @@
 
 PhongShader::PhongShader(ID3D11Device* device)
 {
-	//頂点
-	//GpuResourceUtils::LoadVertexShader(
-	//	device,
-	//	"Data/Shader/PhongShaderVS.cso",
-	//	ModelResource::InputElementDescs.data(),
-	//	static_cast<UINT>(ModelResource::InputElementDescs.size()),
-	//	inputLayout.GetAddressOf(),
-	//	vertexShader.GetAddressOf());
-
-	////ピクセル
-	//GpuResourceUtils::LoadPixelShader(
-	//	device,
-	//	"Data/Shader/PhongShaderPS.cso",
-	//	pixelShader.GetAddressOf());
-
+	
 	//マテリアル用定数バッファ
 	GpuResourceUtils::CreateConstantBuffer(
 		device,
