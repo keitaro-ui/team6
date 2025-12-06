@@ -9,6 +9,7 @@
 #include "Model.h"
 #include "Shader.h"
 #include "ShapeRenderer.h"
+#include "Camera.h"
 #include <random>
 
 
@@ -80,6 +81,8 @@ public:
 	//    （不透明 → 透明の順で描画するときに安全）
 	void ClearBinding(ID3D11DeviceContext* dc);
 	
+	void UpdateLightSwitch();
+
 	//遊び
 	void UpdataLightsSS();
 private:
@@ -91,7 +94,8 @@ private:
 		DirectX::XMFLOAT4		cameraPosition;		// カメラ座標
 		float lightingMultiplier{ 0.0f };			// ライト強度調整
 		float useLighting{ 1.0f };					// ライトON/OFF用
-		float padding[2];							// 16バイト境界揃え
+		float LightSwitch{ 0.0f };
+		float SpotLightSwitch{ 1.0f };
 	};
 	CbScene sceneConstantBufferData;
 
@@ -200,6 +204,17 @@ private:
 
 	std::uniform_real_distribution<float> dist;
 
+	float accumulatedDistanceT = 0.0f;
+	DirectX::XMFLOAT3 lastPos = Camera::Instance().GetEye();
+	bool Event = false;
+	float dx, dy, dz;
+
+	float horrorTimer = 0.0f;
+	int horrorFrame = 0;
+	int horrorPhase = -1;
+
+
+
 public:
 	// ポイントライト設定
 	void SetPointLight(int index, const point_lights& light);
@@ -207,4 +222,6 @@ public:
 	void SetAmbientColor(const DirectX::XMFLOAT4& color);
 
 	void UpdateSafetyAreaLights(const std::vector<DirectX::XMFLOAT4>& position);
+
+	int GetHorrorPhase() { return horrorPhase; }
 };

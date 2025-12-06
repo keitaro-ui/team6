@@ -19,7 +19,6 @@ SamplerState LinearSampler : register(s0);
 
 float4 main(VS_OUT pin) : SV_TARGET
 {  
-    
 	// ÉKÉìÉ}ï‚ê≥åWêî
     static const float GammaFactor = 2.2f;
 
@@ -80,7 +79,15 @@ float4 main(VS_OUT pin) : SV_TARGET
         return texColor;
     }
     
-    float ambientStrength = 0.02f; // 0.0Å`0.1Ç≠ÇÁÇ¢Ç≈à√Ç≠Ç»ÇÈ
+    if (LightSwitch <= 0.5f)
+    {
+        float power = saturate(dot(N, -L));
+        power = power * 0.5f + 0.5f;
+        texColor.rgb *= power;
+        return texColor;
+    }
+    
+    float ambientStrength = 0.02f;
     float3 ambient = float3(0.1, 0.2f, 0.2f) * ka.rgb;
     //float3 ambient = float3(0.5f,0.5f,0.5f) * ka.rgb;
     
@@ -165,37 +172,49 @@ float4 main(VS_OUT pin) : SV_TARGET
     float3 spot_diffuse = 0;
     float3 spot_specular = 0;
     float aaa = 0;
+   
     
     float3 SpotColor = 0;
-    for (int j = 0; j < 8; ++j)
+    if (SpotLightSwitch <= 0.3f)
     {
-        float3 LP = spot_light[j].position.xyz - pin.position.xyz;
-        float len = length(LP);
+        for (int j = 0; j < 8; ++j)
+        {
+            float3 LP = spot_light[j].position.xyz - pin.position.xyz;
+            float len = length(LP);
+            
+            float range = spot_light[j].range;
+            
+            if(SpotLightSwitch>=0.5f&&SpotLightSwitch<=0.9f)
+                range = 0.5f;
         
-        float3 L = normalize(-LP);
+            float3 L = normalize(-LP);
+            float attenuateLength = saturate(1.0f - len / range);
+            float attenuation = attenuateLength * attenuateLength;
         
-        float attenuateLength = saturate(1.0f - len / spot_light[j].range);
-        float attenuation = attenuateLength * attenuateLength;
+            float3 spotDirection = normalize(spot_light[j].direction.xyz);
+            float angle = dot(spotDirection, L);
         
-        float3 spotDirection = normalize(spot_light[j].direction.xyz);
-        float angle = dot(spotDirection, L); 
+            float spotEffect = smoothstep(spot_light[j].outerCorn, spot_light[j].innerCorn, angle);
+            attenuation *= spotEffect;
         
-        float spotEffect = smoothstep(spot_light[j].outerCorn , spot_light[j].innerCorn, angle);
-        attenuation *= spotEffect;
+            float3 H = normalize(V + L);
+            float NdotL = saturate(dot(N, L));
+            float NdotV = saturate(dot(N, V));
+            float NdotH = saturate(dot(N, H));
+            float VdotH = saturate(dot(V, H));
         
-        float3 H = normalize(V + L);
-        float NdotL = saturate(dot(N, L));
-        float NdotV = saturate(dot(N, V));
-        float NdotH = saturate(dot(N, H));
-        float VdotH = saturate(dot(V, H));
+            float3 LightColor = spot_light[j].color.rgb * attenuation * spot_light[0].color.w;
         
-        float3 LightColor = spot_light[j].color.rgb * attenuation * spot_light[0].color.w;
+            float3 diff = DiffuseBRDF(VdotH, F0, kd.rgb);
+            float3 spec = SpecularBRDF(NdotV, NdotL, NdotH, VdotH, F0, roughness);
+            
         
-        float3 diff = DiffuseBRDF(VdotH, F0, kd.rgb);
-        float3 spec = SpecularBRDF(NdotV, NdotL, NdotH, VdotH, F0, roughness);
         
-        diffuse_total += diff * LightColor;
-        specular_total += spec * LightColor;  
+     
+            diffuse_total += diff * LightColor;
+            specular_total += spec * LightColor;
+        
+        }
     }
 
     

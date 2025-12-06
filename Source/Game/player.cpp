@@ -19,6 +19,7 @@ Player::Player()
 	//モデルが大きいのでスケーリング
 	scale.x = scale.y = scale.z = 0.21f;
 	position.y = 3.0f;
+	position.z = 3.0f;
 }
 
 //デストラクタ
@@ -36,6 +37,7 @@ void Player::Update(float elapsedTime)
 {
 	shottimer++;
 
+	renderer->GetHorrorPhase();
 	////移動入力処理
 	InputMove(elapsedTime);
 

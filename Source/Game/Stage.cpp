@@ -7,7 +7,7 @@ Stage::Stage()
 {
 	//ステージモデルを読み込み
 	//model = new Model("Data/Model/Stage/smallroom.mdl");
-	model = new Model("Data/Model/Stage/wallceiling.mdl");
+	model = new Model("Data/Model/Stage/doorT.mdl");
 
 
 	//loadTextures.LoadNormal("Data/Model/Stage/Texture/Small room/aiStandardSurface2_Normal_Utility - Raw.png");
@@ -52,7 +52,7 @@ Stage::Stage()
 	
     models.push_back(std::make_unique<Model>("Data/Model/Stage/saku.mdl"));
 
-
+   
 	scale.x = scale.y = scale.z = 0.02f;
 	/*scale.x = scale.y = scale.z = 1.0f;*/
 
@@ -103,6 +103,7 @@ void Stage::Render(const RenderContext& rc, ModelRenderer* renderer)
             TextureList[i].Clear(rc);
         }
 	}
+
 
 }
 

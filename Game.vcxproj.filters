@@ -78,6 +78,7 @@
     <ClCompile Include="Source\System\ShadowMapShader.cpp" />
     <ClCompile Include="Source\System\ShapeRenderer.cpp" />
     <ClCompile Include="Source\System\Sprite.cpp" />
+    <ClCompile Include="Source\Scene\SceneRule.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="External\imgui-docking\imconfig.h" />
@@ -156,6 +157,7 @@
     <ClInclude Include="Source\System\Sprite.h" />
     <ClInclude Include="Source\Game\GoalPoint.h" />
     <ClInclude Include="Source\Game\StartPoint.h" />
+    <ClInclude Include="Source\Scene\SceneRule.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\Basic.hlsli" />

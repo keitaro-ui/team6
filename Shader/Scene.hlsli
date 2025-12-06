@@ -6,7 +6,8 @@ cbuffer CbScene : register(b0)
     float4				camera_position;
     float lightingMultiplier;
     float useLighting;
-    float padding[2];
+    float LightSwitch;
+    float SpotLightSwitch;
 };
 
 // “_ŒõŒ¹
