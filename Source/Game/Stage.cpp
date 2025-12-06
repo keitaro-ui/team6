@@ -205,11 +205,10 @@ Stage::Stage()
 	doorPos.z = 17.8f;
     doorAngle.y = DirectX::XMConvertToRadians(-180.0f);
 	//position.y = 4.0f;
-<<<<<<< HEAD
-=======
+
     DirectX::XMFLOAT3 doorPos = { 0,0,0 };
  
->>>>>>> master
+
 
 }
 
@@ -276,13 +275,8 @@ void Stage::Render(const RenderContext& rc, ModelRenderer* renderer)
 	}
 
 
-
-<<<<<<< HEAD
-=======
     renderer->Render(rc, transformDoor, door.get(), ShaderId::Lambert);
 
-
->>>>>>> master
 }
 
 //void Stage::RenderDebugPrimitive(const RenderContext& rc, ShapeRenderer* renderer)

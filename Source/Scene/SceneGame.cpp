@@ -253,20 +253,6 @@ void SceneGame::Finalize()
 	//エラー起きるかも
 	EnemyManager::Instance().Clear();
 
-<<<<<<< HEAD
-	//SafetyArea終了化
-	for (auto& s : player->safetyAreas)
-	{
-		if (s)
-		{
-			delete s;
-			s = nullptr;
-		}
-	}
-
-=======
-	
-
 
 	////SafetyArea終了化
 	//for (auto& s : player->safetyAreas)
@@ -277,7 +263,7 @@ void SceneGame::Finalize()
 	//		s = nullptr;
 	//	}
 	//}
->>>>>>> master
+
 }
 
 // 更新処理
@@ -286,85 +272,9 @@ void SceneGame::Update(float elapsedTime)
 	if (!player || !goalPoint)
 		return;
 
-<<<<<<< HEAD
-	// --- HPチェック ---
-	if (player->hp <= 0.0f)
-	{
-		// SceneResultGameOver に切り替え
-		SceneManager::Instance().ChangeScene(new SceneResult(ResultType::GameOver));
-		return; // 以降の更新は行わない
-	}
-	//カメラコントローラー更新処理
-	DirectX::XMFLOAT3 target = player->GetPosition();
-	target.y += 0.5f;
-	cameraController->SetTarget(target);
-	cameraController->Update(elapsedTime);
-	
-	//プレイヤー更新処理
-	player->Update(elapsedTime);
-
-	if (renderer) {
-		std::vector<DirectX::XMFLOAT4> saPositions;
-		player->FillSafetyAreaPosition(saPositions);
-		renderer->UpdateSafetyAreaLights(saPositions);
-	}
-
-	player->SetPosition(physics.CircleVsStage(player->GetPosition(), player->GethitRadius()));
-
-
-	enemyslime->Update(elapsedTime);
-
-	Graphics& graphics = Graphics::Instance();
-	ID3D11DeviceContext* dc = graphics.GetDeviceContext();
-	ShapeRenderer* shapeRenderer = graphics.GetShapeRenderer();
-	ModelRenderer* modelRenderer = graphics.GetModelRenderer();
-
-	// 描画準備
-	RenderContext rc;
-	rc.deviceContext = dc;
-	renderer->RenderImGui(rc);
-	//ステージ更新処理
-	stage->Update(elapsedTime);
-
-	//エネミー更新処理
-	EnemyManager::Instance().Update(elapsedTime);
-
-	if (renderer->GetHorrorPhase() == 3)
-	{
-		//ステージ継続ダメージ
-		const float stageDamagePerSec = 0.0f;
-		player->AddDamage(stageDamagePerSec * elapsedTime);
-	}
-
-	
-
-	if (!player->safetyAreas.empty())
-	{
-		//SafetyArea内なら回復
-		for (auto& s : player->safetyAreas)
-		{
-			if (!s) continue;
-
-			if (s) s->Update(elapsedTime);
-			if (s && s->IsInside(player->GetPosition()))
-			{
-				player->Heal(5.0f * elapsedTime);
-				break;
-			}
-		}
-	}
-=======
->>>>>>> master
-	//ゴール判定
-
-<<<<<<< HEAD
-		float distSq = dx * dx + dy * dy + dz * dz;
-		float goalRadius = 1.0f;
-=======
 	float dx = player->GetPosition().x - goalPoint->position.x;
 	float dy = player->GetPosition().y - goalPoint->position.y;
 	float dz = player->GetPosition().z - goalPoint->position.z;
->>>>>>> master
 
 	float distSq = dx * dx + dy * dy + dz * dz;
 	float goalRadius = 0.4f;

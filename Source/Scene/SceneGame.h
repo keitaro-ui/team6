@@ -11,11 +11,8 @@
 #include "../Game/Board.h"
 #include "../Game/Box.h"
 #include "../Game/EnemySlime.h"
-<<<<<<< HEAD
 #include "../Game/Object.h"
 #include "../Source/System/Sprite.h"
-=======
->>>>>>> master
 #include "../Game/StartPoint.h"
 #include "../Game/GoalPoint.h"
 #include "ScenePassword.h"
