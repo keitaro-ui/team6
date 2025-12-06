@@ -258,89 +258,18 @@ void SceneGame::Update(float elapsedTime)
 	if (!player || !goalPoint)
 		return;
 
-<<<<<<< HEAD
-=======
-	// --- HPチェック ---
-	if (player->hp <= 0.0f)
-	{
-		// SceneResultGameOver に切り替え
-		SceneManager::Instance().ChangeScene(new SceneResult(ResultType::GameOver));
-		return; // 以降の更新は行わない
-	}
-	//カメラコントローラー更新処理
-	DirectX::XMFLOAT3 target = player->GetPosition();
-	target.y += 0.5f;
-	cameraController->SetTarget(target);
-	cameraController->Update(elapsedTime);
-	
-	//プレイヤー更新処理
-	player->Update(elapsedTime);
-
-	if (renderer) {
-		std::vector<DirectX::XMFLOAT4> saPositions;
-		player->FillSafetyAreaPosition(saPositions);
-		renderer->UpdateSafetyAreaLights(saPositions);
-	}
-
-	player->SetPosition(physics.CircleVsStage(player->GetPosition(), player->GethitRadius()));
-
-
-	enemyslime->Update(elapsedTime);
-
-	Graphics& graphics = Graphics::Instance();
-	ID3D11DeviceContext* dc = graphics.GetDeviceContext();
-	ShapeRenderer* shapeRenderer = graphics.GetShapeRenderer();
-	ModelRenderer* modelRenderer = graphics.GetModelRenderer();
-
-	// 描画準備
-	RenderContext rc;
-	rc.deviceContext = dc;
-	renderer->RenderImGui(rc);
-	//ステージ更新処理
-	stage->Update(elapsedTime);
-
-	//エネミー更新処理
-	EnemyManager::Instance().Update(elapsedTime);
-
-	if (renderer->GetHorrorPhase() == 3)
-	{
-		//ステージ継続ダメージ
-		const float stageDamagePerSec = 5.0f;
-		player->AddDamage(stageDamagePerSec * elapsedTime);
-	}
-
-	
-
-	if (!player->safetyAreas.empty())
-	{
-		//SafetyArea内なら回復
-		for (auto& s : player->safetyAreas)
-		{
-			if (!s) continue;
-
-			if (s) s->Update(elapsedTime);
-			if (s && s->IsInside(player->GetPosition()))
-			{
-				player->Heal(5.0f * elapsedTime);
-				break;
-			}
-		}
-	}
->>>>>>> master
 	//ゴール判定
 
 	float dx = player->GetPosition().x - goalPoint->position.x;
 	float dy = player->GetPosition().y - goalPoint->position.y;
 	float dz = player->GetPosition().z - goalPoint->position.z;
 
-<<<<<<< HEAD
 	float distSq = dx * dx + dy * dy + dz * dz;
 	float goalRadius = 0.4f;
 	GamePadButton button = Input::Instance().GetGamePad().GetButtonDown();
 	if (distSq <= goalRadius * goalRadius && button == GamePad::BTN_START)
 	{
-		/*	Scene* currentScene = SceneManager::Instance().GetCurrentScene();*/
-			//SceneManager::Instance().ChangeScene(new ScenePassword("3132"));
+		
 		passward = true;
 	}
 
@@ -394,7 +323,7 @@ void SceneGame::Update(float elapsedTime)
 		EnemyManager::Instance().Update(elapsedTime);
 
 		//ステージ継続ダメージ
-		const float stageDamagePerSec = 5.0f;
+		const float stageDamagePerSec = 3.0f;
 		player->AddDamage(stageDamagePerSec * elapsedTime);
 
 
@@ -416,13 +345,7 @@ void SceneGame::Update(float elapsedTime)
 			}
 
 		}
-=======
-		if(distSq <= goalRadius * goalRadius)
-		{
-			SceneManager::Instance().ChangeScene(new SceneResult(ResultType::GameClear));
-		return;
-		}
-	
+
 
 	bool inside = false;
 
@@ -437,74 +360,7 @@ void SceneGame::Update(float elapsedTime)
 
 	player->SetPlayerInside(inside);
 
-	//クイズ処理
-	//if (!quizFlag)   // ←クイズ中は検知しない
-	//{
-	//	for (auto& board : boards)
-	//	{
-	//		//quizFlag = false;
-	//		if (board->CheckNearBoard(player.get()))
-	//		{
-	//			fRenFlag = true;
-	//			auto& gamepad = Input::Instance().GetGamePad();
-	//			//if (gamepad.GetButtonDown() & GamePad::BTN_A)
-	//			if (GetAsyncKeyState('F') & 0x8000)
-	//			{
-	//				quizFlag = true;
-	//				activeBoard = board;
-	//				board->StartQuiz();
-	//				break;
-	//			}
-	//		}
-	//	}
-	//}
-
-	//if (quizFlag && activeBoard && GetAsyncKeyState('F') & 0x8000)
-	//{
-	//	activeBoard->EndQuiz();
-	//	quizFlag = false;
-	//	fRenFlag = false;
-	//	activeBoard = nullptr;
-	//}
->>>>>>> master
-
-
-
-
-
-
-		//クイズ処理
-		if (!quizFlag)   // ←クイズ中は検知しない
-		{
-			for (auto& board : boards)
-			{
-				//quizFlag = false;
-				if (board->CheckNearBoard(player.get()))
-				{
-					fRenFlag = true;
-					auto& gamepad = Input::Instance().GetGamePad();
-					//if (gamepad.GetButtonDown() & GamePad::BTN_A)
-					if (GetAsyncKeyState('F') & 0x8000)
-					{
-						quizFlag = true;
-						activeBoard = board;
-						board->StartQuiz();
-						break;
-					}
-				}
-			}
-		}
-
-		if (quizFlag && activeBoard && GetAsyncKeyState('F') & 0x8000)
-		{
-			activeBoard->EndQuiz();
-			quizFlag = false;
-			fRenFlag = false;
-			activeBoard = nullptr;
-		}
-
-
-
+	
 		//シーン遷移
 		//GamePad& gamePad = Input::Instance().GetGamePad();
 		GamePad& gamePad = Input::Instance().GetGamePad();
@@ -610,7 +466,7 @@ void SceneGame::Render()
 			0.5, 0.5, 0.5, 1
 		);
 
-		int remain = (int)player->GetMaxSafeAreaCount() - (int)player->safetyAreas.size();
+		int remain = (int)player->GetMaxSafeAreaCount();
 
 		float iconW = SafetyIconTex.GetWidth() * 0.5f;
 		float iconH = SafetyIconTex.GetHeight() * 0.5f;

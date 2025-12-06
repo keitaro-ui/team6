@@ -193,7 +193,8 @@ void ScenePassword::OnMouseDown(float mx, float my)
     
     // TriangleƒNƒŠƒbƒN”»’è
     for (int i = 0; i < 4; i++)
-    {
+	{
+		//clickNum[i] = 0;
         if (mx >= tri[i].x && mx <= tri[i].x + tri[i].w &&
             my >= tri[i].y && my <= tri[i].y + tri[i].h)
         {

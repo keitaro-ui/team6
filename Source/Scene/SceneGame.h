@@ -70,16 +70,11 @@ private:
 	std::unique_ptr<Sprite> spr = nullptr;
 
 	//•Ï”éŒ¾
-<<<<<<< HEAD
-	bool quizFlag = false;
-	bool fRenFlag = false;
 
-	bool passward = false;
-=======
->>>>>>> master
 	PhysicsSystem2d physics;
 	Board* activeBoard = nullptr;
 	float playerSize;
+	bool passward = false;
 
 	float xDis;
 	float zDis;
@@ -88,9 +83,7 @@ private:
 	bool playerIsInside = false;
 public:
 	std::vector<std::unique_ptr<Sprite>> sprites;
-<<<<<<< HEAD
-	
+
 	ScenePassword* passwordScene;
-=======
->>>>>>> master
+
 };
