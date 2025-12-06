@@ -11,11 +11,14 @@
 //コンストラクタ
 EnemySlime::EnemySlime()
 {
-	model = new Model("Data/EnemySlime/usaa.mdl");
+	model = new Model("Data/EnemySlime/motion_usa.mdl");
+	modelFuyo = new Model("Data/EnemySlime/fuyo.mdl");
+	model->PlayAnimation(0, true);
+	modelFuyo->PlayAnimation(0, true);
 	//model = new Model("Data/Model/Target/balloon.mdl");
 	//モデルが大きいのでスケーリング
 	//scale.x = scale.y = scale.z = 0.1f;
-	scale = { 0.03f, 0.03f, 0.03f };
+	scale = { 0.02f, 0.02f, 0.02f };
 	//幅、高さ設定
 	radius = 0.2f;
 	height = 0.0f;
@@ -36,16 +39,14 @@ EnemySlime::EnemySlime()
 			//aiTree->AddNode("Battle", "Attack", 1, BehaviorTree05::SelectRule::Random, new AttackJudgment05(this), nullptr);
 			aiTree->AddNode("Battle", "Pursuit", 1, BehaviorTree::SelectRule::Non, nullptr, new PursuitAction(this));
 		}
-		aiTree->AddNode("Root", "SearchBox", 2, BehaviorTree::SelectRule::Priority, new PutTrueJudgment(this), nullptr);
-		//Bring子ノード
-		{
-			aiTree->AddNode("SearchBox", "Search", 1, BehaviorTree::SelectRule::Non, new BreakSearchJudgment(this), new BreakPursuitAction(this));
-			
-			//中間地点を壊す
-			aiTree->AddNode("SearchBox", "Push", 2, BehaviorTree::SelectRule::Non, nullptr, new BringAction(this));
-			
-		}
-		aiTree->AddNode("Root", "Scout", 3, BehaviorTree::SelectRule::Sequence, nullptr, nullptr);
+		//aiTree->AddNode("Root", "SearchBox", 2, BehaviorTree::SelectRule::Priority, new PutTrueJudgment(this), nullptr);
+		////Bring子ノード
+		//{
+		//	aiTree->AddNode("SearchBox", "Search", 1, BehaviorTree::SelectRule::Non, new BreakSearchJudgment(this), new BringAction(this));
+		//	
+		//	
+		//}
+		aiTree->AddNode("Root", "Scout", 2, BehaviorTree::SelectRule::Sequence, nullptr, nullptr);
 		// Scout 子ノード
 		{
 			aiTree->AddNode("Scout", "RouteSearch", 1, BehaviorTree::SelectRule::Non, new WanderJudgment(this), new ComputePathAction(this));
@@ -66,6 +67,7 @@ EnemySlime::EnemySlime()
 EnemySlime::~EnemySlime()
 {
 	delete model;
+	delete modelFuyo;
 }
 
 //更新処理
@@ -87,8 +89,12 @@ void EnemySlime::Update(float elapsedTime)
 	//オブジェクト行列を更新
 	UpdateTransform();
 
+	model->UpdateAnimation(elapsedTime);
+	model->UpdateTransform();
+
+	modelFuyo->UpdateAnimation(elapsedTime);
+	modelFuyo->UpdateTransform();
 	//モデル行列更新
-	//model->UpdateTransform();
 
 	//無敵時間更新
 	UpdateInvincibleTimer(elapsedTime);
@@ -100,6 +106,7 @@ void EnemySlime::Update(float elapsedTime)
 void EnemySlime::Render(const RenderContext& rc, ModelRenderer* renderer)
 {
 	renderer->Render(rc, transform, model, ShaderId::Lambert);
+	renderer->Render(rc, transform, modelFuyo, ShaderId::Lambert);
 	//rendererer->RenderSphere(rc, targetPosition, radius, { 0.2f, 1.0f, 0.2f, 1.0f });
 }
 

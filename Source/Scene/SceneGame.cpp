@@ -38,11 +38,11 @@ void SceneGame::Initialize()
 	enemyslime = std::make_unique<EnemySlime>();
 	//enemyslime->player = player.get();
 
-<<<<<<< HEAD
+
 	start = std::make_unique<Start>();
 
 	goal = std::make_unique<Goal>();
-=======
+
 	//スタート位置初期化
 	player->SetPosition({ 0.0f, 3.0f, -16.0f });
 	Graphics& graphics = Graphics::Instance();
@@ -54,7 +54,7 @@ void SceneGame::Initialize()
 	//ゴール位置初期化
 	goalPoint = new GoalPoint({ 0.0f, 3.0f, 16.0f });
 
->>>>>>> master
+
 
 	//スプライト初期設定
 	{
@@ -207,9 +207,10 @@ void SceneGame::Finalize()
 	//boxなどのenemyを継承しているnewはdeleteしてはいけない。EnemyManagerごと消す
 
 	//エネミー終了化
-<<<<<<< HEAD
+
 	//EnemyManager::Instance().Clear();
-=======
+
+	//エラー起きるかも
 	EnemyManager::Instance().Clear();
 
 	//SafetyArea終了化
@@ -221,7 +222,7 @@ void SceneGame::Finalize()
 			s = nullptr;
 		}
 	}
->>>>>>> master
+
 }
 
 // 更新処理
@@ -275,7 +276,7 @@ void SceneGame::Update(float elapsedTime)
 	if (renderer->GetHorrorPhase() == 3)
 	{
 		//ステージ継続ダメージ
-		const float stageDamagePerSec = 5.0f;
+		const float stageDamagePerSec = 0.0f;
 		player->AddDamage(stageDamagePerSec * elapsedTime);
 	}
 
@@ -303,7 +304,7 @@ void SceneGame::Update(float elapsedTime)
 		float dz = player->GetPosition().z - goalPoint->position.z;
 
 		float distSq = dx * dx + dy * dy + dz * dz;
-		float goalRadius = 1.5f;
+		float goalRadius = 1.0f;
 
 		if(distSq <= goalRadius * goalRadius)
 		{
@@ -400,7 +401,7 @@ void SceneGame::Render()
 		
 		//player->Render(rc, modelRenderer);
 
-		//enemyslime->Render(rc, modelRenderer);
+		enemyslime->Render(rc, modelRenderer);
 
 		ProjectileManager::Instance().Render(rc, modelRenderer);
 
@@ -416,22 +417,20 @@ void SceneGame::Render()
 		physics.RenderDebugPrimitive(rc, shapeRenderer);
 
 		//エネミーデバッグプリミティブ描画
-<<<<<<< HEAD
+
 		//EnemyManager::Instance(); 
 		//.RenderDebugPrimitive(rc, shapeRenderer);
 		// ラインレンダラ描画実行
 		//graphics.GetLineRenderer()->Render(rc.deviceContext, rc.view, rc.projection);
 
-		player->RenderDebugPrimitive(rc, shapeRenderer);
-		enemyslime->RenderDebugPrimitive(rc, shapeRenderer);
+		
 
 		stage->RenderDebugPrimitive(rc, shapeRenderer);
-=======
+
 		enemyslime->RenderDebugPrimitive(rc, shapeRenderer);
 
 		//modelRenderer->RenderImGui(rc);
 
->>>>>>> master
 	}
 
 	// 2Dスプライト描画

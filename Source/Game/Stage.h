@@ -65,7 +65,7 @@ public:
 	//WayPoint* wayPoint[MAX_WAY_POINT];
 private:
 	Model* model = nullptr;
-<<<<<<< HEAD
+
 	int wayPointCount = 0;
 
 	// これはがウェイポイント配列の本体
@@ -75,6 +75,12 @@ private:
 	DirectX::XMFLOAT3 sizeWay = { 0.5f,0.5f,0.5f };
 
 	std::vector<int> path;   // A* の結果（WayPoint index の列）
+	LoadTextures loadTextures;
+
+	std::vector<std::unique_ptr<Model>> models;
+	std::vector<LoadTextures> TextureList;
+	
+	std::unique_ptr<ModelRenderer> modelRenderer;
 
 	int windex = 0;
 
@@ -99,15 +105,8 @@ public:
 	const std::vector<int>& GetPath() const { return path; }
 	//エネミー全削除
 	void Clear();
-=======
 
-	LoadTextures loadTextures;
 
-	std::vector<std::unique_ptr<Model>> models;
-	std::vector<LoadTextures> TextureList;
-	
-	std::unique_ptr<ModelRenderer> modelRenderer;
->>>>>>> master
 };
 
 

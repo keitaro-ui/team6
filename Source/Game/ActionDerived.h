@@ -15,13 +15,7 @@ public:
 	ActionBase::State Run(float elapsedTime);
 };
 
-// スキル攻撃行動
-class SkillAction : public ActionBase
-{
-public:
-	SkillAction(EnemySlime* enemy) :ActionBase(enemy) {}
-	ActionBase::State Run(float elapsedTime);
-};
+
 
 // 追跡行動
 class PursuitAction : public ActionBase
@@ -42,30 +36,6 @@ public:
 	ActionBase::State Run(float elapsedTime);
 };
 
-// 待機行動
-class IdleAction : public ActionBase
-{
-public:
-	IdleAction(EnemySlime* enemy) :ActionBase(enemy) {}
-	ActionBase::State Run(float elapsedTime);
-};
-
-// 逃走行動
-class LeaveAction05 : public ActionBase
-{
-public:
-	LeaveAction05(EnemySlime* enemy) :ActionBase(enemy) {}
-	ActionBase::State Run(float elapsedTime);
-};
-
-// 回復行動
-class RecoverAction : public ActionBase
-{
-public:
-	RecoverAction(EnemySlime* enemy) :ActionBase(enemy) {}
-	ActionBase::State Run(float elapsedTime);
-};
-
 
 //物を動かす行動
 class BringAction : public ActionBase
@@ -76,14 +46,10 @@ public:
 
 private:
 	int step = 0;
+	int path_idx = -1;
 };
 
-class BreakPursuitAction : public ActionBase
-{
-public:
-	BreakPursuitAction(EnemySlime* enemy) :ActionBase(enemy) {}
-	ActionBase::State Run(float elapsedTime);
-};
+
 
 class ComputePathAction :public ActionBase
 {
@@ -102,14 +68,3 @@ private:
 	int goalIndex = 0;
 };
 
-class FollowPathAction :public ActionBase
-{
-public:
-	FollowPathAction(EnemySlime*enemy):ActionBase(enemy){}
-	ActionBase::State Run(float elpasedTime);
-
-private:
-
-	// 現在目標にしているパスのインデックス
-	int path_idx = -1;;
-};

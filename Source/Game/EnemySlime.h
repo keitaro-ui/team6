@@ -100,6 +100,7 @@ public:
 
 private:
 	Model* model = nullptr;
+	Model* modelFuyo = nullptr;
 	
 
 	DirectX::XMFLOAT3	territoryOrigin = { 0.0f,0.0f,0.0f };
@@ -110,7 +111,7 @@ private:
 	float				attackRange = 1.5f;
 	float				moveSpeed = 3.0f;
 	float				turnSpeed = DirectX::XMConvertToRadians(360);
-	float				searchRange = 25.0f;
+	float				searchRange = 20.0f;
 	float				runTimer = 0.0f;
 
 	bool renderModel = true;
@@ -128,4 +129,10 @@ public:
 	void SetSPlayer(bool i) { search_player = i; }
 	float GetSearchRange() const { return searchRange; }
 	DirectX::XMFLOAT3 GetAngle() { return angle; }
+
+	// アニメーション
+	enum class EnemyAnimation
+	{
+		usa,
+	};
 };

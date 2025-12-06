@@ -23,6 +23,8 @@ void Character::UpdateTransform()
 
 	//計算したワールド行列を取り出す
 	DirectX::XMStoreFloat4x4(&transform, W);
+
+	
 }
 
 //デバッグプリミティブ描画

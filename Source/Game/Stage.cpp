@@ -8,7 +8,7 @@
 //コンストラクタ
 Stage::Stage()
 {
-<<<<<<< HEAD
+
     //ステージモデルを読み込み
     model = new Model("Data/Model/Stage/syusei.mdl");
     //model = new Model("Data/Model/Stage/StageT.mdl");
@@ -16,7 +16,7 @@ Stage::Stage()
 
     scale.x = scale.y = scale.z = 0.02f;
     /*scale.x = scale.y = scale.z = 1.0f;*/
-    position.y = 4.0f;
+    //position.y = 4.0f;
 
     wayPointCount = 0;
 
@@ -34,7 +34,7 @@ Stage::Stage()
        
 
     // 手動で必要なノードを追加
-    AddWayPoint({ -27.1f, -1.7f, 16.3f });
+   /* AddWayPoint({ -27.1f, -1.7f, 16.3f });
     AddWayPoint({ -27.1f, -1.7f, 9.7f });
     AddWayPoint({ -27.1f, -1.7f, 3.4f });
     AddWayPoint({ -27.1f, -1.7f, -3.4f });
@@ -81,28 +81,58 @@ Stage::Stage()
     AddWayPoint({ 27, -1.7f, 3.4f });
     AddWayPoint({ 27, -1.7f, -3.4f });
     AddWayPoint({ 27, -1.7f, -10.1f });
-    AddWayPoint({ 27, -1.7f, -16.2f });
+    AddWayPoint({ 27, -1.7f, -16.2f });*/
 
-    //for (int i = 0; i < ROW_COUNT; ++i) {
-    //    for (int j = 0; j < COLUM_COUNT; ++j)
-    //    {
-    //        // インデックス番号計算
-    //        int index = (i * COLUM_COUNT) + j;
-    //        //WayPoint生成
-    //        //wayPoints[index] = new WayPoint();
-    //        wayPoints[index] = std::make_unique<WayPoint>();
+    AddWayPoint({ -27.1f, 1.0f, 16.3f });
+    AddWayPoint({ -27.1f, 1.0f, 9.7f });
+    AddWayPoint({ -27.1f, 1.0f, 3.4f });
+    AddWayPoint({ -27.1f, 1.0f, -3.4f });
+    AddWayPoint({ -27.1f, 1.0f, -10.1f });
+    AddWayPoint({ -27.1f, 1.0f, -16.2f });
 
-    //        // WayPointの座標決定
-    //        wayPoints[index]->position = DirectX::XMFLOAT3(i + 0.5f, 1.0f, j + 0.5f);
+    AddWayPoint({ -18, 1.0f, 16.3f });
+    AddWayPoint({ -18, 1.0f, 9.7f });
+    AddWayPoint({ -18, 1.0f, 3.4f });
+    AddWayPoint({ -18, 1.0f, -3.4f });
+    AddWayPoint({ -18, 1.0f, -10.1f });
+    AddWayPoint({ -18, 1.0f, -16.2f });
 
-    //        // WayPointに紐づくエッジを生成
-    //        for (int k = 0; k < 8; ++k)
-    //        {
-    //            wayPoints[index]->edge[k] = new Edge();
-    //            wayPoints[index]->edge[k]->originPoint = index;
-    //        }
-    //    }
-    //}
+    AddWayPoint({ -8.95f, 1.0f, 16.3f });
+    AddWayPoint({ -8.95f, 1.0f, 9.7f });
+    AddWayPoint({ -8.95f, 1.0f, 3.4f });
+    AddWayPoint({ -8.95f, 1.0f, -3.4f });
+    AddWayPoint({ -8.95f, 1.0f, -10.1f });
+    AddWayPoint({ -8.95f, 1.0f, -16.2f });
+
+    AddWayPoint({ 0, 1.0f, 16.3f });
+    AddWayPoint({ 0, 1.0f, 9.7f });
+    AddWayPoint({ 0, 1.0f, 3.4f });
+    AddWayPoint({ 0, 1.0f, -3.4f });
+    AddWayPoint({ 0, 1.0f, -10.1f });
+    AddWayPoint({ 0, 1.0f, -16.2f });
+
+    AddWayPoint({ 8.95f, 1.0f, 16.3f });
+    AddWayPoint({ 8.95f, 1.0f, 9.7f });
+    AddWayPoint({ 8.95f, 1.0f, 3.4f });
+    AddWayPoint({ 8.95f, 1.0f, -3.4f });
+    AddWayPoint({ 8.95f, 1.0f, -10.1f });
+    AddWayPoint({ 8.95f, 1.0f, -16.2f });
+
+    AddWayPoint({ 17.94f, 1.0f, 16.3f });
+    AddWayPoint({ 17.94f, 1.0f, 9.7f });
+    AddWayPoint({ 17.94f, 1.0f, 3.4f });
+    AddWayPoint({ 17.94f, 1.0f, -3.4f });
+    AddWayPoint({ 17.94f, 1.0f, -10.1f });
+    AddWayPoint({ 17.94f, 1.0f, -16.2f });
+
+    AddWayPoint({ 27, 1.0f, 16.3f });
+    AddWayPoint({ 27, 1.0f, 9.7f });
+    AddWayPoint({ 27, 1.0f, 3.4f });
+    AddWayPoint({ 27, 1.0f, -3.4f });
+    AddWayPoint({ 27, 1.0f, -10.1f });
+    AddWayPoint({ 27, 1.0f, -16.2f });
+
+
 
 
      // WayPointに紐づくエッジを生成
@@ -115,8 +145,8 @@ Stage::Stage()
         }
         ConnectWayPoints(windex);
     }
-=======
-	//�X�e�[�W���f����ǂݍ���
+
+	//ステージデータを読み込む
 	//model = new Model("Data/Model/Stage/smallroom.mdl");
 	model = new Model("Data/Model/Stage/doorT.mdl");
 
@@ -169,9 +199,6 @@ Stage::Stage()
 
 	//position.y = 4.0f;
 
- 
-
->>>>>>> master
 }
 
 
@@ -179,12 +206,8 @@ Stage::~Stage()
 {
 	//ステージモデルを破棄
 	delete model;
-<<<<<<< HEAD
     
    // Clear();
-=======
-	
->>>>>>> master
 }
 
 //更新処理
@@ -214,22 +237,22 @@ void Stage::Render(const RenderContext& rc, ModelRenderer* renderer)
 	//DirectX::XMFLOAT4X4 transform;
 	//DirectX::XMStoreFloat4x4(&transform, DirectX::XMMatrixIdentity());
 
-<<<<<<< HEAD
+
 	//レンダラモデルに描画してもらう
 	//renderer->Render(rc, transform, model, ShaderId::Lambert);
-=======
+
 	for (size_t i = 0; i < models.size(); i++)
 	{
-        // �@ �e�N�X�`��������ꍇ���� Set
+        // �@ �e�N�X�`��������ꍇ���� Set
         if (i < TextureList.size())
         {
             TextureList[i].Set(rc);
         }
 
-        // �A �`��
+        // �A �`��
         renderer->Render(rc, transform, models[i].get(), ShaderId::Lambert);
 
-        // �B �e�N�X�`��������ꍇ���� Clear
+        // �B �e�N�X�`��������ꍇ���� Clear
         if (i < TextureList.size())
         {
             TextureList[i].Clear(rc);
@@ -237,7 +260,7 @@ void Stage::Render(const RenderContext& rc, ModelRenderer* renderer)
 	}
 
 
->>>>>>> master
+
 }
 
 //void Stage::RenderDebugPrimitive(const RenderContext& rc, ShapeRenderer* renderer)

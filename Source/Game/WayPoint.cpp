@@ -24,5 +24,5 @@ WayPoint::~WayPoint()
 //•`‰æˆ—
 void WayPoint::Render(const RenderContext& rc, ModelRenderer* renderer)
 {
-	shape->RenderSphere(rc, position, 0.5f, { 0,0,1,1 });
+	shape->RenderSphere(rc, position, 0.5f, { 1,1,1,1 });
 }

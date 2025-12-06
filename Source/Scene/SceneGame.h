@@ -11,13 +11,10 @@
 #include "../Game/Board.h"
 #include "../Game/Box.h"
 #include "../Game/EnemySlime.h"
-<<<<<<< HEAD
 #include "../Game/Object.h"
-=======
 #include "../Source/System/Sprite.h"
 #include "../Game/StartPoint.h"
 #include "../Game/GoalPoint.h"
->>>>>>> master
 
 // ÉQÅ[ÉÄÉVÅ[Éì
 class SceneGame : public Scene
@@ -56,16 +53,16 @@ private:
 
 	std::unique_ptr<EnemySlime> enemyslime = nullptr;
 
-<<<<<<< HEAD
+
 	std::unique_ptr<Start>start = nullptr;
 
 	std::unique_ptr<Goal>goal = nullptr;
-=======
+
 	std::unique_ptr<StartPoint> startpoint = nullptr;
 
 	std::unique_ptr<GoalPoint> goalpoint = nullptr;
 
->>>>>>> master
+
 
 	CameraController* cameraController = nullptr;
 
