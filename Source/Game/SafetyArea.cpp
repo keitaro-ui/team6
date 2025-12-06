@@ -62,22 +62,11 @@ bool SafetyArea::IsInside(const DirectX::XMFLOAT3& p)
     return distSq < (radius * radius);
 }
 
-//void SafetyArea::UpdateTransform()
-//{
-//    using namespace DirectX;
-//    XMMATRIX S = XMMatrixScaling(scale.x, scale.y, scale.z);
-//    XMMATRIX T = XMMatrixTranslation(position.x, position.y, position.z);
-//    XMStoreFloat4x4(&transform, S * T);
-//}
 
 
 void SafetyArea::Update(float deltaTime)
 {
-    // ïóëDÇÕè≠Çµè„â∫Ç…Ç”ÇÌÇ”ÇÌ
-    //position.y = 0.5f + 0.1f * sinf(static_cast<float>(GetTickCount64()) * 0.005f);
-
-
-    UpdateTransform();
+   UpdateTransform();
     circleUpdateTransform();
     balloonModel->UpdateTransform();
 }
@@ -130,7 +119,6 @@ void SafetyArea::circleUpdateTransform()
     DirectX::XMMATRIX S = DirectX::XMMatrixScaling(circleScale.x, circleScale.y, circleScale.z);
 
     //âÒì]çsóÒÇçÏê¨
-    //DirectX::XMMATRIX R = DirectX::XMMatrixRotationRollPitchYaw(angle.x,angle.y,angle.z);
     DirectX::XMMATRIX Rx = DirectX::XMMatrixRotationX(0);
     DirectX::XMMATRIX Ry = DirectX::XMMatrixRotationY(0);
     DirectX::XMMATRIX Rz = DirectX::XMMatrixRotationZ(0);

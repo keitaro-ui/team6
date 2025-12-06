@@ -56,18 +56,10 @@ void SceneTutorial::Initialize()
 	EnemyManager& enemyManager = EnemyManager::Instance();
 	for (int i = 0; i < 20; i++)
 	{
-		//EnemySlime* target = new EnemySlime();
 		balloon = new Balloon();
-		/*target->setobjnum(i);*/
-
-		//Board* board = new Board();
-		//board = new Board();
-
-		//Box* box = new Box();
+		
 		box = new Box();
-		/*box->setobjnum(i);*/
-
-
+		
 		//エネミー位置
 		std::random_device rd;
 		std::mt19937 gen(rd());
@@ -99,7 +91,6 @@ void SceneTutorial::Initialize()
 
 	//マウス位置の取得とロック
 	Input::Instance().GetMouse().Lock();
-	//Input::Instance().GetMouse();
 }
 
 // 終了化
@@ -213,12 +204,8 @@ void SceneTutorial::Render()
 
 	// 3Dデバッグ描画
 	{
-		//プレイヤーデバッグプリミティブ描画
-		//player->RenderDebugPrimitive(rc, shapeRenderer);
-
 		//エネミーデバッグプリミティブ描画
 		EnemyManager::Instance();
-		//.RenderDebugPrimitive(rc, shapeRenderer);
 	}
 
 	// 2Dスプライト描画
@@ -256,6 +243,5 @@ void SceneTutorial::Render()
 // GUI描画
 void SceneTutorial::DrawGUI()
 {
-	//プレーヤーデバッグ処理
-	//player->DrawDebugGUI();
+	
 }

@@ -45,9 +45,6 @@ void Player::Update(float elapsedTime)
 		InputMove(elapsedTime);
 	}
 
-	////ジャンプ入力処理
-	//InputJump();
-
 	// カメラ角度反映
 	angle.x = -cameraController->getAngle().x;
 	angle.y = cameraController->getAngle().y - DirectX::XM_PIDIV2;
@@ -74,9 +71,6 @@ void Player::Update(float elapsedTime)
 
 	//速力処理更新
 	UpdateVelocity(elapsedTime);
-
-	//弾丸更新処理
-	//projectileManager.Update(elapsedTime);
 
 	//プレイヤーとエネミーとの衝突処理
 	CollisionPlayerVsEnemies();
@@ -157,43 +151,7 @@ void Player::FillSafetyAreaPosition(std::vector<DirectX::XMFLOAT4>& outPositions
 //デバッグ用GUI描画
 void Player::DrawDebugGUI()
 {
-	ImGui::Begin("Player Debug");
 
-	ImGui::DragFloat3("pos", &position.x,0.1f);
-	ImGui::DragFloat("hitRadius", &hitRadius, 0.01f);
-	
-	// 最大数を調整
-	ImGui::DragInt("Max Safety Area Count", &maxSafetyAreaCount, 1, 1, 20);
-
-	// 現在の設置数を表示
-	ImGui::Text("Current Count: %d / %d", (int)safetyAreas.size(), maxSafetyAreaCount);
-
-	//ImGui::DragFloat3("slime.pos", &EnemyManager::Instance().GetEnemy(0)->GetPosition().x, 0.01f);
-
-	ImGui::Text("Player this ptr: %p", (void*)this);
-	ImGui::Text("HP : %.2f / %.2f", hp, maxHP);
-	float hpRateDebug = (maxHP != 0.0f) ? (hp / maxHP) : 0.0f;
-	ImGui::Text("hpRate (calc) = %.4f", hpRateDebug);
-
-
-	if (ImGui::CollapsingHeader("Spawned SafetyAreas"))
-	{
-			// 半径
-		ImGui::DragFloat(("Radius"), &radius, 0.01f, 0.1f, 50.0f);
-
-			// 高さ
-		ImGui::DragFloat(("Height"), &height, 0.01f, 0.1f, 20.0f);
-
-		for (int i = 0; i < safetyAreas.size(); ++i)
-		{
-			SafetyArea* area = safetyAreas[i];
-			if (!area) continue;
-
-			std::string label = "SpawnPos " + std::to_string(i);
-			ImGui::DragFloat3(label.c_str(), &area->position.x, 0.01f);
-		}
-	}
-	ImGui::End();
 }
 
 //描画処理
@@ -202,27 +160,15 @@ void Player::Render(const RenderContext& rc, ModelRenderer* renderer)
 	renderer->Render(rc, transform, model, ShaderId::Lambert);
 
 	//弾丸描画処理
-	//projectileManager.Render(rc, renderer);
 	DirectX::XMFLOAT4X4 projectileTransform = model->GetNode("tipofPistol")->globalTransform;
 	DirectX::XMMATRIX projectileMATRIX = DirectX::XMLoadFloat4x4(&projectileTransform);
 	DirectX::XMMATRIX worldMatrix = DirectX::XMLoadFloat4x4(&transform);
 	DirectX::XMStoreFloat4x4(&projectileTransform, projectileMATRIX * worldMatrix);
-
-	//弾丸射出箇所の可視化
-	/*Graphics::Instance().GetShapeRenderer()->RenderSphere(rc,
-		{ projectileTransform._41,projectileTransform._42,projectileTransform._43 },
-		0.1f,
-		{ 1.0f,1.0f,1.0f,1.0f });*/
 }
 
 //デバッグプリミティブ描画
 void Player::RenderDebugPrimitive(const RenderContext& rc, ShapeRenderer* renderer)
 {
-	//プレイヤーデバッグプリミティブ描画
-	//Character::RenderDebugPrimitive(rc, renderer);
-
-	//弾丸デバッグプリミティブ描画
-	//projectileManager.RenderDebugPrimitive(rc, renderer);
 
 	for (auto* area : safetyAreas)
 	{
@@ -318,8 +264,7 @@ void Player::CollisionPlayerVsEnemies()
 			enemy->GetRadius(),
 			outPosition))
 		{
-			//押し出し後の位置設定
-			//enemy->SetPosition(outPosition);
+			
 		}
 	}
 }
@@ -351,8 +296,6 @@ void Player::CollisionProjectilesVsEnemies()
 				enemy->GetRadius(),
 				outPosition))
 			{
-				//answer = enemy->model_index;
-
 				//ダメージを与える
 				if (enemy->ApplyDamage(1, 0.5f))
 				{
@@ -432,10 +375,6 @@ void Player::InputSafetrSrea()
 		safeCooldown = safeInterval;
 
 		putTrue = true;
-		/*if (putTrue == false)
-		{
-			putTrue = true;
-		}*/
 	}
 
 }

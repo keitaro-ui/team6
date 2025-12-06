@@ -81,9 +81,6 @@ void Stage::Update(float elapsedTime)
 {
 	UpdateTransform();
 
-	RenderImGui();
-	//DirectX::XMVector2LinePointDistance();
-	//RenderImGui();
     DirectX::XMStoreFloat4x4(&transformDoor,
         DirectX::XMMatrixScaling(scale.x,scale.y,scale.z) *
         DirectX::XMMatrixRotationRollPitchYaw(doorAngle.x,doorAngle.y,doorAngle.z)*
@@ -94,8 +91,6 @@ void Stage::Update(float elapsedTime)
 //描画処理
 void Stage::Render(const RenderContext& rc, ModelRenderer* renderer)
 {
-	//DirectX::XMFLOAT4X4 transform;
-	//DirectX::XMStoreFloat4x4(&transform, DirectX::XMMatrixIdentity());
 
 	for (size_t i = 0; i < models.size(); i++)
 	{
@@ -115,11 +110,7 @@ void Stage::Render(const RenderContext& rc, ModelRenderer* renderer)
         }
 	}
 
-
-
     renderer->Render(rc, transformDoor, door.get(), ShaderId::Lambert);
-
-
 }
 
 void Stage::DestinationPointSet(int index)
@@ -222,25 +213,6 @@ void Stage::RenderImGui()
 	DirectX::XMConvertToDegrees(angle.y),
 	DirectX::XMConvertToDegrees(angle.z)
 	};
-	if (ImGui::Begin("Stage Transform"))
-	{
-		ImGui::Text("Stage");
-		ImGui::Separator();
-
-
-		
-		// 各Transform要素を操作
-		ImGui::DragFloat3("Position", &position.x, 0.1f, -1000.0f, 1000.0f);
-		if (ImGui::DragFloat3("Rotation (deg)", &angleDeg.x, 1.0f, -360.0f, 360.0f))
-		{
-			// 変更された場合のみラジアンに戻す
-			angle.x = DirectX::XMConvertToRadians(angleDeg.x);
-			angle.y = DirectX::XMConvertToRadians(angleDeg.y);
-			angle.z = DirectX::XMConvertToRadians(angleDeg.z);
-		}
-		ImGui::DragFloat3("Scale", &scale.x, 0.01f, 0.001f, 10.0f);
-	}
-	ImGui::End();
 }
 
 // インデックス番号からウェイポイントの座標を取得

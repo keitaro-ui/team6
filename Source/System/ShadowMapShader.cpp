@@ -4,20 +4,7 @@
 
 ShadowMapShader::ShadowMapShader(ID3D11Device* device)
 {
-	//頂点
-	//GpuResourceUtils::LoadVertexShader(
-	//	device,
-	//	"Data/Shader/ShadowMapVS.cso",
-	//	ModelResource::InputElementDescs.data(),
-	//	static_cast<UINT>(ModelResource::InputElementDescs.size()),
-	//	inputLayout.GetAddressOf(),
-	//	vertexShader.GetAddressOf());
-
-	////ピクセル
-	//GpuResourceUtils::LoadPixelShader(
-	//	device,
-	//	"Data/Shader/ShadowMapPShlsl.cso",
-	//	pixelShader.GetAddressOf());
+	
 
 	//マテリアル
 	GpuResourceUtils::CreateConstantBuffer(
