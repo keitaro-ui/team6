@@ -82,6 +82,11 @@ void SceneLoading::LoadingThread(SceneLoading* scene)
 	//COM関連の初期化でスレッド毎に呼ぶ必要がある
 	CoInitialize(nullptr);
 
+	if (!scene->nextScene)
+	{
+		// 次のシーンが設定されていない場合はスレッドを終了
+		return;
+	}
 	//次のシーンの初期化を行う
 	scene->nextScene->Initialize();
 

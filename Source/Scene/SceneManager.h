@@ -35,4 +35,7 @@ public:
 private:
 	Scene* currentScene = nullptr;
 	Scene* nextScene = nullptr;
+public:
+	Scene* GetCurrentScene() const;
+	
 };

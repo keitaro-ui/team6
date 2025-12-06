@@ -11,9 +11,9 @@
 #include "../Game/Board.h"
 #include "../Game/Box.h"
 #include "../Game/EnemySlime.h"
-#include "../Source/System/Sprite.h"
 #include "../Game/StartPoint.h"
 #include "../Game/GoalPoint.h"
+#include "ScenePassword.h"
 
 // ÉQÅ[ÉÄÉVÅ[Éì
 class SceneGame : public Scene
@@ -42,6 +42,7 @@ public:
 
 	Sprite hpBarTex;
 	Sprite hpBarFrameTex;
+	Sprite SafetyIconTex;
 
 
 private:
@@ -62,7 +63,7 @@ private:
 	Balloon* balloon = nullptr;
 
 	ModelRenderer* renderer = nullptr;
-	
+
 
 	Board* boards[4];
 
@@ -71,6 +72,8 @@ private:
 	//ïœêîêÈåæ
 	bool quizFlag = false;
 	bool fRenFlag = false;
+
+	bool passward = false;
 	PhysicsSystem2d physics;
 	Board* activeBoard = nullptr;
 	float playerSize;
@@ -82,4 +85,5 @@ private:
 public:
 	std::vector<std::unique_ptr<Sprite>> sprites;
 	
+	ScenePassword* passwordScene;
 };

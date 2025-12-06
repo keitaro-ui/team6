@@ -121,6 +121,7 @@ public:
 
 private:
 
+    SafetyArea* area;
     //セーフティエリア制限個数
     int maxSafetyAreaCount = 5;
 

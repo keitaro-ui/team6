@@ -1,5 +1,9 @@
 #include "SceneManager.h"
 
+Scene* SceneManager::GetCurrentScene() const
+{
+	return currentScene;
+}
 //更新処理
 void SceneManager::Update(float elapsedTime)
 {
@@ -60,4 +64,5 @@ void SceneManager::ChangeScene(Scene* scene)
 	//新しいシーンを設定
 	nextScene = scene;
 }
+
 
