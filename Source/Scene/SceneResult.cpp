@@ -46,6 +46,21 @@ void SceneResult::Finalize()
 		delete sprite;
 		sprite = nullptr;
 	}
+	if (clear_sprite != nullptr)
+	{
+		delete clear_sprite;
+		clear_sprite = nullptr;
+	}
+	if (over_sprite != nullptr)
+	{
+		delete over_sprite;
+		over_sprite = nullptr;
+	}
+	if (sprite_number != nullptr)
+	{
+		delete sprite_number;
+		sprite_number = nullptr;
+	}
 	ShowCursor(true);
 
 	/*point = 0;

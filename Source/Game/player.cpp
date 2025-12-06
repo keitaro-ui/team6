@@ -27,6 +27,7 @@ Player::Player()
 Player::~Player()
 {
 	delete model;
+	ProjectileManager::Instance().Remove(area);
 }
 
 //マウス操作用の変数
@@ -418,7 +419,7 @@ void Player::InputSafetrSrea()
 		};
 
 		// ===== SafetyArea生成 =====
-		SafetyArea* area = new SafetyArea(&ProjectileManager::Instance());
+		area = new SafetyArea(&ProjectileManager::Instance());
 		area->SetPosition(spawnPos);
 		DirectX::XMFLOAT3 front = Camera::Instance().GetFront();
 		float yaw = std::atan2(front.x, front.z);
