@@ -205,7 +205,7 @@ private:
 	std::uniform_real_distribution<float> dist;
 
 	float accumulatedDistanceT = 0.0f;
-	DirectX::XMFLOAT3 lastPos = Camera::Instance().GetEye();
+	DirectX::XMFLOAT3 lastPos;
 	bool Event = false;
 	float dx, dy, dz;
 
@@ -213,7 +213,7 @@ private:
 	int horrorFrame = 0;
 	int horrorPhase = -1;
 
-
+	bool first = true;
 
 public:
 	// ポイントライト設定
