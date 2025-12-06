@@ -63,6 +63,8 @@ ModelRenderer::ModelRenderer(ID3D11Device* device)
 	mt = std::mt19937(std::random_device{}());
 	dist = std::uniform_real_distribution<float>(0.0f, 1.0f);
 
+	lastPos = Camera::Instance().GetEye();
+
 	// シェーダー生成
 	shaders[static_cast<int>(ShaderId::Basic)] = std::make_unique<BasicShader>(device);
 	shaders[static_cast<int>(ShaderId::Lambert)] = std::make_unique<LambertShader>(device);
@@ -125,6 +127,12 @@ void ModelRenderer::Render(const RenderContext& rc,
 	ID3D11DeviceContext* dc = rc.deviceContext;
 
 	DirectX::XMFLOAT3 nowPos = Camera::Instance().GetEye();
+	if (first)
+	{
+		lastPos = nowPos;  // 初回だけ同期
+		first = false;
+	}
+
 	dx = nowPos.x - lastPos.x;
 	dy = nowPos.y - lastPos.y;
 	dz = nowPos.z - lastPos.z;
@@ -134,7 +142,7 @@ void ModelRenderer::Render(const RenderContext& rc,
 
 	lastPos = nowPos;
 
-	if (accumulatedDistanceT > 12.0f&&!Event)
+	if (accumulatedDistanceT > 8.0f&&!Event)
 	{
 		horrorTimer = 0.0f;
 		horrorPhase = 0;

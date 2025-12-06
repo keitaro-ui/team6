@@ -30,11 +30,7 @@ void SceneGame::Initialize()
 	sprites.push_back(std::make_unique<Sprite>("Data/Sprite/Oxygen_gauge.png"));*/
 	//PlayerManager::Instance().Register(player.get());
 
-	Graphics& graphics = Graphics::Instance();
-	ModelRenderer* modelRenderer = graphics.GetModelRenderer();
-	player->SetRenderer(modelRenderer);
 
-	renderer = modelRenderer;
 
 	PlayerManager::Instance().Register(player.get());
 
@@ -43,7 +39,11 @@ void SceneGame::Initialize()
 
 	//スタート位置初期化
 	player->SetPosition({ 0.0f, 3.0f, -16.0f });
+	Graphics& graphics = Graphics::Instance();
+	ModelRenderer* modelRenderer = graphics.GetModelRenderer();
+	player->SetRenderer(modelRenderer);
 
+	renderer = modelRenderer;
 
 	//ゴール位置初期化
 	goalPoint = new GoalPoint({ 0.0f, 3.0f, 16.0f });
@@ -264,9 +264,12 @@ void SceneGame::Update(float elapsedTime)
 	//エネミー更新処理
 	EnemyManager::Instance().Update(elapsedTime);
 
-	//ステージ継続ダメージ
-	const float stageDamagePerSec = 5.0f;
-	player->AddDamage(stageDamagePerSec * elapsedTime);
+	if (renderer->GetHorrorPhase() == 3)
+	{
+		//ステージ継続ダメージ
+		const float stageDamagePerSec = 5.0f;
+		player->AddDamage(stageDamagePerSec * elapsedTime);
+	}
 
 	
 
