@@ -2,6 +2,7 @@
 #include "Object.h"
 #include "System\Graphics.h"
 #include "Collision.h"
+#include "Stage.h"
 
 void ObjectBase::UpdateTransform()
 {
@@ -21,7 +22,10 @@ static Start* startInstance = nullptr;
 // インスタンス取得
 Start& Start::Instance()
 {
-	
+	if (startInstance == nullptr)
+	{
+		assert(false && "Start instance is null! You must create a Start object before using Start::Instance()");
+	}
 	return *startInstance;
 }
 
@@ -30,7 +34,7 @@ Start::Start()
 {
 	// インスタンスポイント設定
 	startInstance = this;
-	position = DirectX::XMFLOAT3(0.5f, 0.0f, 0.5f);
+	position = { StageManager::Instance().GetStage()->GetWayPoint(2)->position.x, StageManager::Instance().GetStage()->GetWayPoint(2)->position.y, StageManager::Instance().GetStage()->GetWayPoint(2)->position.z };
 }
 
 // デストラクタ

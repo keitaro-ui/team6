@@ -33,6 +33,27 @@ void ModelRenderer::UpdateSafetyAreaLights(const std::vector<DirectX::XMFLOAT4>&
 	}
 }
 
+void ModelRenderer::ResetHorror()
+{
+	horrorPhase = -1;
+	horrorFrame = 0;
+	horrorTimer = 0.0f;
+
+	dx = dy = dz = 0;
+	moved = 0;
+	accumulatedDistanceT = 0;
+
+	lastPos = Camera::Instance().GetEye();
+	nowPos = Camera::Instance().GetEye();
+	
+	first = true;
+	Event = false;
+
+
+	sceneConstantBufferData.LightSwitch = 0.0f;
+	sceneConstantBufferData.SpotLightSwitch = 1.0f;
+}
+
 // コンストラクタ
 ModelRenderer::ModelRenderer(ID3D11Device* device)
 {
@@ -64,6 +85,15 @@ ModelRenderer::ModelRenderer(ID3D11Device* device)
 	dist = std::uniform_real_distribution<float>(0.0f, 1.0f);
 
 	lastPos = Camera::Instance().GetEye();
+	horrorTimer = 0.0f;
+	horrorFrame = 0;
+	horrorPhase = -1;
+	first = true;
+	sceneConstantBufferData.LightSwitch = 0.0f;
+	sceneConstantBufferData.SpotLightSwitch = 1.0f;
+	dx = dy = dz = 0;
+	moved = 0;
+	Event = false;
 
 	// シェーダー生成
 	shaders[static_cast<int>(ShaderId::Basic)] = std::make_unique<BasicShader>(device);
@@ -126,18 +156,19 @@ void ModelRenderer::Render(const RenderContext& rc,
 {
 	ID3D11DeviceContext* dc = rc.deviceContext;
 
-	DirectX::XMFLOAT3 nowPos = Camera::Instance().GetEye();
+	nowPos = Camera::Instance().GetEye();
 	if (first)
 	{
-		lastPos = nowPos;  // 初回だけ同期
+		lastPos = nowPos; 
 		first = false;
+
 	}
 
 	dx = nowPos.x - lastPos.x;
 	dy = nowPos.y - lastPos.y;
 	dz = nowPos.z - lastPos.z;
 
-	float moved = sqrtf(dx * dx + dy * dy + dz * dz);
+	moved = sqrtf(dx * dx + dy * dy + dz * dz);
 	accumulatedDistanceT += moved;
 
 	lastPos = nowPos;
@@ -489,9 +520,9 @@ void ModelRenderer::UpdateLightSwitch()
 			// ---- (1) 高速チカチカ ----
 			int cycle = horrorFrame % 8;
 			if (cycle < 3)
-				sceneConstantBufferData.LightSwitch = 1.0f; // OFF
+				sceneConstantBufferData.LightSwitch = 1.0f; // ON
 			else
-				sceneConstantBufferData.LightSwitch = 0.0f; // ON
+				sceneConstantBufferData.LightSwitch = 0.0f; // OFF
 		}
 		else if (horrorFrame < 450)
 		{

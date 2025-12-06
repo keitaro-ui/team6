@@ -3,6 +3,7 @@
 #include "Game/PlayerManager.h"
 #include "System/Mathf.h"
 #include "Camera.h"
+#include "SearchAlgorithm.h"
 
 
 inline DirectX::XMFLOAT3 subtract(const DirectX::XMFLOAT3& a, const DirectX::XMFLOAT3& b)
@@ -46,20 +47,22 @@ bool AttackJudgment::Judgment()
 // WanderNodeに遷移できるか判定
 bool WanderJudgment::Judgment()
 {
-	// 目的地点までのXZ平面での距離判定
-	DirectX::XMFLOAT3 position = owner->GetPosition();
-	DirectX::XMFLOAT3 targetPosition = owner->GetTargetPosition();
-	float vx = targetPosition.x - position.x;
-	float vz = targetPosition.z - position.z;
-	float distSq = vx * vx + vz * vz;
+	 // 経路を取得
+	//const std::vector<int>& path = owner->GetCurrentPath();
+	const auto& path  = SearchAlgorithm::Instance().GetCurrentPath();
+	int index = StageManager::Instance().GetStage()->GetIndex();
 
-	// 目的地から離れている場合
-	float radius = owner->GetRadius();
-	if (distSq > radius * radius)
-	{
+	// 経路が空なら A* を実行すべき → true
+	if (path.empty())
 		return true;
-	}
 
+	// 経路がまだ最後まで進んでいないなら、A* 行動を継続 → true
+	/*if (index < static_cast<int>(path.size()))
+		return true;*/
+	if (index >= (int)path.size())
+		return true;
+
+	// 最後まで行った → A* 行動は終了 → false
 	return false;
 }
 

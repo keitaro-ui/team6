@@ -15,6 +15,7 @@ class SearchAlgorithm
 private:
 	SearchAlgorithm();
 	~SearchAlgorithm();
+	std::vector<int> path;
 public:
 	static SearchAlgorithm& Instance()
 	{
@@ -23,11 +24,16 @@ public:
 	}
 
 	// DijkstraSearch(ダイクストラサーチ)
-	bool DijkstraSearch(Stage* stage, bool heuristicFlg = false);
+	bool DijkstraSearch(Stage* stage,int StartIndex,int GoalIndex, bool heuristicFlg = false);
+	std::vector<int> BuildPath(Stage* stage,int startIndex,int goalIndex);
 	// Dijkstraで使用するコスト計算関数
 	Edge* searchMinCostEdge(std::vector<Edge*>& FNR, Stage* stage, bool heuristicFlg);
 	// A*で使用する見積コスト計算関数
 	float heuristicCulc(WayPoint* N1, WayPoint* N2);
+
+	std::vector<int>& GetCurrentPath() { return path; }
+
+	//void SetCurrentPath(const std::vector<int>& path) { path = path; }
 
 	//探索したエッジをを記憶するワーク
 	std::vector<Edge*> searchEdge;

@@ -24,6 +24,7 @@ void SceneGame::Initialize()
 {
 	//ステージ初期化
 	stage = std::make_unique<Stage>();
+	StageManager::Instance().Regist(stage.get());
 
 	//プレイヤー初期化
 	player = std::make_unique<Player>();
@@ -38,6 +39,11 @@ void SceneGame::Initialize()
 	enemyslime = std::make_unique<EnemySlime>();
 	//enemyslime->player = player.get();
 
+
+	start = std::make_unique<Start>();
+
+	goal = std::make_unique<Goal>();
+
 	//スタート位置初期化
 	player->SetPosition({ 0.0f, 3.0f, -16.0f });
 	Graphics& graphics = Graphics::Instance();
@@ -45,9 +51,11 @@ void SceneGame::Initialize()
 	player->SetRenderer(modelRenderer);
 
 	renderer = modelRenderer;
+	
 
 	//ゴール位置初期化
 	goalPoint = new GoalPoint({ 0.0f, 3.0f, 17.0f });
+
 
 
 	//スプライト初期設定
@@ -181,6 +189,9 @@ void SceneGame::Initialize()
 
 	//マウス位置の取得とロック
 	Input::Instance().GetMouse().Lock();
+
+	renderer->ResetHorror();
+
 }
 
 // 終了化
@@ -236,9 +247,11 @@ void SceneGame::Finalize()
 	//boxなどのenemyを継承しているnewはdeleteしてはいけない。EnemyManagerごと消す
 
 	//エネミー終了化
-	EnemyManager::Instance().Clear();
 
-	
+	//EnemyManager::Instance().Clear();
+
+	//エラー起きるかも
+	EnemyManager::Instance().Clear();
 
 
 	////SafetyArea終了化
@@ -250,6 +263,7 @@ void SceneGame::Finalize()
 	//		s = nullptr;
 	//	}
 	//}
+
 }
 
 // 更新処理
@@ -257,8 +271,6 @@ void SceneGame::Update(float elapsedTime)
 {
 	if (!player || !goalPoint)
 		return;
-
-	//ゴール判定
 
 	float dx = player->GetPosition().x - goalPoint->position.x;
 	float dy = player->GetPosition().y - goalPoint->position.y;
@@ -405,7 +417,7 @@ void SceneGame::Render()
 		
 		//player->Render(rc, modelRenderer);
 
-		//enemyslime->Render(rc, modelRenderer);
+		enemyslime->Render(rc, modelRenderer);
 
 		ProjectileManager::Instance().Render(rc, modelRenderer);
 
@@ -421,6 +433,16 @@ void SceneGame::Render()
 		physics.RenderDebugPrimitive(rc, shapeRenderer);
 
 		//エネミーデバッグプリミティブ描画
+
+		//EnemyManager::Instance(); 
+		//.RenderDebugPrimitive(rc, shapeRenderer);
+		// ラインレンダラ描画実行
+		//graphics.GetLineRenderer()->Render(rc.deviceContext, rc.view, rc.projection);
+
+		
+
+		stage->RenderDebugPrimitive(rc, shapeRenderer);
+
 		enemyslime->RenderDebugPrimitive(rc, shapeRenderer);
 
 		//modelRenderer->RenderImGui(rc);

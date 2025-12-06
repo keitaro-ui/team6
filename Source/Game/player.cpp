@@ -19,8 +19,11 @@ Player::Player()
 
 	//モデルが大きいのでスケーリング
 	scale.x = scale.y = scale.z = 0.21f;
+
+
 	position.y = 3.0f;
 	position = { 0.0f, 3.0f, -16.0f };
+
 }
 
 //デストラクタ

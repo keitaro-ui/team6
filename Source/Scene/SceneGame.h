@@ -11,6 +11,8 @@
 #include "../Game/Board.h"
 #include "../Game/Box.h"
 #include "../Game/EnemySlime.h"
+#include "../Game/Object.h"
+#include "../Source/System/Sprite.h"
 #include "../Game/StartPoint.h"
 #include "../Game/GoalPoint.h"
 #include "ScenePassword.h"
@@ -53,9 +55,15 @@ private:
 
 	std::unique_ptr<EnemySlime> enemyslime = nullptr;
 
+
+	std::unique_ptr<Start>start = nullptr;
+
+	std::unique_ptr<Goal>goal = nullptr;
+
 	std::unique_ptr<StartPoint> startpoint = nullptr;
 
 	std::unique_ptr<GoalPoint> goalpoint = nullptr;
+
 
 
 	CameraController* cameraController = nullptr;

@@ -208,6 +208,8 @@ private:
 	DirectX::XMFLOAT3 lastPos;
 	bool Event = false;
 	float dx, dy, dz;
+	float moved;
+	DirectX::XMFLOAT3 nowPos;
 
 	float horrorTimer = 0.0f;
 	int horrorFrame = 0;
@@ -224,4 +226,6 @@ public:
 	void UpdateSafetyAreaLights(const std::vector<DirectX::XMFLOAT4>& position);
 
 	int GetHorrorPhase() { return horrorPhase; }
+
+	void ResetHorror();
 };

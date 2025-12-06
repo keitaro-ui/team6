@@ -92,9 +92,9 @@ void EnemyManager::CollisionEnemyVsEnemies()
 //エネミー全削除
 void EnemyManager::Clear()
 {
-	for (Enemy* enemy : enemies)
+	/*for (Enemy* enemy : enemies)
 	{
 		delete enemy;
 	}
-	enemies.clear();
+	enemies.clear();*/
 }
