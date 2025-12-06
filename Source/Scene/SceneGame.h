@@ -69,8 +69,6 @@ private:
 	std::unique_ptr<Sprite> spr = nullptr;
 
 	//•Ï”éŒ¾
-	bool quizFlag = false;
-	bool fRenFlag = false;
 	PhysicsSystem2d physics;
 	Board* activeBoard = nullptr;
 	float playerSize;
@@ -79,7 +77,7 @@ private:
 	float zDis;
 	float debugDoorSize;
 	DirectX::XMFLOAT3 blockSize;
+	bool playerIsInside = false;
 public:
 	std::vector<std::unique_ptr<Sprite>> sprites;
-	
 };
