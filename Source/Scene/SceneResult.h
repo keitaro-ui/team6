@@ -2,6 +2,7 @@
 
 #include "System/Sprite.h"
 #include "Scene.h"
+#include <vector>
 
 enum class ResultType
 {
@@ -39,4 +40,10 @@ private:
 	Sprite* clear_sprite;
 	Sprite* over_sprite;
 	Sprite* sprite_number = nullptr;
+
+	std::vector < std::unique_ptr<Sprite>> sprites_gameover;
+	std::vector < std::unique_ptr<Sprite>> sprites_clear;
+
+	float blinkTimer = 0.0f;
+	bool  blinkVisible = true;
 };

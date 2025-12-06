@@ -44,6 +44,7 @@ void SceneGame::Initialize()
 	player->SetRenderer(modelRenderer);
 
 	renderer = modelRenderer;
+	
 
 	//ゴール位置初期化
 	goalPoint = new GoalPoint({ 0.0f, 3.0f, 16.0f });
@@ -178,6 +179,9 @@ void SceneGame::Initialize()
 
 	//マウス位置の取得とロック
 	Input::Instance().GetMouse().Lock();
+
+	renderer->ResetHorror();
+
 }
 
 // 終了化
