@@ -125,6 +125,7 @@ public:
     bool GetPlayerInside() const { return playerInside; }
 private:
 
+    SafetyArea* area;
     //セーフティエリア制限個数
     int maxSafetyAreaCount = 5;
 

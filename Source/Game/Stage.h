@@ -79,9 +79,11 @@ private:
 
 	std::vector<std::unique_ptr<Model>> models;
 	std::vector<LoadTextures> TextureList;
+	std::unique_ptr<Model> door;
 	
 	std::unique_ptr<ModelRenderer> modelRenderer;
 
+<<<<<<< HEAD
 	int windex = 0;
 
 public:
@@ -107,6 +109,12 @@ public:
 	void Clear();
 
 
+=======
+	DirectX::XMFLOAT4X4 transformDoor;
+
+	DirectX::XMFLOAT3 doorPos = { 0,0,0 };
+	DirectX::XMFLOAT3 doorAngle = { 0,0,0 };
+>>>>>>> master
 };
 
 

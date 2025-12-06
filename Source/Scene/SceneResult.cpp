@@ -18,11 +18,23 @@ void SceneResult::Initialize()
 	over_sprite = new Sprite("Data/Sprite/gameover.png");
 	sprite_number = new Sprite("Data/Sprite/number.png");
 
+	sprites_gameover.push_back(std::make_unique<Sprite>("Data/Sprite/gameover_background.png"));
+	sprites_gameover.push_back(std::make_unique<Sprite>("Data/Sprite/gameover_latter.png"));
+	sprites_gameover.push_back(std::make_unique<Sprite>("Data/Sprite/decoration.png"));
+	sprites_gameover.push_back(std::make_unique<Sprite>("Data/Sprite/yourdied.png"));
+	sprites_gameover.push_back(std::make_unique<Sprite>("Data/Sprite/backTitle.png"));
+
+	sprites_clear.push_back(std::make_unique<Sprite>("Data/Sprite/gameclear.png"));
+	sprites_clear.push_back(std::make_unique<Sprite>("Data/Sprite/gameclear_latter.png"));
+
 	//point = 0;
 	/*count_1 = 0;
 	count_2 = 0;
 	count_3 = 0;
 	count_4 = 0;*/
+
+	blinkTimer = 0.0f;
+	blinkVisible = true;
 }
 
 //終了化
@@ -33,6 +45,21 @@ void SceneResult::Finalize()
 	{
 		delete sprite;
 		sprite = nullptr;
+	}
+	if (clear_sprite != nullptr)
+	{
+		delete clear_sprite;
+		clear_sprite = nullptr;
+	}
+	if (over_sprite != nullptr)
+	{
+		delete over_sprite;
+		over_sprite = nullptr;
+	}
+	if (sprite_number != nullptr)
+	{
+		delete sprite_number;
+		sprite_number = nullptr;
 	}
 	ShowCursor(true);
 
@@ -55,7 +82,15 @@ void SceneResult::Update(float elapsedTime)
 
 	answerCheck();
 
-	if (gamePad.GetButtonDown() & anyButton)
+	// ---- チカチカ処理 ----
+	blinkTimer += elapsedTime;
+
+	if (blinkTimer > 0.4f) {   // 0.4秒ごとに ON/OFF
+		blinkTimer = 0.0f;
+		blinkVisible = !blinkVisible;
+	}
+
+	if (GetAsyncKeyState(VK_RETURN) & 1)
 	{
 		SceneManager::Instance().ChangeScene(new SceneLoading(new SceneTitle));
 		//SceneManager::Instance().ChangeScene((new SceneGameproject));
@@ -84,13 +119,42 @@ void SceneResult::Render()
 
 		if (resultType == ResultType::GameClear)
 		{
-			clear_sprite->Render(rc,0, 0, 0, screenWidth, screenHeight, 0, 1, 1, 1, 1);
-		}
-		if (resultType == ResultType::GameOver)
-		{
-			over_sprite->Render(rc, 0, 0, 0, screenWidth, screenHeight, 0, 1, 1, 1, 1);
+			for (int i = 0; i < sprites_clear.size(); i++)
+			{
+				// 最後のスプライトだけ点滅
+				if (i == sprites_clear.size() - 1)
+				{
+					if (blinkVisible)
+					{
+						sprites_clear[i]->Render(rc, 0, 0, 0, screenWidth, screenHeight, 0, 1, 1, 1, 1);
+					}
+				}
+				else
+				{
+					// 通常描画
+					sprites_clear[i]->Render(rc, 0, 0, 0, screenWidth, screenHeight, 0, 1, 1, 1, 1);
+				}
+			}
 		}
 
+		if (resultType == ResultType::GameOver)
+		{
+			for (int i = 0; i < sprites_gameover.size(); i++)
+			{
+				// 最後だけ点滅
+				if (i == sprites_gameover.size() - 1)
+				{
+					if (blinkVisible)
+					{
+						sprites_gameover[i]->Render(rc, 0, 0, 0, screenWidth, screenHeight, 0, 1, 1, 1, 1);
+					}
+				}
+				else
+				{
+					sprites_gameover[i]->Render(rc, 0, 0, 0, screenWidth, screenHeight, 0, 1, 1, 1, 1);
+				}
+			}
+		}
 
 		/*
 	void Sprite::Render(const RenderContext& rc,

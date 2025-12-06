@@ -193,11 +193,23 @@ Stage::Stage()
 	
     models.push_back(std::make_unique<Model>("Data/Model/Stage/saku.mdl"));
 
-   
+
+    
+    //door.model = std::make_unique<Model>("Data/Model/Stage/door.mdl");
+    door = std::make_unique<Model>("Data/Model/Stage/door.mdl");
+
 	scale.x = scale.y = scale.z = 0.02f;
 	/*scale.x = scale.y = scale.z = 1.0f;*/
-
+    doorPos.x = 0.0f;
+	doorPos.y = 1.0f;
+	doorPos.z = 17.8f;
+    doorAngle.y = DirectX::XMConvertToRadians(-180.0f);
 	//position.y = 4.0f;
+<<<<<<< HEAD
+=======
+    DirectX::XMFLOAT3 doorPos = { 0,0,0 };
+ 
+>>>>>>> master
 
 }
 
@@ -218,7 +230,11 @@ void Stage::Update(float elapsedTime)
 	RenderImGui();
 	//DirectX::XMVector2LinePointDistance();
 	//RenderImGui();
-
+    DirectX::XMStoreFloat4x4(&transformDoor,
+        DirectX::XMMatrixScaling(scale.x,scale.y,scale.z) *
+        DirectX::XMMatrixRotationRollPitchYaw(doorAngle.x,doorAngle.y,doorAngle.z)*
+        DirectX::XMMatrixTranslation(doorPos.x, doorPos.y, doorPos.z)
+    );
 }
 
 //描画処理
@@ -261,6 +277,12 @@ void Stage::Render(const RenderContext& rc, ModelRenderer* renderer)
 
 
 
+<<<<<<< HEAD
+=======
+    renderer->Render(rc, transformDoor, door.get(), ShaderId::Lambert);
+
+
+>>>>>>> master
 }
 
 //void Stage::RenderDebugPrimitive(const RenderContext& rc, ShapeRenderer* renderer)

@@ -9,7 +9,24 @@ ProjectileManager::ProjectileManager()
 //ƒfƒXƒgƒ‰ƒNƒ^
 ProjectileManager::~ProjectileManager()
 {
-	//Clear();
+	////”jŠüˆ—
+	//for (Projectile * projectile : removes)
+	//{
+	//	if (!projectile) continue;
+	//	auto it = std::find(projectiles.begin(), projectiles.end(), projectile);
+
+	//	/*std::vector<Projectile*>::iterator it = std::find(projectiles.begin(),
+	//		projectiles.end(), projectile);*/
+	//	if (it != projectiles.end())
+	//	{
+	//		projectiles.erase(it);
+	//	}
+	//	//’eŠÛ‚Ì”jŠüˆ—
+	//	delete projectile;
+	//}
+	////”jŠüƒŠƒXƒg‚ğƒNƒŠƒA
+	//removes.clear();
+	Clear();
 }
 
 //’eŠÛíœ
@@ -30,24 +47,22 @@ void ProjectileManager::Update(float elapsedTime)
 			projectile->Update(elapsedTime);
 		}
 	}
-
-	//”jŠüˆ—
-	for (Projectile * projectile : removes)
+	for (Projectile* p : removes)
 	{
-		if (!projectile) continue;
-		auto it = std::find(projectiles.begin(), projectiles.end(), projectile);
-
-		/*std::vector<Projectile*>::iterator it = std::find(projectiles.begin(),
-			projectiles.end(), projectile);*/
+		// projectiles ‚©‚çæ‚èœ‚­
+		auto it = std::find(projectiles.begin(), projectiles.end(), p);
 		if (it != projectiles.end())
 		{
 			projectiles.erase(it);
 		}
-		//’eŠÛ‚Ì”jŠüˆ—
-		delete projectile;
+
+		// ƒƒ‚ƒŠŠJ•ú
+		delete p;
 	}
-	//”jŠüƒŠƒXƒg‚ğƒNƒŠƒA
+
+	// removes ‚ğ‹ó‚É
 	removes.clear();
+
 }
 
 //•`‰æˆ—
@@ -82,6 +97,7 @@ void ProjectileManager::Register(Projectile* projectile)
 //’eŠÛ‘Síœ
 void ProjectileManager::Clear()
 {
+
 	for (Projectile* projectile : projectiles)
 	{
 		delete projectile;
