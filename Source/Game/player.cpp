@@ -107,7 +107,6 @@ void Player::InputMove(float elapsedTime)
 
 	//ù‰ñˆ—
 	Turn(elapsedTime, moveVec.x, moveVec.z, turnSpeed);
-
 }
 
 //’eŠÛ“ü—Íˆ—
@@ -361,7 +360,7 @@ void Player::CollisionProjectilesVsEnemies()
 				{
 					//’eŠÛ”jŠü
 					projectile->Destroy();
-					hitSE->Play(false);
+					hitSE->Play(false, 1.0f);
 				}
 				break;
 			}
@@ -411,13 +410,14 @@ void Player::InputSafetrSrea()
 {
 	if (GetAsyncKeyState('R') & 1 && canPlaceSafeArea && maxSafetyAreaCount>0 && GetPlayerInside())
 	{
+		SoundManager::Instance().GetSound(SoundList::flagSE)->Play(false, 1.0f);
 		DirectX::XMFLOAT3 CamPos = Camera::Instance().GetEye();
 		DirectX::XMFLOAT3 forward = Camera::Instance().GetFront();
 
-		float distance = 3.0f;
+		float distance = 0.0f;
 		DirectX::XMFLOAT3 spawnPos = {
 		 CamPos.x + forward.x * distance,
-		1.0f,
+		-1.0f,
 		CamPos.z + forward.z * distance
 		};
 

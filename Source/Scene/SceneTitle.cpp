@@ -45,6 +45,7 @@ void SceneTitle::Initialize()
 
     startTime = std::chrono::steady_clock::now();
 
+    SoundManager::Instance().GetSound(SoundList::titleBGM)->Play(true, 0.8f);
 }
 
 extern POINT cursorPos;
@@ -53,6 +54,8 @@ extern POINT cursorPos;
 void SceneTitle::Finalize()
 {
     ShowCursor(false);
+    SoundManager::Instance().GetSound(SoundList::titleBGM)->Stop();
+    //SoundManager::Instance().GetSound(SoundList::startSE)->Stop();
 }
 
 //XVˆ—
@@ -83,10 +86,12 @@ void SceneTitle::Update(float elapsedTime)
             {
                 if (btn.type == UIButtonType::Start)
                 {
+                    SoundManager::Instance().GetSound(SoundList::startSE)->Play(false, 1.6f);
                     SceneManager::Instance().ChangeScene(new SceneLoading(new SceneGame));
                 }
                 else if (btn.type == UIButtonType::Rule)
                 {
+                    SoundManager::Instance().GetSound(SoundList::startSE)->Play(false, 1.6f);
                     SceneManager::Instance().ChangeScene(new SceneLoading(new SceneRule));
                 }
                 return;

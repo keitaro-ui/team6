@@ -491,9 +491,13 @@
     <ClCompile Include="Source\System\ShapeRenderer.cpp" />
     <ClCompile Include="Source\System\Sprite.cpp" />
 <<<<<<< HEAD
+    <ClCompile Include="Source\SoundManager.cpp" />
+=======
+<<<<<<< HEAD
     <ClCompile Include="Source\Scene\ScenePassword.cpp" />
 =======
     <ClCompile Include="Source\Scene\SceneRule.cpp" />
+>>>>>>> master
 >>>>>>> master
   </ItemGroup>
   <ItemGroup>
@@ -574,9 +578,13 @@
     <ClInclude Include="Source\Game\GoalPoint.h" />
     <ClInclude Include="Source\Game\StartPoint.h" />
 <<<<<<< HEAD
+    <ClInclude Include="Source\SoundManager.h" />
+=======
+<<<<<<< HEAD
     <ClInclude Include="Source\Scene\ScenePassword.h" />
 =======
     <ClInclude Include="Source\Scene\SceneRule.h" />
+>>>>>>> master
 >>>>>>> master
   </ItemGroup>
   <ItemGroup>

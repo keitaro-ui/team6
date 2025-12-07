@@ -141,7 +141,7 @@ void SceneGame::Initialize()
 			for (int x = 0; x < 6; x++)
 			{
 				DirectX::XMFLOAT3 pos = { -22.5f + x * xDis, 0.0f, zDis * (2 - z) };
-
+				
 				int v = map[z][x];
 
 				if (v == 0)
@@ -177,7 +177,8 @@ void SceneGame::Initialize()
 	Input::Instance().GetMouse().Lock();
 	
 	renderer->ResetHorror();
-
+	//BGM
+	SoundManager::Instance().GetSound(SoundList::gameBGM)->Play(true, 0.02f);
 }
 
 // I—¹‰»
@@ -214,6 +215,10 @@ void SceneGame::Finalize()
 	}
 
 	delete balloon;
+
+	//BGM
+	SoundManager::Instance().GetSound(SoundList::gameBGM)->Stop();
+	SoundManager::Instance().GetSound(SoundList::walkSE)->Stop();
 
 	ProjectileManager::Instance().Clear();
 	for (auto& s : player->safetyAreas)
