@@ -47,6 +47,8 @@ public:
 	//ƒ_ƒ[ƒW‚ğ—^‚¦‚é
 	bool ApplyDamage(int damage, float invincibleTime);
 
+	const DirectX::XMFLOAT4X4& GetTransform()const{return transform; }
+
 protected:
 	DirectX::XMFLOAT3		position = { 0,1,0 };
 	DirectX::XMFLOAT3		angle = { 0,0,0 };

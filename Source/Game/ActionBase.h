@@ -17,6 +17,7 @@ public:
 
 	// Àsˆ—(ƒˆ‰¼‘zŠÖ”)
 	virtual ActionBase::State Run(float elapsedTime) = 0;
+
 protected:
 	EnemySlime* owner;
 	int step = 0;

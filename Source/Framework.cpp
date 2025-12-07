@@ -73,10 +73,11 @@ void Framework::Render(float elapsedTime)
 	ID3D11DeviceContext* dc = Graphics::Instance().GetDeviceContext();
 
 	// 画面クリア
+
 	Graphics::Instance().Clear(0, 0, 0, 1);
+
 	// レンダーターゲット設定
 	Graphics::Instance().SetRenderTargets();
-
 
 	// シーン描画処理
 	SceneManager::Instance().Render();

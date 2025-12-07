@@ -1,7 +1,9 @@
 #include "EnemySlime.h"
 #include "System\Mathf.h"
 #include "PlayerManager.h"
-
+#include "Stage.h"
+#include "System/Raycast.h"
+#include <DirectXMath.h>
 #include <random>
 #include <imgui.h>
 
@@ -9,7 +11,10 @@
 //コンストラクタ
 EnemySlime::EnemySlime()
 {
-	model = new Model("Data/EnemySlime/BlueSlime.mdl");
+	model = new Model("Data/EnemySlime/motion_usa.mdl");
+	modelFuyo = new Model("Data/EnemySlime/fuyo.mdl");
+	model->PlayAnimation(0, true);
+	modelFuyo->PlayAnimation(0, true);
 	//model = new Model("Data/Model/Target/balloon.mdl");
 	//モデルが大きいのでスケーリング
 	//scale.x = scale.y = scale.z = 0.1f;
@@ -19,7 +24,7 @@ EnemySlime::EnemySlime()
 	height = 0.0f;
 
 	CreateModel();
-	SetPosition(DirectX::XMFLOAT3(0.0f, -0.05f, 5.0f));
+	SetPosition(StageManager::Instance().GetStage()->GetWayPoint(20)->position);
 
 	behaviorData = new BehaviorData();
 	aiTree = new BehaviorTree(this);
@@ -34,33 +39,35 @@ EnemySlime::EnemySlime()
 			//aiTree->AddNode("Battle", "Attack", 1, BehaviorTree05::SelectRule::Random, new AttackJudgment05(this), nullptr);
 			aiTree->AddNode("Battle", "Pursuit", 1, BehaviorTree::SelectRule::Non, nullptr, new PursuitAction(this));
 		}
-		aiTree->AddNode("Root", "SearchBox", 2, BehaviorTree::SelectRule::Priority, new PutTrueJudgment(this), nullptr);
-		//Bring子ノード
-		{
-			aiTree->AddNode("SearchBox", "Search", 1, BehaviorTree::SelectRule::Sequence, new BreakSearchJudgment(this), new BreakPursuitAction(this));
-			{
-				//中間地点を壊す
-				aiTree->AddNode("Search", "Push", 1, BehaviorTree::SelectRule::Non, nullptr, new BringAction(this));
-			}
-		}
-		aiTree->AddNode("Root", "Scout", 3, BehaviorTree::SelectRule::Random, nullptr, nullptr);
+		//aiTree->AddNode("Root", "SearchBox", 2, BehaviorTree::SelectRule::Priority, new PutTrueJudgment(this), nullptr);
+		////Bring子ノード
+		//{
+		//	aiTree->AddNode("SearchBox", "Search", 1, BehaviorTree::SelectRule::Non, new BreakSearchJudgment(this), new BringAction(this));
+		//	
+		//	
+		//}
+		aiTree->AddNode("Root", "Scout", 2, BehaviorTree::SelectRule::Sequence, nullptr, nullptr);
 		// Scout 子ノード
 		{
-			aiTree->AddNode("Scout", "Wander", 1, BehaviorTree::SelectRule::Non, new WanderJudgment(this), new WanderAction(this));
-			//aiTree->AddNode("Scout", "Idle", 2, BehaviorTree05::SelectRule::Non, nullptr, new IdleAction05(this));
+			aiTree->AddNode("Scout", "RouteSearch", 1, BehaviorTree::SelectRule::Non, new WanderJudgment(this), new ComputePathAction(this));
+			//aiTree->AddNode("Scout", "Astar", 2, BehaviorTree::SelectRule::Non, nullptr, new FollowPathAction(this));
 		}
 
 	}
+	//targetPosition = PlayerManager::Instance().GetPlayer()->GetPosition();
+
+	//targetPosition = StageManager::Instance().GetStage()->GetWayPoint(o)->position;
 
 	//ここで縄張り設定
-	SetTerritory(PlayerManager::Instance().GetPlayer()->GetPosition(), 10.0f);
-	SetRandomTargetPosition();
+	//SetTerritory(PlayerManager::Instance().GetPlayer()->GetPosition(), 10.0f);
+	//SetRandomTargetPosition();
 }
 
 //デストラクタ
 EnemySlime::~EnemySlime()
 {
 	delete model;
+	delete modelFuyo;
 }
 
 //更新処理
@@ -82,8 +89,12 @@ void EnemySlime::Update(float elapsedTime)
 	//オブジェクト行列を更新
 	UpdateTransform();
 
+	model->UpdateAnimation(elapsedTime);
+	model->UpdateTransform();
+
+	modelFuyo->UpdateAnimation(elapsedTime);
+	modelFuyo->UpdateTransform();
 	//モデル行列更新
-	//model->UpdateTransform();
 
 	//無敵時間更新
 	UpdateInvincibleTimer(elapsedTime);
@@ -95,6 +106,7 @@ void EnemySlime::Update(float elapsedTime)
 void EnemySlime::Render(const RenderContext& rc, ModelRenderer* renderer)
 {
 	renderer->Render(rc, transform, model, ShaderId::Lambert);
+	renderer->Render(rc, transform, modelFuyo, ShaderId::Lambert);
 	//rendererer->RenderSphere(rc, targetPosition, radius, { 0.2f, 1.0f, 0.2f, 1.0f });
 }
 
@@ -109,6 +121,10 @@ void EnemySlime::DrawGUI()
 	{
 		std::string name = activeNode ? activeNode->GetName() : "None";
 		ImGui::Text("Behavior: %s", name.c_str());
+
+		ImGui::DragFloat3("pos", &position.x, 0.01f);
+
+		ImGui::Checkbox("Search_Player", &search_player);
 	}
 	ImGui::End();
 }
@@ -130,7 +146,7 @@ void EnemySlime::SetRandomTargetPosition()
 }
 
 // 目的地点へ移動
-void EnemySlime::MoveToTarget(float elapsedTime, float speedRate)
+void EnemySlime::MoveToTarget(float speedRate, float elapsedTime)
 {
 	// ターゲット方向への進行ベクトルを算出
 	float vx = targetPosition.x - position.x;
@@ -142,6 +158,31 @@ void EnemySlime::MoveToTarget(float elapsedTime, float speedRate)
 	// 移動処理
 	Move(elapsedTime,vx, vz, moveSpeed * speedRate);
 	Turn(elapsedTime, vx, vz, turnSpeed * speedRate);
+
+}
+
+void EnemySlime::MoveToward(float elapsedTime, float speedRate)
+{
+	/*if (owner->Reached(nextPos))
+	{
+		currentPathIndex++;
+	}*/
+}
+
+void EnemySlime::WallRayCast(float elapsedTime)
+{
+	//レイの始点と終点を求める
+	//DirectX::XMFLOAT3 start, end;
+	//start = { position.x,position.y + height,position.z };
+	//end = StageManager::Instance().GetStage()->GetPosition();
+
+	//DirectX::XMFLOAT3 hitPosition, hitNormal;
+	///*for (int i = 0; i < StageManager::Instance().GetStage()->GetWayPointCount();i++)
+	//{
+	//	
+	//}*/
+
+	//if(Raycast::RayCast())
 }
 
 bool EnemySlime::SearchPlayer()
@@ -167,9 +208,11 @@ bool EnemySlime::SearchPlayer()
 		float dot = (frontX * vx) + (frontZ * vz);
 		if (dot > 0.0f)
 		{
+			search_player = true;
 			return true;
 		}
 	}
+	search_player = false;
 	return false;
 }
 

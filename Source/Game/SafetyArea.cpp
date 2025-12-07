@@ -76,6 +76,7 @@ void SafetyArea::Update(float deltaTime)
     // •—‘D‚Í­‚µã‰º‚É‚Ó‚í‚Ó‚í
     //position.y = 0.5f + 0.1f * sinf(static_cast<float>(GetTickCount64()) * 0.005f);
 
+
     UpdateTransform();
     circleUpdateTransform();
     balloonModel->UpdateTransform();

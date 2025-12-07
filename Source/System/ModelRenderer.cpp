@@ -33,6 +33,27 @@ void ModelRenderer::UpdateSafetyAreaLights(const std::vector<DirectX::XMFLOAT4>&
 	}
 }
 
+void ModelRenderer::ResetHorror()
+{
+	horrorPhase = -1;
+	horrorFrame = 0;
+	horrorTimer = 0.0f;
+
+	dx = dy = dz = 0;
+	moved = 0;
+	accumulatedDistanceT = 0;
+
+	lastPos = Camera::Instance().GetEye();
+	nowPos = Camera::Instance().GetEye();
+	
+	first = true;
+	Event = false;
+
+
+	sceneConstantBufferData.LightSwitch = 0.0f;
+	sceneConstantBufferData.SpotLightSwitch = 1.0f;
+}
+
 // コンストラクタ
 ModelRenderer::ModelRenderer(ID3D11Device* device)
 {
@@ -62,6 +83,17 @@ ModelRenderer::ModelRenderer(ID3D11Device* device)
 
 	mt = std::mt19937(std::random_device{}());
 	dist = std::uniform_real_distribution<float>(0.0f, 1.0f);
+
+	lastPos = Camera::Instance().GetEye();
+	horrorTimer = 0.0f;
+	horrorFrame = 0;
+	horrorPhase = -1;
+	first = true;
+	sceneConstantBufferData.LightSwitch = 0.0f;
+	sceneConstantBufferData.SpotLightSwitch = 1.0f;
+	dx = dy = dz = 0;
+	moved = 0;
+	Event = false;
 
 	// シェーダー生成
 	shaders[static_cast<int>(ShaderId::Basic)] = std::make_unique<BasicShader>(device);
@@ -123,6 +155,32 @@ void ModelRenderer::Render(const RenderContext& rc,
 	ShaderId shaderId)
 {
 	ID3D11DeviceContext* dc = rc.deviceContext;
+
+	nowPos = Camera::Instance().GetEye();
+	if (first)
+	{
+		lastPos = nowPos; 
+		first = false;
+
+	}
+
+	dx = nowPos.x - lastPos.x;
+	dy = nowPos.y - lastPos.y;
+	dz = nowPos.z - lastPos.z;
+
+	moved = sqrtf(dx * dx + dy * dy + dz * dz);
+	accumulatedDistanceT += moved;
+
+	lastPos = nowPos;
+
+	if (accumulatedDistanceT > 8.0f&&!Event)
+	{
+		horrorTimer = 0.0f;
+		horrorPhase = 0;
+		Event = true;
+	}
+
+	UpdateLightSwitch();
 
 	UpdataLightsSS();
 
@@ -319,6 +377,8 @@ void ModelRenderer::UpdateSceneConstantBuffer(ID3D11DeviceContext* dc, const Ren
 
 	cbScene.lightingMultiplier = sceneConstantBufferData.lightingMultiplier;
 	cbScene.useLighting = sceneConstantBufferData.useLighting;
+	cbScene.LightSwitch = sceneConstantBufferData.LightSwitch;
+	cbScene.SpotLightSwitch = sceneConstantBufferData.SpotLightSwitch;
 
 	dc->UpdateSubresource(sceneConstantBuffer.Get(), 0, 0, &cbScene, 0, 0);
 }
@@ -442,6 +502,104 @@ void ModelRenderer::ClearBinding(ID3D11DeviceContext* dc)
 	// サンプラー解除
 	ID3D11SamplerState* nullSamplers[5] = { nullptr };
 	dc->PSSetSamplers(0, 5, nullSamplers);
+}
+
+void ModelRenderer::UpdateLightSwitch()
+{
+	if (horrorPhase < 0) return;
+
+	// フレームカウント
+	horrorFrame++;
+	
+
+	// ---- フェーズ0：全体ライトがチカチカ ----
+	if (horrorPhase == 0)
+	{
+		if (horrorFrame < 300)
+		{
+			// ---- (1) 高速チカチカ ----
+			int cycle = horrorFrame % 8;
+			if (cycle < 3)
+				sceneConstantBufferData.LightSwitch = 1.0f; // ON
+			else
+				sceneConstantBufferData.LightSwitch = 0.0f; // OFF
+		}
+		else if (horrorFrame < 450)
+		{
+			// ---- (2) 不規則チカチカ ----
+			// ランダムで暗くなる明るくなるを繰り返す
+			int r = rand() % 100;
+
+			if (r < 10)
+			{
+				// 完全OFF（バチッと消える）
+				sceneConstantBufferData.LightSwitch = 1.0f;
+			}
+			else if (r < 40)
+			{
+				// 弱い点灯（ちらっと光る）
+				sceneConstantBufferData.LightSwitch = 0.7f;
+			}
+			else
+			{
+				// 通常ON
+				sceneConstantBufferData.LightSwitch = 0.0f;
+			}
+		}
+		else
+		{
+			// ---- (3) 最後のバチッ ----
+			sceneConstantBufferData.LightSwitch = 1.0f;
+			
+
+			// 少しだけ暗闇を維持したあと次へ
+			if (horrorFrame > 500)
+			{
+				
+				horrorPhase = 1;
+				horrorFrame = 0;
+			}
+		}
+	}
+
+	// ---- フェーズ1：真っ暗 ----
+	else if (horrorPhase == 1)
+	{
+		sceneConstantBufferData.LightSwitch = 1.0f; // 
+
+		// 0.7秒 → 約42フレーム
+		if (horrorFrame > 570)
+		{
+			horrorPhase = 2;
+			horrorFrame = 0;
+		}
+	}
+
+	// ---- フェーズ2：スポットライトON ----
+	else if (horrorPhase == 2)
+	{
+		sceneConstantBufferData.LightSwitch = 1.0f;
+		sceneConstantBufferData.SpotLightSwitch = 0.0f;
+
+		// 以降ずっとスポットライト
+		horrorPhase = 3;
+	}
+
+	else if (horrorPhase >= 3)
+	{
+		static int SpotLightFlickerFrames = 0;
+		const int MaxFlickerFrames = 100;
+
+		// 基本点灯（HLSL側で0.0 = 最大点灯）
+		sceneConstantBufferData.SpotLightSwitch = 0.0f;
+
+		if (SpotLightFlickerFrames < MaxFlickerFrames)
+		{
+			// 最初の数フレームだけチカチカ
+			sceneConstantBufferData.SpotLightSwitch = 0.2f + static_cast<float>(rand() % 30) / 100.0f; // 0.20?0.49
+			SpotLightFlickerFrames++;
+		}
+	}
 }
 
 void ModelRenderer::UpdataLightsSS()

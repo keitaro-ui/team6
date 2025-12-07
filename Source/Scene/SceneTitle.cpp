@@ -7,6 +7,7 @@
 #include "System/Mouse.h"
 #include "../Game/Player.h"
 #include "../Scene/SceneTutorial.h"
+#include "SceneRule.h"
 
 
 
@@ -90,8 +91,12 @@ void SceneTitle::Update(float elapsedTime)
                 }
                 else if (btn.type == UIButtonType::Rule)
                 {
+<<<<<<< HEAD
                     SoundManager::Instance().GetSound(SoundList::startSE)->Play(false, 0.6f);
                     SceneManager::Instance().ChangeScene(new SceneLoading(new SceneTutorial));
+=======
+                    SceneManager::Instance().ChangeScene(new SceneLoading(new SceneRule));
+>>>>>>> master
                 }
                 return;
             }

@@ -38,7 +38,11 @@ public:
 	void SetRandomTargetPosition();
 
 	//目標地点へ移動
-	void MoveToTarget(float elapsedTime, float speedRate);
+	void MoveToTarget(float speedRate,float elapsedTime);
+
+	void MoveToward(float elapsedTime, float speedRate);
+
+	void WallRayCast(float elapsedTime);
 
 	//プレイヤー索敵
 	bool SearchPlayer();
@@ -72,15 +76,31 @@ public:
 
 	Model* GetModel() { return model; }
 
+
+
+	// ----- currentPath -----
+	/*std::vector<int>& GetCurrentPath() {return currentPath;}
+
+	void SetCurrentPath(const std::vector<int>& path){currentPath = path;}*/
+
+	// currentPath をクリアする関数（よく使うので）
+	/*void ClearPath()
+	{
+		currentPath.clear();
+		PathIndex = 0;
+	}*/
+
 protected:
 	//死亡したときに呼ばれる
 	void OnDead() override;
 
 public:
 
+	int GetO() { return o; }
 
 private:
 	Model* model = nullptr;
+	Model* modelFuyo = nullptr;
 	
 
 	DirectX::XMFLOAT3	territoryOrigin = { 0.0f,0.0f,0.0f };
@@ -91,15 +111,28 @@ private:
 	float				attackRange = 1.5f;
 	float				moveSpeed = 3.0f;
 	float				turnSpeed = DirectX::XMConvertToRadians(360);
-	float				searchRange = 5.0f;
+	float				searchRange = 20.0f;
 	float				runTimer = 0.0f;
 
 	bool renderModel = true;
+
+	bool search_player = false;
 
 	BehaviorTree* aiTree = nullptr;
 	BehaviorData* behaviorData = nullptr;
 	NodeBase* activeNode = nullptr;
 
-	//押す（到達）目標
-	/*DirectX::XMFLOAT3 moveTargetPosition = { 10.0f,0.0f,-5.0f };*/
+	int o = rand() % 42;
+
+public:
+	bool GetSPlayer() { return search_player; }
+	void SetSPlayer(bool i) { search_player = i; }
+	float GetSearchRange() const { return searchRange; }
+	DirectX::XMFLOAT3 GetAngle() { return angle; }
+
+	// アニメーション
+	enum class EnemyAnimation
+	{
+		usa,
+	};
 };

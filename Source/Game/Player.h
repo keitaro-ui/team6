@@ -44,6 +44,7 @@ private:
     Model* model = nullptr;
 
     //移動入力処理
+    
     void InputMove(float elapsedTime);
 
     //弾丸入力処理
@@ -126,6 +127,7 @@ public:
     bool GetPlayerInside() const { return playerInside; }
 private:
 
+    SafetyArea* area;
     //セーフティエリア制限個数
     int maxSafetyAreaCount = 5;
 

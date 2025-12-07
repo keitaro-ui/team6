@@ -2,6 +2,8 @@
 #include "ActionBase.h"
 #include "EnemySlime.h"
 #include "SafetyArea.h"
+#include "System/Raycast.h"
+
 
 //std::vector<SafetyArea*> safetyAreas;
 
@@ -13,13 +15,7 @@ public:
 	ActionBase::State Run(float elapsedTime);
 };
 
-// スキル攻撃行動
-class SkillAction : public ActionBase
-{
-public:
-	SkillAction(EnemySlime* enemy) :ActionBase(enemy) {}
-	ActionBase::State Run(float elapsedTime);
-};
+
 
 // 追跡行動
 class PursuitAction : public ActionBase
@@ -27,6 +23,9 @@ class PursuitAction : public ActionBase
 public:
 	PursuitAction(EnemySlime* enemy) :ActionBase(enemy) {}
 	ActionBase::State Run(float elapsedTime);
+
+private:
+	int path_idx = 0;
 };
 
 // 徘徊行動
@@ -34,30 +33,6 @@ class WanderAction : public ActionBase
 {
 public:
 	WanderAction(EnemySlime* enemy) :ActionBase(enemy) {}
-	ActionBase::State Run(float elapsedTime);
-};
-
-// 待機行動
-class IdleAction : public ActionBase
-{
-public:
-	IdleAction(EnemySlime* enemy) :ActionBase(enemy) {}
-	ActionBase::State Run(float elapsedTime);
-};
-
-// 逃走行動
-class LeaveAction05 : public ActionBase
-{
-public:
-	LeaveAction05(EnemySlime* enemy) :ActionBase(enemy) {}
-	ActionBase::State Run(float elapsedTime);
-};
-
-// 回復行動
-class RecoverAction : public ActionBase
-{
-public:
-	RecoverAction(EnemySlime* enemy) :ActionBase(enemy) {}
 	ActionBase::State Run(float elapsedTime);
 };
 
@@ -71,11 +46,25 @@ public:
 
 private:
 	int step = 0;
+	int path_idx = -1;
 };
 
-class BreakPursuitAction : public ActionBase
+
+
+class ComputePathAction :public ActionBase
 {
 public:
-	BreakPursuitAction(EnemySlime* enemy) :ActionBase(enemy) {}
-	ActionBase::State Run(float elapsedTime);
+	ComputePathAction(EnemySlime*enemy):ActionBase(enemy){}
+	ActionBase::State Run(float elpasedTime);
+
+	
+	//std::vector<int>GetCP() { return currPaths; }
+private:
+	//std::vector<int>& currPaths;
+
+	// 現在目標にしているパスのインデックス
+	int path_idx = 0;
+	int startIndex = 0;
+	int goalIndex = 0;
 };
+

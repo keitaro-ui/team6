@@ -291,19 +291,6 @@ void CameraController::HandleFreeCam(float elapsedTime)
 
 void CameraController::RenderImGui()
 {
-	if (ImGui::Begin("Camera Controller"))
-	{
-		ImGui::Text("Eye: %.2f, %.2f, %.2f", eye.x, eye.y, eye.z);
-		ImGui::Text("Target: %.2f, %.2f, %.2f", target.x, target.y, target.z);
-
-		ImGui::Separator();
-
-		// äeílÇÃí≤êÆ
-		ImGui::DragFloat3("Angle (rad)", &angle.x, 0.01f, -DirectX::XM_PI, DirectX::XM_PI);
-		ImGui::DragFloat("Bob Amount X", &bobAmountX, 0.01f, 0.0f, 0.05f);
-		ImGui::DragFloat("Bob Amount Y", &bobAmountY, 0.01f, 0.0f, 0.05f);
-
-	}
-	ImGui::End();
+	
 }
 

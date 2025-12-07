@@ -1,20 +1,142 @@
-#include "Stage.h"
+ï»¿#include "Stage.h"
 #include "PlayerManager.h"
 #include "WayPoint.h"
+#include "EnemyManager.h"
+#include "System/Raycast.h"
+#include "ActionDerived.h"
 
-//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+//ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 Stage::Stage()
 {
-	//ƒXƒe[ƒWƒ‚ƒfƒ‹‚ğ“Ç‚İ‚İ
-	//model = new Model("Data/Model/Stage/smallroom.mdl");
-	model = new Model("Data/Model/Stage/wallceiling.mdl");
+
+    //ã‚¹ãƒ†ãƒ¼ã‚¸ãƒ¢ãƒ‡ãƒ«ã‚’èª­ã¿è¾¼ã¿
+    model = new Model("Data/Model/Stage/syusei.mdl");
+    
+    scale.x = scale.y = scale.z = 0.02f;
+   
+
+    wayPointCount = 0;
+
+    
+
+    // æ‰‹å‹•ã§å¿…è¦ãªãƒãƒ¼ãƒ‰ã‚’è¿½åŠ 
+   /* AddWayPoint({ -27.1f, -1.7f, 16.3f });
+    AddWayPoint({ -27.1f, -1.7f, 9.7f });
+    AddWayPoint({ -27.1f, -1.7f, 3.4f });
+    AddWayPoint({ -27.1f, -1.7f, -3.4f });
+    AddWayPoint({ -27.1f, -1.7f, -10.1f });
+    AddWayPoint({ -27.1f, -1.7f, -16.2f });
+
+    AddWayPoint({ -18, -1.7f, 16.3f });
+    AddWayPoint({ -18, -1.7f, 9.7f });
+    AddWayPoint({ -18, -1.7f, 3.4f });
+    AddWayPoint({ -18, -1.7f, -3.4f });
+    AddWayPoint({ -18, -1.7f, -10.1f });
+    AddWayPoint({ -18, -1.7f, -16.2f });
+
+    AddWayPoint({ -8.95f, -1.7f, 16.3f });
+    AddWayPoint({ -8.95f, -1.7f, 9.7f });
+    AddWayPoint({ -8.95f, -1.7f, 3.4f });
+    AddWayPoint({ -8.95f, -1.7f, -3.4f });
+    AddWayPoint({ -8.95f, -1.7f, -10.1f });
+    AddWayPoint({ -8.95f, -1.7f, -16.2f });
+
+    AddWayPoint({ 0, -1.7f, 16.3f });
+    AddWayPoint({ 0, -1.7f, 9.7f });
+    AddWayPoint({ 0, -1.7f, 3.4f });
+    AddWayPoint({ 0, -1.7f, -3.4f });
+    AddWayPoint({ 0, -1.7f, -10.1f });
+    AddWayPoint({ 0, -1.7f, -16.2f });
+
+    AddWayPoint({ 8.95f, -1.7f, 16.3f });
+    AddWayPoint({ 8.95f, -1.7f, 9.7f });
+    AddWayPoint({ 8.95f, -1.7f, 3.4f });
+    AddWayPoint({ 8.95f, -1.7f, -3.4f });
+    AddWayPoint({ 8.95f, -1.7f, -10.1f });
+    AddWayPoint({ 8.95f, -1.7f, -16.2f });
+
+    AddWayPoint({ 17.94f, -1.7f, 16.3f });
+    AddWayPoint({ 17.94f, -1.7f, 9.7f });
+    AddWayPoint({ 17.94f, -1.7f, 3.4f });
+    AddWayPoint({ 17.94f, -1.7f, -3.4f });
+    AddWayPoint({ 17.94f, -1.7f, -10.1f });
+    AddWayPoint({ 17.94f, -1.7f, -16.2f });
+
+    AddWayPoint({ 27, -1.7f, 16.3f });
+    AddWayPoint({ 27, -1.7f, 9.7f });
+    AddWayPoint({ 27, -1.7f, 3.4f });
+    AddWayPoint({ 27, -1.7f, -3.4f });
+    AddWayPoint({ 27, -1.7f, -10.1f });
+    AddWayPoint({ 27, -1.7f, -16.2f });*/
+
+    AddWayPoint({ -27.1f, 1.0f, 16.3f });
+    AddWayPoint({ -27.1f, 1.0f, 9.7f });
+    AddWayPoint({ -27.1f, 1.0f, 3.4f });
+    AddWayPoint({ -27.1f, 1.0f, -3.4f });
+    AddWayPoint({ -27.1f, 1.0f, -10.1f });
+    AddWayPoint({ -27.1f, 1.0f, -16.2f });
+
+    AddWayPoint({ -18, 1.0f, 16.3f });
+    AddWayPoint({ -18, 1.0f, 9.7f });
+    AddWayPoint({ -18, 1.0f, 3.4f });
+    AddWayPoint({ -18, 1.0f, -3.4f });
+    AddWayPoint({ -18, 1.0f, -10.1f });
+    AddWayPoint({ -18, 1.0f, -16.2f });
+
+    AddWayPoint({ -8.95f, 1.0f, 16.3f });
+    AddWayPoint({ -8.95f, 1.0f, 9.7f });
+    AddWayPoint({ -8.95f, 1.0f, 3.4f });
+    AddWayPoint({ -8.95f, 1.0f, -3.4f });
+    AddWayPoint({ -8.95f, 1.0f, -10.1f });
+    AddWayPoint({ -8.95f, 1.0f, -16.2f });
+
+    AddWayPoint({ 0, 1.0f, 16.3f });
+    AddWayPoint({ 0, 1.0f, 9.7f });
+    AddWayPoint({ 0, 1.0f, 3.4f });
+    AddWayPoint({ 0, 1.0f, -3.4f });
+    AddWayPoint({ 0, 1.0f, -10.1f });
+    AddWayPoint({ 0, 1.0f, -16.2f });
+
+    AddWayPoint({ 8.95f, 1.0f, 16.3f });
+    AddWayPoint({ 8.95f, 1.0f, 9.7f });
+    AddWayPoint({ 8.95f, 1.0f, 3.4f });
+    AddWayPoint({ 8.95f, 1.0f, -3.4f });
+    AddWayPoint({ 8.95f, 1.0f, -10.1f });
+    AddWayPoint({ 8.95f, 1.0f, -16.2f });
+
+    AddWayPoint({ 17.94f, 1.0f, 16.3f });
+    AddWayPoint({ 17.94f, 1.0f, 9.7f });
+    AddWayPoint({ 17.94f, 1.0f, 3.4f });
+    AddWayPoint({ 17.94f, 1.0f, -3.4f });
+    AddWayPoint({ 17.94f, 1.0f, -10.1f });
+    AddWayPoint({ 17.94f, 1.0f, -16.2f });
+
+    AddWayPoint({ 27, 1.0f, 16.3f });
+    AddWayPoint({ 27, 1.0f, 9.7f });
+    AddWayPoint({ 27, 1.0f, 3.4f });
+    AddWayPoint({ 27, 1.0f, -3.4f });
+    AddWayPoint({ 27, 1.0f, -10.1f });
+    AddWayPoint({ 27, 1.0f, -16.2f });
 
 
-	//loadTextures.LoadNormal("Data/Model/Stage/Texture/Small room/aiStandardSurface2_Normal_Utility - Raw.png");
-	//loadTextures.LoadRoughness("Data/Model/Stage/Texture/Small room/aiStandardSurface2_Roughness_Utility - Raw.png");
-	//loadTextures.LoadMetalness("Data/Model/Stage/Texture/Small room/aiStandardSurface2_Metallic_Utility - Raw.png");
-	//loadTextures.LoadEmisive("Data/Model/Stage/Texture/Small room/aiStandardSurface2_Emissive_Utility - sRGB - Texture.png");
 
+
+     // WayPointã«ç´ã¥ãã‚¨ãƒƒã‚¸ã‚’ç”Ÿæˆ
+    for (windex = 0; windex < 42; windex++)
+    {
+        for (int k = 0; k < 4; ++k)
+        {
+            wayPoints[windex]->edge[k] = new Edge();
+            wayPoints[windex]->edge[k]->originPoint = windex;
+        }
+        ConnectWayPoints(windex);
+    }
+
+	//ã‚¹ãƒ†ãƒ¼ã‚¸ãƒ‡ãƒ¼ã‚¿ã‚’èª­ã¿è¾¼ã‚€
+	model = new Model("Data/Model/Stage/doorT.mdl");
+
+
+	
 	loadTextures.LoadNormal("Data/Model/Stage/Texture/wall/wallceilings_standardSurface1_Normal_Utility - Raw.png");
 	loadTextures.LoadRoughness("Data/Model/Stage/Texture/wall/wallceilings_standardSurface1_Roughness_Utility - Raw.png");
 	loadTextures.LoadMetalness("Data/Model/Stage/Texture/wall/wallceilings_standardSurface1_Metallic_Utility - Raw.png");
@@ -53,23 +175,34 @@ Stage::Stage()
     models.push_back(std::make_unique<Model>("Data/Model/Stage/saku.mdl"));
 
 
+    
+    //door.model = std::make_unique<Model>("Data/Model/Stage/door.mdl");
+    door = std::make_unique<Model>("Data/Model/Stage/door.mdl");
+
 	scale.x = scale.y = scale.z = 0.02f;
 	/*scale.x = scale.y = scale.z = 1.0f;*/
-
+    doorPos.x = 0.0f;
+	doorPos.y = 1.0f;
+	doorPos.z = 17.8f;
+    doorAngle.y = DirectX::XMConvertToRadians(-180.0f);
 	//position.y = 4.0f;
 
+    DirectX::XMFLOAT3 doorPos = { 0,0,0 };
  
 
+
 }
+
 
 Stage::~Stage()
 {
-	//ƒXƒe[ƒWƒ‚ƒfƒ‹‚ğ”jŠü
+	//ã‚¹ãƒ†ãƒ¼ã‚¸ãƒ¢ãƒ‡ãƒ«ã‚’ç ´æ£„
 	delete model;
-	
+    
+   // Clear();
 }
 
-//XVˆ—
+//æ›´æ–°å‡¦ç†
 void Stage::Update(float elapsedTime)
 {
 	UpdateTransform();
@@ -77,125 +210,214 @@ void Stage::Update(float elapsedTime)
 	RenderImGui();
 	//DirectX::XMVector2LinePointDistance();
 	//RenderImGui();
-
+    DirectX::XMStoreFloat4x4(&transformDoor,
+        DirectX::XMMatrixScaling(scale.x,scale.y,scale.z) *
+        DirectX::XMMatrixRotationRollPitchYaw(doorAngle.x,doorAngle.y,doorAngle.z)*
+        DirectX::XMMatrixTranslation(doorPos.x, doorPos.y, doorPos.z)
+    );
 }
 
-//•`‰æˆ—
+//æç”»å‡¦ç†
 void Stage::Render(const RenderContext& rc, ModelRenderer* renderer)
 {
-	//DirectX::XMFLOAT4X4 transform;
-	//DirectX::XMStoreFloat4x4(&transform, DirectX::XMMatrixIdentity());
+    ////æ¶ˆã™
+    //// ã‚¦ã‚§ã‚¤ãƒã‚¤ãƒ³ãƒˆã®æç”»å‡¦ç†
+    //for (int i = 0; i <= MAX_WAY_POINT; i++)
+    //{
+    //    // MAX_WAY_POINTã‚ˆã‚ŠwayPointsã®è¦ç´ ãŒå°‘ãªã„å ´åˆç¯„å›²å¤–ã‚¢ã‚¯ã‚»ã‚¹ã§ã‚¨ãƒ©ãƒ¼ãŒç™ºç”Ÿ
 
+    //    // wayPointsã®ã‚µã‚¤ã‚ºã‚ˆã‚Šå¤§ãã„å ´åˆã«ã‚¢ã‚¯ã‚»ã‚¹ã—ãªã„ã‚ˆã†ã«åˆ¶é™
+    //    if (i < wayPoints.size())
+    //        wayPoints[i]->Render(rc, renderer);
+    //}
+	
+
+	//ãƒ¬ãƒ³ãƒ€ãƒ©ãƒ¢ãƒ‡ãƒ«ã«æç”»ã—ã¦ã‚‚ã‚‰ã†
+	
 	for (size_t i = 0; i < models.size(); i++)
 	{
-        // ‡@ ƒeƒNƒXƒ`ƒƒ‚ª‚ ‚éê‡‚¾‚¯ Set
+        // ï¿½@ ï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ê‡ï¿½ï¿½ï¿½ï¿½ Set
         if (i < TextureList.size())
         {
             TextureList[i].Set(rc);
         }
 
-        // ‡A •`‰æ
+        // ï¿½A ï¿½`ï¿½ï¿½
         renderer->Render(rc, transform, models[i].get(), ShaderId::Lambert);
 
-        // ‡B ƒeƒNƒXƒ`ƒƒ‚ª‚ ‚éê‡‚¾‚¯ Clear
+        // ï¿½B ï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ê‡ï¿½ï¿½ï¿½ï¿½ Clear
         if (i < TextureList.size())
         {
             TextureList[i].Clear(rc);
         }
 	}
 
+
+    renderer->Render(rc, transformDoor, door.get(), ShaderId::Lambert);
+
 }
+
+
 
 void Stage::DestinationPointSet(int index)
 {
-    //edge[0] = ãi12j
-    //edge[1] = ‰Ei3j
-    //edge[2] = ‰ºi6j
-    //edge[3] = ¶i9)
 
+}
+
+void Stage::AddWayPoint(const DirectX::XMFLOAT3& pos)
+{
+   
+
+        if (wayPointCount >= MAX_WAY_POINT)
+        {
+            OutputDebugStringA("ERROR: MAX_WAY_POINT overflow!\n");
+            return;
+        }
+
+        // ã“ã“ã§ã‚¦ã‚§ã‚¤ãƒã‚¤ãƒ³ãƒˆç”Ÿæˆã™ã‚‹
+        std::unique_ptr<WayPoint> w = std::make_unique<WayPoint>();
+
+        //WayPoint w = *wayPoint[wayPointCount];
+        w->position = pos;
+
+
+
+
+        // Edge ã‚’åˆæœŸåŒ–
+        for (int i = 0; i < w->GetEdgeNo(); i++)
+            w->edge[i] = nullptr;
+
+        //wayPoints ã«ã¤ã„ã‹
+        wayPoints.emplace_back(std::move(w));
+
+        wayPointCount++;
+    
+}
+
+void Stage::ConnectWayPoints(int index)
+{
+    
     int x = index % COLUM_COUNT;
 
-    // 0: 12iãj
+    // ã‚¨ãƒƒã‚¸ã®è¡Œå…ˆæŒ‡å®š
+    // 12æ™‚ã®æ–¹å‘
+    // -COLUM_COUNTã®å€¤ãŒ0ä»¥ä¸Šã§ã‚ã‚Œã°
     int point = index - COLUM_COUNT;
-    if (point >= 0)
-    {
-        wayPoint[index]->edge[0]->destinationPoint = point;
+    DirectX::XMFLOAT3 hitPosition, hitNormal;
 
-        DirectX::XMVECTOR dest = DirectX::XMLoadFloat3(&wayPoint[point]->position);
-        DirectX::XMVECTOR orig = DirectX::XMLoadFloat3(&wayPoint[index]->position);
-        DirectX::XMVECTOR len = DirectX::XMVector3Length(DirectX::XMVectorSubtract(dest, orig));
+       if (point >= 0)
+       {
+           wayPoints[index]->edge[0]->destinationPoint = point;
+           // 2ç‚¹é–“ã®è·é›¢ã‚’è¨ˆç®—ã—ã¦ã‚¨ãƒƒã‚¸ã®ã‚³ã‚¹ãƒˆã«è¿½åŠ 
+           DirectX::XMVECTOR destinationPoint = DirectX::XMLoadFloat3(&wayPoints[point]->position);
+           DirectX::XMVECTOR originPoint = DirectX::XMLoadFloat3(&wayPoints[index]->position);
+           DirectX::XMVECTOR cost = DirectX::XMVector3Length(DirectX::XMVectorSubtract(destinationPoint, originPoint));
+          /* if (Raycast::RayCast(wayPoints[point]->position,
+               wayPoints[index]->position, transform,
+               model, hitPosition, hitNormal))
+           {
+               wayPoints[index]->edge[0]->cost = FLT_MAX;
+           }*/
+           /*else*/
+           wayPoints[index]->edge[0]->cost = DirectX::XMVectorGetX(cost);
+       }
+       else
+       {
+           wayPoints[index]->edge[0]->destinationPoint = -1;
+           wayPoints[index]->edge[0]->cost = FLT_MAX;
+       }
+       // 3æ™‚ã®æ–¹å‘
+       // (j+1)ãŒæ¨ªå¹…ã‚’è¶…ãˆãªã„ã¨ã
+       point = index + 1;
+       if ((x + 1) < COLUM_COUNT)
+       {
+           wayPoints[index]->edge[1]->destinationPoint = point;
+           // 2ç‚¹é–“ã®è·é›¢ã‚’è¨ˆç®—ã—ã¦ã‚¨ãƒƒã‚¸ã®ã‚³ã‚¹ãƒˆã«è¿½åŠ 
+           DirectX::XMVECTOR destinationPoint = DirectX::XMLoadFloat3(&wayPoints[point]->position);
+           DirectX::XMVECTOR originPoint = DirectX::XMLoadFloat3(&wayPoints[index]->position);
+           DirectX::XMVECTOR cost = DirectX::XMVector3Length(DirectX::XMVectorSubtract(destinationPoint, originPoint));
+           /*if (Raycast::RayCast(wayPoints[point]->position,
+               wayPoints[index]->position, transform,
+               model, hitPosition, hitNormal))
+           {
+               wayPoints[index]->edge[1]->cost = FLT_MAX;
+           }
+           else*/
+           wayPoints[index]->edge[1]->cost = DirectX::XMVectorGetX(cost);
+       }
+       else
+       {
+           wayPoints[index]->edge[1]->destinationPoint = -1;
+           wayPoints[index]->edge[1]->cost = FLT_MAX;
+       }
+       // 6æ™‚ã®æ–¹å‘
+       // +COLUM_COUNTã®å€¤ãŒæœ€å¤§å€¤æœªæº€ã®ã¨ã
+       point = index + COLUM_COUNT;
+       if (point < MAX_WAY_POINT)
+       {
+           wayPoints[index]->edge[2]->destinationPoint = point;
+           // 2ç‚¹é–“ã®è·é›¢ã‚’è¨ˆç®—ã—ã¦ã‚¨ãƒƒã‚¸ã®ã‚³ã‚¹ãƒˆã«è¿½åŠ 
+           DirectX::XMVECTOR destinationPoint = DirectX::XMLoadFloat3(&wayPoints[point]->position);
+           DirectX::XMVECTOR originPoint = DirectX::XMLoadFloat3(&wayPoints[index]->position);
+           DirectX::XMVECTOR cost = DirectX::XMVector3Length(DirectX::XMVectorSubtract(destinationPoint, originPoint));
+          /* if (Raycast::RayCast(wayPoints[point]->position,
+               wayPoints[index]->position, transform,
+               model, hitPosition, hitNormal))
+           {
+               wayPoints[index]->edge[2]->cost = FLT_MAX;
+           }
+           else*/
+               wayPoints[index]->edge[2]->cost = DirectX::XMVectorGetX(cost);
+       }
+       else
+       {
+           wayPoints[index]->edge[2]->destinationPoint = -1;
+           wayPoints[index]->edge[2]->cost = FLT_MAX;
+       }
+       // 9æ™‚ã®æ–¹å‘
+       // jãŒ0ã‚ˆã‚Šå¤šãã„ã¨ã
+       point = index - 1;
+       if (x > 0)
+       {
+           wayPoints[index]->edge[3]->destinationPoint = point;
+           // 2ç‚¹é–“ã®è·é›¢ã‚’è¨ˆç®—ã—ã¦ã‚¨ãƒƒã‚¸ã®ã‚³ã‚¹ãƒˆã«è¿½åŠ 
+           DirectX::XMVECTOR destinationPoint = DirectX::XMLoadFloat3(&wayPoints[point]->position);
+           DirectX::XMVECTOR originPoint = DirectX::XMLoadFloat3(&wayPoints[index]->position);
+           DirectX::XMVECTOR cost = DirectX::XMVector3Length(DirectX::XMVectorSubtract(destinationPoint, originPoint));
+           /*if (Raycast::RayCast(wayPoints[point]->position,
+               wayPoints[index]->position, 
+               transform,
+               model, hitPosition, hitNormal))
+           {
+               wayPoints[index]->edge[3]->cost = FLT_MAX;
+           }
+           else*/
+           wayPoints[index]->edge[3]->cost = DirectX::XMVectorGetX(cost);
+       }
+       else
+       {
+           wayPoints[index]->edge[3]->destinationPoint = -1;
+           wayPoints[index]->edge[3]->cost = FLT_MAX;
+       }
+    
+}
 
-        wayPoint[index]->edge[0]->cost = DirectX::XMVectorGetX(len);
-    }
-    else
-    {
-        wayPoint[index]->edge[0]->destinationPoint = -1;
-        wayPoint[index]->edge[0]->cost = FLT_MAX;
-    }
+float Stage::Distance2D(const DirectX::XMFLOAT3& a, const DirectX::XMFLOAT3& b)
+{
+    float dx = a.x - b.x;
+    float dz = a.z - b.z;
+    return sqrtf(dx * dx + dz * dz);
+}
 
 
-    // 1: 3i‰Ej
-    point = index + 1;
-    if ((x + 1) < COLUM_COUNT)
-    {
-        wayPoint[index]->edge[1]->destinationPoint = point;
 
-        DirectX::XMVECTOR dest = DirectX::XMLoadFloat3(&wayPoint[point]->position);
-        DirectX::XMVECTOR orig = DirectX::XMLoadFloat3(&wayPoint[index]->position);
-        DirectX::XMVECTOR len = DirectX::XMVector3Length(DirectX::XMVectorSubtract(dest, orig));
-
-        wayPoint[index]->edge[1]->cost = DirectX::XMVectorGetX(len);
-    }
-    else
-    {
-        wayPoint[index]->edge[1]->destinationPoint = -1;
-        wayPoint[index]->edge[1]->cost = FLT_MAX;
-    }
-
-
-    // 2: 6i‰ºj
-    point = index + COLUM_COUNT;
-    if (point < MAX_WAY_POINT)
-    {
-        wayPoint[index]->edge[2]->destinationPoint = point;
-
-        DirectX::XMVECTOR dest = DirectX::XMLoadFloat3(&wayPoint[point]->position);
-        DirectX::XMVECTOR orig = DirectX::XMLoadFloat3(&wayPoint[index]->position);
-        DirectX::XMVECTOR len = DirectX::XMVector3Length(DirectX::XMVectorSubtract(dest, orig));
-
-        wayPoint[index]->edge[2]->cost = DirectX::XMVectorGetX(len);
-    }
-    else
-    {
-        wayPoint[index]->edge[2]->destinationPoint = -1;
-        wayPoint[index]->edge[2]->cost = FLT_MAX;
-    }
-
-
-    // 3: 9i¶j
-    point = index - 1;
-    if (x > 0)
-    {
-        wayPoint[index]->edge[3]->destinationPoint = point;
-
-        DirectX::XMVECTOR dest = DirectX::XMLoadFloat3(&wayPoint[point]->position);
-        DirectX::XMVECTOR orig = DirectX::XMLoadFloat3(&wayPoint[index]->position);
-        DirectX::XMVECTOR len = DirectX::XMVector3Length(DirectX::XMVectorSubtract(dest, orig));
-
-        wayPoint[index]->edge[3]->cost = DirectX::XMVectorGetX(len);
-    }
-    else
-    {
-        wayPoint[index]->edge[3]->destinationPoint = -1;
-        wayPoint[index]->edge[3]->cost = FLT_MAX;
-    }
-
-    //—]‚Á‚½‚S`‚VŒÂ‚ğ–³Œø‚É‚·‚é
-    for (int i = 4; i < 8; i++)
-    {
-        wayPoint[index]->edge[i]->destinationPoint = -1;
-        wayPoint[index]->edge[i]->cost = FLT_MAX;
-    }
+void Stage::Clear()
+{
+    //for (WayPoint wayPoints : wayPoints)
+    //{
+    //    delete wayPoints;
+    //}
+    //wayPoints.clear();
 }
 
 
@@ -206,58 +428,44 @@ void Stage::RenderImGui()
 	DirectX::XMConvertToDegrees(angle.y),
 	DirectX::XMConvertToDegrees(angle.z)
 	};
-	if (ImGui::Begin("Stage Transform"))
-	{
-		ImGui::Text("Stage");
-		ImGui::Separator();
-
-
-		
-		// ŠeTransform—v‘f‚ğ‘€ì
-		ImGui::DragFloat3("Position", &position.x, 0.1f, -1000.0f, 1000.0f);
-		if (ImGui::DragFloat3("Rotation (deg)", &angleDeg.x, 1.0f, -360.0f, 360.0f))
-		{
-			// •ÏX‚³‚ê‚½ê‡‚Ì‚İƒ‰ƒWƒAƒ“‚É–ß‚·
-			angle.x = DirectX::XMConvertToRadians(angleDeg.x);
-			angle.y = DirectX::XMConvertToRadians(angleDeg.y);
-			angle.z = DirectX::XMConvertToRadians(angleDeg.z);
-		}
-		ImGui::DragFloat3("Scale", &scale.x, 0.01f, 0.001f, 10.0f);
-	}
-	ImGui::End();
+	
+    
 }
 
-// ƒCƒ“ƒfƒbƒNƒX”Ô†‚©‚çƒEƒFƒCƒ|ƒCƒ“ƒg‚ÌÀ•W‚ğæ“¾
+// ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ç•ªå·ã‹ã‚‰ã‚¦ã‚§ã‚¤ãƒã‚¤ãƒ³ãƒˆã®åº§æ¨™ã‚’å–å¾—
 DirectX::XMFLOAT3 Stage::GetIndexWayPoint(int index)
 {
 
-	return wayPoint[index]->position;
+	return wayPoints[index]->position;
 }
 
-// À•W‚©‚çˆê”Ô‹ß‚¢ƒEƒFƒCƒ|ƒCƒ“ƒg‚ÌƒCƒ“ƒfƒbƒNƒX‚ğæ“¾
+// åº§æ¨™ã‹ã‚‰ä¸€ç•ªè¿‘ã„ã‚¦ã‚§ã‚¤ãƒã‚¤ãƒ³ãƒˆã®ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã‚’å–å¾—
 int Stage::NearWayPointIndex(DirectX::XMFLOAT3 target)
 {
     float minLength = FLT_MAX;
     float length = 0.0f;
     int index = -1;
-    // VECTOR‚É•ÏŠ·
+    // VECTORã«å¤‰æ›
     DirectX::XMVECTOR targetPos = DirectX::XMLoadFloat3(&target);
 
     for (int i = 0; i < MAX_WAY_POINT; ++i)
     {
-        DirectX::XMVECTOR point = DirectX::XMLoadFloat3(&(wayPoint[i]->position));
-        // ‹——£‚ğ‹‚ß‚é
+        DirectX::XMVECTOR point = DirectX::XMLoadFloat3(&(wayPoints[i]->position));
+        // è·é›¢ã‚’æ±‚ã‚ã‚‹
         DirectX::XMVECTOR vector = DirectX::XMVectorSubtract(targetPos, point);
         DirectX::XMVECTOR vectorLength = DirectX::XMVector3Length(vector);
         DirectX::XMStoreFloat(&length, vectorLength);
 
-        // ‹‚ß‚½‹——£‚ª•Û‘¶‚µ‚Ä‚¢‚é‚à‚Ì‚æ‚è¬‚³‚¯‚ê‚Î
+         //æ±‚ã‚ãŸè·é›¢ãŒä¿å­˜ã—ã¦ã„ã‚‹ã‚‚ã®ã‚ˆã‚Šå°ã•ã‘ã‚Œã°
         if (minLength > length)
         {
-            // ’l‚ğXV
+            // å€¤ã‚’æ›´æ–°
             minLength = length;
+
             index = i;
         }
     }
     return index;
+
+  
 }

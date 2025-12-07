@@ -19,13 +19,18 @@ Player::Player()
 
 	//モデルが大きいのでスケーリング
 	scale.x = scale.y = scale.z = 0.21f;
+
+
 	position.y = 3.0f;
+	position = { 0.0f, 3.0f, -16.0f };
+
 }
 
 //デストラクタ
 Player::~Player()
 {
 	delete model;
+	ProjectileManager::Instance().Remove(area);
 }
 
 //マウス操作用の変数
@@ -37,8 +42,11 @@ void Player::Update(float elapsedTime)
 {
 	shottimer++;
 
-	////移動入力処理
-	InputMove(elapsedTime);
+	if (renderer->GetHorrorPhase() == -1 || renderer->GetHorrorPhase() == 3)
+	{
+		////移動入力処理
+		InputMove(elapsedTime);
+	}
 
 	////ジャンプ入力処理
 	//InputJump();
@@ -418,7 +426,7 @@ void Player::InputSafetrSrea()
 		};
 
 		// ===== SafetyArea生成 =====
-		SafetyArea* area = new SafetyArea(&ProjectileManager::Instance());
+		area = new SafetyArea(&ProjectileManager::Instance());
 		area->SetPosition(spawnPos);
 		DirectX::XMFLOAT3 front = Camera::Instance().GetFront();
 		float yaw = std::atan2(front.x, front.z);

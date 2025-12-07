@@ -207,3 +207,9 @@ void LineRenderer::AddVertex(const DirectX::XMFLOAT3& position, const DirectX::X
 	v.color = color;
 	vertices.emplace_back(v);
 }
+
+void LineRenderer::AddLine(const Vertex& a, const Vertex& b)
+{
+	vertices.push_back(a);
+	vertices.push_back(b);
+}

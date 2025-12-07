@@ -18,17 +18,18 @@ public:
 	// ’¸“_’Ç‰Á
 	void AddVertex(const DirectX::XMFLOAT3& position, const DirectX::XMFLOAT4& color);
 
+	
+	struct Vertex
+	{
+		DirectX::XMFLOAT3	position;
+		DirectX::XMFLOAT4	color;
+	};
 private:
 	struct ConstantBuffer
 	{
 		DirectX::XMFLOAT4X4	wvp;
 	};
 
-	struct Vertex
-	{
-		DirectX::XMFLOAT3	position;
-		DirectX::XMFLOAT4	color;
-	};
 
 
 	Microsoft::WRL::ComPtr<ID3D11Buffer>			vertexBuffer;
@@ -44,5 +45,9 @@ private:
 
 	std::vector<Vertex>			vertices;
 	UINT						capacity = 0;
+
+public:
+	void AddLine(const Vertex& a, const Vertex& b);
+
 };
 

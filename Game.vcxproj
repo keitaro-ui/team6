@@ -156,7 +156,9 @@
     <ClInclude Include="Source\Scene\SceneGame.h" />
     <ClInclude Include="Source\Scene\SceneLoading.h" />
     <ClInclude Include="Source\Scene\SceneManager.h" />
+    <ClInclude Include="Source\Scene\ScenePassword.h" />
     <ClInclude Include="Source\Scene\SceneResult.h" />
+    <ClInclude Include="Source\Scene\SceneRule.h" />
     <ClInclude Include="Source\Scene\SceneTitle.h" />
     <ClInclude Include="Source\Scene\SceneTutorial.h" />
     <ClInclude Include="Source\SoundManager.h" />
@@ -181,6 +183,7 @@
     <ClInclude Include="Source\System\Mouse.h" />
     <ClInclude Include="Source\System\PhongShader.h" />
     <ClInclude Include="Source\System\PhongShadowShader.h" />
+    <ClInclude Include="Source\System\Raycast.h" />
     <ClInclude Include="Source\System\RenderContext.h" />
     <ClInclude Include="Source\System\RenderState.h" />
     <ClInclude Include="Source\System\Shader.h" />
@@ -228,7 +231,9 @@
     <ClCompile Include="Source\Scene\SceneGame.cpp" />
     <ClCompile Include="Source\Scene\SceneLoading.cpp" />
     <ClCompile Include="Source\Scene\SceneManager.cpp" />
+    <ClCompile Include="Source\Scene\ScenePassword.cpp" />
     <ClCompile Include="Source\Scene\SceneResult.cpp" />
+    <ClCompile Include="Source\Scene\SceneRule.cpp" />
     <ClCompile Include="Source\Scene\SceneTitle.cpp" />
     <ClCompile Include="Source\Scene\SceneTutorial.cpp" />
     <ClCompile Include="Source\SoundManager.cpp" />
@@ -251,6 +256,7 @@
     <ClCompile Include="Source\System\ModelResource.cpp" />
     <ClCompile Include="Source\System\Mouse.cpp" />
     <ClCompile Include="Source\System\PhongShader.cpp" />
+    <ClCompile Include="Source\System\Raycast.cpp" />
     <ClCompile Include="Source\System\RenderState.cpp" />
     <ClCompile Include="Source\System\ShadowMap.cpp" />
     <ClCompile Include="Source\System\ShadowMapShader.cpp" />
