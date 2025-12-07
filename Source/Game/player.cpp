@@ -91,6 +91,9 @@ void Player::Update(float elapsedTime)
 //移動入力処理
 void Player::InputMove(float elapsedTime)
 {
+	//SE
+	SoundManager::Instance().GetSound(SoundList::walkSE)->Play(false, 1.0f);
+
 	//進行ベクトル取得
 	DirectX::XMFLOAT3 moveVec = GetMoveVec();
 
@@ -353,7 +356,7 @@ void Player::CollisionProjectilesVsEnemies()
 				{
 					//弾丸破棄
 					projectile->Destroy();
-					hitSE->Play(false);
+					hitSE->Play(false, 1.0f);
 				}
 				break;
 			}
@@ -403,6 +406,7 @@ void Player::InputSafetrSrea()
 {
 	if (GetAsyncKeyState('R') & 1 && canPlaceSafeArea && maxSafetyAreaCount>0 && GetPlayerInside())
 	{
+		SoundManager::Instance().GetSound(SoundList::flagSE)->Play(false, 1.0f);
 		DirectX::XMFLOAT3 CamPos = Camera::Instance().GetEye();
 		DirectX::XMFLOAT3 forward = Camera::Instance().GetFront();
 

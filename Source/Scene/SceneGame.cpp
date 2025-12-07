@@ -133,7 +133,7 @@ void SceneGame::Initialize()
 			for (int x = 0; x < 6; x++)
 			{
 				DirectX::XMFLOAT3 pos = { -22.5f + x * xDis, 0.0f, zDis * (2 - z) };
-
+				
 				int v = map[z][x];
 
 				if (v == 0)
@@ -163,6 +163,9 @@ void SceneGame::Initialize()
 	}
 	//マウス位置の取得とロック
 	Input::Instance().GetMouse().Lock();
+
+	//BGM
+	SoundManager::Instance().GetSound(SoundList::gameBGM)->Play(true, 0.5f);
 }
 
 // 終了化
@@ -180,7 +183,7 @@ void SceneGame::Finalize()
 
 	delete balloon;
 
-
+	SoundManager::Instance().GetSound(SoundList::gameBGM)->Stop();
 
 	//boxなどのenemyを継承しているnewはdeleteしてはいけない。EnemyManagerごと消す
 

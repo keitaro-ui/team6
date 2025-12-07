@@ -7,6 +7,8 @@
 #include "System/AudioSource.h"
 #include "SafetyArea.h"
 #include <vector>
+#include "SoundManager.h"
+
 
 //ƒvƒŒƒCƒ„[
 class Player : public Character

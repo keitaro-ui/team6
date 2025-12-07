@@ -2,6 +2,7 @@
 
 #include "System/Sprite.h"
 #include "Scene.h"
+#include "SoundManager.h"
 
 #include <chrono>
 
