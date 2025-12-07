@@ -20,32 +20,32 @@ void CameraController::Update(float elapsedTime)
 
 	static bool cKeyLast = false;
 	// Cキーでカメラモード切替
-	bool cKeyNow = (GetAsyncKeyState('C') & 0x8000) != 0;
-	if (cKeyNow && !cKeyLast)
-	{
-		if (!isTopDown && !isFreeCam)
-		{
-			// FPS → 俯瞰に切り替える前にFPS情報を保存
-			fpsBackup.eye = eye;
-			fpsBackup.target = target;
-			fpsBackup.angle = angle;
+	//bool cKeyNow = (GetAsyncKeyState('C') & 0x8000) != 0;
+	//if (cKeyNow && !cKeyLast)
+	//{
+	//	if (!isTopDown && !isFreeCam)
+	//	{
+	//		// FPS → 俯瞰に切り替える前にFPS情報を保存
+	//		fpsBackup.eye = eye;
+	//		fpsBackup.target = target;
+	//		fpsBackup.angle = angle;
 
-			isTopDown = true;
-		}
-		else if (isTopDown)
-		{
-			// 俯瞰 → 自由カメラに切り替え
-			isTopDown = false;
-			isFreeCam = true;
-		}
-		else if (isFreeCam)
-		{
-			// 自由カメラ → FPSに戻す
-			isFreeCam = false;
-			restoringFPS = true;
-		}
-	}
-	cKeyLast = cKeyNow;
+	//		isTopDown = true;
+	//	}
+	//	else if (isTopDown)
+	//	{
+	//		// 俯瞰 → 自由カメラに切り替え
+	//		isTopDown = false;
+	//		isFreeCam = true;
+	//	}
+	//	else if (isFreeCam)
+	//	{
+	//		// 自由カメラ → FPSに戻す
+	//		isFreeCam = false;
+	//		restoringFPS = true;
+	//	}
+	//}
+	//cKeyLast = cKeyNow;
 
 	// マウス入力による角度更新
 	float movePower = 0.01f;

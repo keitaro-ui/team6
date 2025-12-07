@@ -76,6 +76,8 @@ private:
 	Board* boards[4];
 
 	std::unique_ptr<Sprite> spr = nullptr;
+	std::unique_ptr<Sprite> sprSpace = nullptr;
+	std::unique_ptr<Sprite> sprR = nullptr;
 
 	//•Ï”éŒ¾
 
@@ -89,6 +91,9 @@ private:
 	float debugDoorSize;
 	DirectX::XMFLOAT3 blockSize;
 	bool playerIsInside = false;
+
+	bool SpaceBool = false;
+	bool RBool = false;
 public:
 	std::vector<std::unique_ptr<Sprite>> sprites;
 

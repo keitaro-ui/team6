@@ -41,9 +41,9 @@ void ScenePassword::Initialize()
 
 void ScenePassword::Update(float elapsedTime)
 {
+    ShowCursor(true);
     const GamePadButton ESCButton = GamePad::BTN_A;
     Mouse& mouse = Input::Instance().GetMouse();
-    ShowCursor(true);
     mouse.Unlock();
 
     cooltime += elapsedTime;

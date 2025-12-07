@@ -89,6 +89,8 @@ void SceneResult::Update(float elapsedTime)
 
 	answerCheck();
 
+	while (ShowCursor(FALSE) >= 0);
+
 	// ---- チカチカ処理 ----
 	blinkTimer += elapsedTime;
 

@@ -47,6 +47,7 @@ void SceneGame::Initialize()
 	player->SetRenderer(modelRenderer);
 
 	renderer = modelRenderer;
+	renderer->InitLights();
 	
 
 	//ゴール位置初期化
@@ -57,6 +58,8 @@ void SceneGame::Initialize()
 	//スプライト初期設定
 	{
 		spr = std::make_unique<Sprite>("Data/Sprite/LoadingIcon.png");
+		sprSpace = std::make_unique<Sprite>("Data/Sprite/space.png");
+		sprR = std::make_unique<Sprite>("Data/Sprite/R.png");
 		Graphics& graphics = Graphics::Instance();
 		//スプライト読み込み
 		hpBarTex = Sprite("Data/Sprite/Oxygen_gauge_Single.png");
@@ -251,16 +254,28 @@ void SceneGame::Update(float elapsedTime)
 	float dz = player->GetPosition().z - goalPoint->position.z;
 
 	float distSq = dx * dx + dy * dy + dz * dz;
-	float goalRadius = 0.4f;
+	float goalRadius = 1.0f;
 	GamePadButton button = Input::Instance().GetGamePad().GetButtonDown();
-	if (distSq <= goalRadius * goalRadius && button == GamePad::BTN_START)
+	if (distSq <= goalRadius * goalRadius )
 	{
-		
-		passward = true;
+		SpaceBool = true;
+		if (button == GamePad::BTN_START)
+		{
+			while (ShowCursor(TRUE) < 0);
+			ShowCursor(true);
+			SoundManager::Instance().GetSound(SoundList::walkSE)->Stop();
+			passward = true;
+			SpaceBool = false;
+		}
 	}
+	else
+		SpaceBool = false;
 
 	if (passward && GetAsyncKeyState(VK_BACK) & 0x8000)
 	{
+		while (ShowCursor(FALSE) >= 0);
+		Mouse& mouse = Input::Instance().GetMouse();
+		mouse.Lock();
 		passward=false;
 	}
 	if (passward) passwordScene->Update(elapsedTime);
@@ -309,7 +324,7 @@ void SceneGame::Update(float elapsedTime)
 		EnemyManager::Instance().Update(elapsedTime);
 
 		//ステージ継続ダメージ
-		const float stageDamagePerSec = 3.0f;
+		const float stageDamagePerSec = 2.0f;
 		player->AddDamage(stageDamagePerSec * elapsedTime);
 
 
@@ -325,7 +340,7 @@ void SceneGame::Update(float elapsedTime)
 				if (s) s->Update(elapsedTime);
 				if (s && s->IsInside(player->GetPosition()))
 				{
-					player->Heal(5.0f * elapsedTime);
+					player->Heal(2.0f * elapsedTime);
 					break;
 				}
 			}
@@ -334,12 +349,14 @@ void SceneGame::Update(float elapsedTime)
 
 
 	bool inside = false;
+	RBool = false;
 
 	for (const auto& d : physics.GetDoorObbs())
 	{
 		if (physics.IsInside(d, { player->GetPosition().x, player->GetPosition().z }))
 		{
 			inside = true;
+			RBool = true;
 			break;
 		}
 	}
@@ -401,16 +418,16 @@ void SceneGame::Render()
 	// 3Dデバッグ描画
 	{
 		//プレイヤーデバッグプリミティブ描画
-		player->RenderDebugPrimitive(rc, shapeRenderer);
+		//player->RenderDebugPrimitive(rc, shapeRenderer);
 
 		//当たり判定デバッグプリミティブ描画
-		physics.RenderDebugPrimitive(rc, shapeRenderer);
+		//physics.RenderDebugPrimitive(rc, shapeRenderer);
 
 		//エネミーデバッグプリミティブ描画
 
 		
 
-		stage->RenderDebugPrimitive(rc, shapeRenderer);
+		//stage->RenderDebugPrimitive(rc, shapeRenderer);
 
 		enemyslime->RenderDebugPrimitive(rc, shapeRenderer);
 
@@ -423,6 +440,12 @@ void SceneGame::Render()
 
 		float texWidth = hpBarTex.GetWidth();
 		float texHeight = hpBarTex.GetHeight();
+
+		float SpaceW = sprSpace->GetWidth();
+		float SpaceH = sprSpace->GetHeight();
+
+		float RW = sprR->GetWidth();
+		float RH = sprR->GetHeight();
 
 		float texW = hpBarFrameTex.GetWidth();
 		float texH = hpBarFrameTex.GetHeight();
@@ -452,6 +475,36 @@ void SceneGame::Render()
 			0,
 			0.5, 0.5, 0.5, 1
 		);
+
+
+		if (SpaceBool)
+		{
+
+			sprSpace->Render(
+				rc,
+				screenWidth*0.7f, screenHeight*0.6f,
+				0,
+				SpaceW * 0.8f, SpaceH * 0.5f,
+				0, 0,
+				SpaceW, SpaceH,
+				0,
+				1, 1, 1, 1
+			);
+		}
+
+		if(RBool && player->GetCanPlaceSafeArea())
+		{
+			sprR->Render(
+				rc,
+				0, 0,
+				0,
+				RW * 0.7f, RH * 0.7f,
+				0, 0,
+				RW, RH,
+				0,
+				1, 1, 1, 1
+			);
+		}
 
 		int remain = (int)player->GetMaxSafeAreaCount();
 
