@@ -176,13 +176,9 @@ void SceneGame::Initialize()
 	//マウス位置の取得とロック
 	Input::Instance().GetMouse().Lock();
 
-<<<<<<< HEAD
-	//BGM
-	SoundManager::Instance().GetSound(SoundList::gameBGM)->Play(true, 0.5f);
-=======
 	renderer->ResetHorror();
-
->>>>>>> master
+	//BGM
+	SoundManager::Instance().GetSound(SoundList::gameBGM)->Play(true, 0.2f);
 }
 
 // 終了化
@@ -220,16 +216,14 @@ void SceneGame::Finalize()
 
 	delete balloon;
 
-<<<<<<< HEAD
 	SoundManager::Instance().GetSound(SoundList::gameBGM)->Stop();
-=======
+
 	ProjectileManager::Instance().Clear();
 	for (auto& s : player->safetyAreas)
 	{
 		s = nullptr;
 	}
 	player->safetyAreas.clear();
->>>>>>> master
 
 	//boxなどのenemyを継承しているnewはdeleteしてはいけない。EnemyManagerごと消す
 
