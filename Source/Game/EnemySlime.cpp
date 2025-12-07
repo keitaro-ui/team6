@@ -24,7 +24,7 @@ EnemySlime::EnemySlime()
 	height = 0.0f;
 
 	CreateModel();
-	SetPosition(StageManager::Instance().GetStage()->GetWayPoint(20)->position);
+	SetPosition(StageManager::Instance().GetStage()->GetWayPoint(19)->position);
 
 	behaviorData = new BehaviorData();
 	aiTree = new BehaviorTree(this);
@@ -54,13 +54,7 @@ EnemySlime::EnemySlime()
 		}
 
 	}
-	//targetPosition = PlayerManager::Instance().GetPlayer()->GetPosition();
 
-	//targetPosition = StageManager::Instance().GetStage()->GetWayPoint(o)->position;
-
-	//ここで縄張り設定
-	//SetTerritory(PlayerManager::Instance().GetPlayer()->GetPosition(), 10.0f);
-	//SetRandomTargetPosition();
 }
 
 //デストラクタ
@@ -274,3 +268,30 @@ void EnemySlime::OnDead()
 	//自信を破棄
 	Destroy();
 }
+
+void EnemySlime::OnHitWaypoint()
+{
+	for (int i = 0; i < 42; i++)
+	{
+		DirectX::XMFLOAT3 wpPos = StageManager::Instance().GetStage()->GetWayPoint(i)->position;
+		DirectX::XMFLOAT3 dir = { position.x - wpPos.x,
+						 position.y - wpPos.y,
+						 position.z - wpPos.z };
+
+		int edgeNo = -1;
+
+		if (fabsf(dir.z) > fabsf(dir.x))
+		{
+			if (dir.z > 0) edgeNo = 0; // 上
+			else edgeNo = 2;          // 下
+		}
+		else
+		{
+			if (dir.x > 0) edgeNo = 1; // 右
+			else edgeNo = 3;          // 左
+		}
+
+		StageManager::Instance().GetStage()->GetWayPoint(i)->edge[edgeNo]->cost = FLT_MAX;
+	}
+}
+

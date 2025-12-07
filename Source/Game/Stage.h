@@ -73,6 +73,7 @@ private:
 
 	DirectX::XMFLOAT3 angleWay = { 0,0,0 };
 	DirectX::XMFLOAT3 sizeWay = { 0.5f,0.5f,0.5f };
+	bool enehit = false;
 
 	std::vector<int> path;   // A* の結果（WayPoint index の列）
 	LoadTextures loadTextures;
@@ -112,7 +113,8 @@ public:
 	//エネミー全削除
 	void Clear();
 
-	
+	bool GetEneHit() const{ return enehit; }
+	void SetEneHit(bool s) { enehit = s; }
 
 };
 

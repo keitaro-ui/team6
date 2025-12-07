@@ -316,6 +316,7 @@ void SceneGame::Update(float elapsedTime)
 
 		player->SetPosition(physics.CircleVsStage(player->GetPosition(), player->GethitRadius()));
 
+		//enemyslime->SetPosition(physics.CircleVsStage(enemyslime->GetPosition(), enemyslime->GethitRadius()));
 
 		enemyslime->Update(elapsedTime);
 
@@ -473,7 +474,7 @@ void SceneGame::Render()
 			0,
 			1, 1, 1, 1
 		);
-
+		
 		float drawWidth = texWidth * hpRate;
 
 		// ピクセル指定でOK

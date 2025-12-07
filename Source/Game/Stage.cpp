@@ -4,6 +4,7 @@
 #include "EnemyManager.h"
 #include "System/Raycast.h"
 #include "ActionDerived.h"
+#include "PhysicsSystem2d.h"
 
 //コンストラクタ
 Stage::Stage()
@@ -131,9 +132,6 @@ Stage::Stage()
     AddWayPoint({ 27, 1.0f, -3.4f });
     AddWayPoint({ 27, 1.0f, -10.1f });
     AddWayPoint({ 27, 1.0f, -16.2f });
-
-
-
 
      // WayPointに紐づくエッジを生成
     for (windex = 0; windex < 42; windex++)
@@ -480,6 +478,11 @@ void Stage::ConnectWayPoints(int index)
        if (point >= 0)
        {
            wayPoints[index]->edge[0]->destinationPoint = point;
+           if (enehit == true)
+           {
+               wayPoints[index]->edge[0]->cost = FLT_MAX;
+               enehit = false;
+           }
            // 2点間の距離を計算してエッジのコストに追加
            DirectX::XMVECTOR destinationPoint = DirectX::XMLoadFloat3(&wayPoints[point]->position);
            DirectX::XMVECTOR originPoint = DirectX::XMLoadFloat3(&wayPoints[index]->position);
@@ -504,6 +507,11 @@ void Stage::ConnectWayPoints(int index)
        if ((x + 1) < COLUM_COUNT)
        {
            wayPoints[index]->edge[1]->destinationPoint = point;
+           if (enehit == true)
+           {
+               wayPoints[index]->edge[1]->cost = FLT_MAX;
+               enehit=false;
+           }
            // 2点間の距離を計算してエッジのコストに追加
            DirectX::XMVECTOR destinationPoint = DirectX::XMLoadFloat3(&wayPoints[point]->position);
            DirectX::XMVECTOR originPoint = DirectX::XMLoadFloat3(&wayPoints[index]->position);
@@ -528,6 +536,11 @@ void Stage::ConnectWayPoints(int index)
        if (point < MAX_WAY_POINT)
        {
            wayPoints[index]->edge[2]->destinationPoint = point;
+           if (enehit == true)
+           {
+               wayPoints[index]->edge[2]->cost = FLT_MAX;
+               enehit=false;
+           }
            // 2点間の距離を計算してエッジのコストに追加
            DirectX::XMVECTOR destinationPoint = DirectX::XMLoadFloat3(&wayPoints[point]->position);
            DirectX::XMVECTOR originPoint = DirectX::XMLoadFloat3(&wayPoints[index]->position);
@@ -552,6 +565,11 @@ void Stage::ConnectWayPoints(int index)
        if (x > 0)
        {
            wayPoints[index]->edge[3]->destinationPoint = point;
+           if (enehit == true)
+           {
+               wayPoints[index]->edge[3]->cost = FLT_MAX;
+               enehit = false;
+           }
            // 2点間の距離を計算してエッジのコストに追加
            DirectX::XMVECTOR destinationPoint = DirectX::XMLoadFloat3(&wayPoints[point]->position);
            DirectX::XMVECTOR originPoint = DirectX::XMLoadFloat3(&wayPoints[index]->position);
@@ -700,3 +718,4 @@ int Stage::NearWayPointIndex(DirectX::XMFLOAT3 target)
         }
     }*/
 }
+

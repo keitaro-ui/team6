@@ -1,6 +1,8 @@
 #pragma once
 #include <vector>
 
+#include"Game/Stage.h"
+
 #include "DirectXMath.h"
 #include "System/ShapeRenderer.h"
 
@@ -9,6 +11,7 @@ class PhysicsSystem2d
 public:
 
     void Update();
+
 
 private:
     // プロキシ（型をまたいで１つの配列にまとめる構造体）
@@ -65,4 +68,5 @@ public:
 
     //デバッグプリミティブ描画
     void RenderDebugPrimitive(const RenderContext& rc, ShapeRenderer* renderer);
+
 };

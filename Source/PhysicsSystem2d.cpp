@@ -1,5 +1,5 @@
 #include "PhysicsSystem2d.h"
-
+#include "Game/EnemySlime.h"
 #include <algorithm>
 #include <vector>
 inline float ProjectLength(const DirectX::XMFLOAT2& halfSize,
@@ -127,6 +127,7 @@ bool PhysicsSystem2d::CheckCircleOBB(const Collider2dObb& A, const Circle& B, Se
             if (dist < radius)
             {
                 float penetration = radius - dist;
+                //EnemySlime::Instance(). OnHitWaypoint();
                 if (penetration > bestPenetration)
                 {
                     bestPenetration = penetration;
@@ -269,6 +270,8 @@ DirectX::XMFLOAT3 PhysicsSystem2d::CircleVsStage(DirectX::XMFLOAT3 pos, float si
 
             // åãâ ÇèëÇ´ñﬂÇ∑
             DirectX::XMStoreFloat2(&pos2d, Pos);
+
+            
 
             // y ÇÕÇªÇÃÇ‹Ç‹ÅAXZ ÇæÇØçXêV
             circle.position = { pos2d.x, circle.position.y, pos2d.y };

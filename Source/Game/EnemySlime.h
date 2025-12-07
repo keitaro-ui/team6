@@ -17,6 +17,12 @@ class EnemySlime : public Enemy
 public:
 	EnemySlime();
 	~EnemySlime() override;
+	//唯一のインスタンス取得
+	static EnemySlime& Instance()
+	{
+		static EnemySlime instance;
+		return instance;
+	}
 
 	//更新処理
 	void Update(float elapsedTime) override;
@@ -114,6 +120,9 @@ private:
 	float				searchRange = 20.0f;
 	float				runTimer = 0.0f;
 
+	//当たり判定の大きさ
+	float hitRadius = 0.55f;
+
 	bool renderModel = true;
 
 	bool search_player = false;
@@ -135,4 +144,8 @@ public:
 	{
 		usa,
 	};
+
+
+	void OnHitWaypoint();
+	float GethitRadius() { return hitRadius; }
 };

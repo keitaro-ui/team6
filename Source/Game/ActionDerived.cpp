@@ -109,7 +109,6 @@ ActionBase::State PursuitAction::Run(float elapsedTime)
 			goalIndex,
 			true
 		);
-
 		path_idx = 0;
 
 		// A* を実行して path を取得
@@ -210,17 +209,17 @@ ActionBase::State BringAction::Run(float elapsedTime)
 {
 	auto& path = SearchAlgorithm::Instance().GetCurrentPath();
 
-	switch (step)
+	for (int i = 0; i < ProjectileManager::Instance().GetProjectileCount(); i++)
 	{
-	case 0:
-	{
-		printf("ComputePathAction\n");
-		// 経路配列をリセット
-		/*owner->GetCurrentPath().clear();
-		owner->GetPathIndex() = 0;*/
-
-		for (int i = 0; i < ProjectileManager::Instance().GetProjectileCount(); i++)
+		switch (step)
 		{
+		case 0:
+		{
+			printf("ComputePathAction\n");
+			// 経路配列をリセット
+			/*owner->GetCurrentPath().clear();
+			owner->GetPathIndex() = 0;*/
+
 #if 1 // ゲーム用
 			// 必要な情報を取得
 			int startIndex = StageManager::Instance().GetStage()->NearWayPointIndex(owner->GetPosition());
@@ -284,43 +283,72 @@ ActionBase::State BringAction::Run(float elapsedTime)
 			// 次のステップへ
 			step = 1;
 			break;
+
 		}
-	}
 
-	case 1:
-	{
-		DirectX::XMFLOAT3 way_pos = StageManager::Instance().GetStage()->GetWayPoint(path.at(path_idx))->position;
-		owner->SetTargetPosition(way_pos);
-
-		DirectX::XMFLOAT3 target_pos = owner->GetTargetPosition();
-		//DirectX::XMFLOAT3 goal_pos = StageManager::Instance().GetStage()->GetWayPoint(path.at(goalIndexX))->position;
-		float dx = owner->GetPosition().x - target_pos.x;
-		float dy = owner->GetPosition().y - target_pos.y;
-		float dz = owner->GetPosition().z - target_pos.z;
-
-		//float dx = owner->GetPosition().x - goal_pos.x;
-		//float dy = owner->GetPosition().y - goal_pos.y;
-		//float dz = owner->GetPosition().z - goal_pos.z;
-
-		float distSq = dx * dx + dy * dy + dz * dz;
-
-		if (distSq < 0.1f)
+		case 1:
 		{
-			//パスの最後のウェイポイントに到達したか
-			if (path_idx == path.size() - 1)
 			{
-				//
-				step = 0;
-				return ActionBase::State::Complete;
-			}
-			else
-				path_idx++;
-		}
+				float dix = owner->GetPosition().x - PlayerManager::Instance().GetPlayer()->GetPosition().x;
+				float diy = owner->GetPosition().y - PlayerManager::Instance().GetPlayer()->GetPosition().y;
+				float diz = owner->GetPosition().z - PlayerManager::Instance().GetPlayer()->GetPosition().z;
 
-		owner->MoveToTarget(0.5f, elapsedTime);
-		//return ActionBase::State::Complete;
-		break;
-	}
+				float dist = dix * dix + diy * diy + diz * diz;
+
+				if (dist < 10.0f)
+				{
+					SceneManager::Instance().ChangeScene(new SceneResult(ResultType::GameOver));
+				}
+			}
+
+			{
+				float dix = owner->GetPosition().x - ProjectileManager::Instance().GetProjectile(i)->GetPosition().x;
+				float diy = owner->GetPosition().y - ProjectileManager::Instance().GetProjectile(i)->GetPosition().y;
+				float diz = owner->GetPosition().z - ProjectileManager::Instance().GetProjectile(i)->GetPosition().z;
+
+				float dist = dix * dix + diy * diy + diz * diz;
+
+				if (dist < 10.0f)
+				{
+					ProjectileManager::Instance().GetProjectile(i)->Destroy();
+				}
+			}
+
+			
+			DirectX::XMFLOAT3 way_pos = StageManager::Instance().GetStage()->GetWayPoint(path.at(path_idx))->position;
+			owner->SetTargetPosition(way_pos);
+
+			DirectX::XMFLOAT3 target_pos = owner->GetTargetPosition();
+			//DirectX::XMFLOAT3 goal_pos = StageManager::Instance().GetStage()->GetWayPoint(path.at(goalIndexX))->position;
+			float dx = owner->GetPosition().x - target_pos.x;
+			float dy = owner->GetPosition().y - target_pos.y;
+			float dz = owner->GetPosition().z - target_pos.z;
+
+			//float dx = owner->GetPosition().x - goal_pos.x;
+			//float dy = owner->GetPosition().y - goal_pos.y;
+			//float dz = owner->GetPosition().z - goal_pos.z;
+
+			float distSq = dx * dx + dy * dy + dz * dz;
+
+
+			if (distSq < 0.1f)
+			{
+				//パスの最後のウェイポイントに到達したか
+				if (path_idx == path.size() - 1)
+				{
+					//
+					step = 0;
+					return ActionBase::State::Complete;
+				}
+				else
+					path_idx++;
+			}
+
+			owner->MoveToTarget(0.5f, elapsedTime);
+			//return ActionBase::State::Complete;
+			break;
+		}
+		}
 	}
 	return ActionBase::State::Run;
 }
@@ -407,9 +435,7 @@ ActionBase::State ComputePathAction::Run(float elapsedTime)
 			float distSq = dx * dx + dy * dy + dz * dz;
 
 			path_idx = distSq < 0.1f ? 1 : 0;
-			
-
-			
+		
 			// 次のステップへ
 			step = 1;
 			return ActionBase::State::Complete;
