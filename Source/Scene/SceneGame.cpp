@@ -175,7 +175,7 @@ void SceneGame::Initialize()
 
 	//マウス位置の取得とロック
 	Input::Instance().GetMouse().Lock();
-
+	
 	renderer->ResetHorror();
 
 }
@@ -261,6 +261,7 @@ void SceneGame::Update(float elapsedTime)
 	if (passward) passwordScene->Update(elapsedTime);
 	else
 	{
+		ShowCursor(false);
 		// --- HPチェック ---
 		if (player->hp <= 0.0f)
 		{
