@@ -64,6 +64,7 @@ private:
     float screenWidth = 0.0f;
     float screenHeight = 0.0f;
     
+    float cooltime;
 
     float textureWidth = 3725.0f;
     float textureHeight = 514.0f;

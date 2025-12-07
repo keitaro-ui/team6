@@ -9,23 +9,7 @@ ProjectileManager::ProjectileManager()
 //デストラクタ
 ProjectileManager::~ProjectileManager()
 {
-	////破棄処理
-	//for (Projectile * projectile : removes)
-	//{
-	//	if (!projectile) continue;
-	//	auto it = std::find(projectiles.begin(), projectiles.end(), projectile);
-
-	//	/*std::vector<Projectile*>::iterator it = std::find(projectiles.begin(),
-	//		projectiles.end(), projectile);*/
-	//	if (it != projectiles.end())
-	//	{
-	//		projectiles.erase(it);
-	//	}
-	//	//弾丸の破棄処理
-	//	delete projectile;
-	//}
-	////破棄リストをクリア
-	//removes.clear();
+	
 	Clear();
 }
 
@@ -73,10 +57,7 @@ void ProjectileManager::Render(const RenderContext& rc, ModelRenderer* renderer)
 		//if (projectile && !projectile->IsDead())
 		projectile->Render(rc, renderer);
 	}
-	//for (auto area : projectiles)
-	//{
-	//	area->Render(rc, renderer);
-	//}
+	
 }
 
 //デバッグプリミティブ描画

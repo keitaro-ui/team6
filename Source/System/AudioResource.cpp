@@ -97,6 +97,8 @@ AudioResource::AudioResource(const char* filename)
 		wfx.nBlockAlign = (wfx.wBitsPerSample >> 3) * wfx.nChannels;
 		wfx.nAvgBytesPerSec = wfx.nBlockAlign * wfx.nSamplesPerSec;
 		wfx.cbSize = sizeof(WAVEFORMATEX);
+
+
 	}
 }
 

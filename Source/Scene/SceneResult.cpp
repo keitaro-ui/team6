@@ -35,6 +35,12 @@ void SceneResult::Initialize()
 
 	blinkTimer = 0.0f;
 	blinkVisible = true;
+
+	//BGM
+	if (resultType == ResultType::GameClear)
+		SoundManager::Instance().GetSound(SoundList::resultClearBGM)->Play(true, 0.8f);
+	else if (resultType == ResultType::GameOver)
+		SoundManager::Instance().GetSound(SoundList::resultOverBGM)->Play(true, 0.8f);
 }
 
 //終了化
@@ -62,7 +68,8 @@ void SceneResult::Finalize()
 		sprite_number = nullptr;
 	}
 	ShowCursor(true);
-
+	SoundManager::Instance().GetSound(SoundList::resultClearBGM)->Stop();
+	SoundManager::Instance().GetSound(SoundList::resultOverBGM)->Stop();
 	/*point = 0;
 	result = -1;
 	count_1 = 0;
@@ -81,6 +88,8 @@ void SceneResult::Update(float elapsedTime)
 		GamePad::BTN_START;
 
 	answerCheck();
+
+	while (ShowCursor(FALSE) >= 0);
 
 	// ---- チカチカ処理 ----
 	blinkTimer += elapsedTime;

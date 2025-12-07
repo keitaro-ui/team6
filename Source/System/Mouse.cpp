@@ -20,6 +20,8 @@ Mouse::Mouse(HWND hWnd)
 
 	//マウスカーソルの非表示
 	ShowCursor(FALSE);
+
+
 }
 
 // 更新
@@ -59,30 +61,7 @@ void Mouse::Update()
 	bool isRightClickDown = (buttonState[0] & (1 << 2)) != 0;   // 現在押されているか
 	bool wasRightClickDown = (buttonState[1] & (1 << 2)) != 0; // 前フレームの状態
 
-	// 押した瞬間のみ
-	if (isRightClickDown && !wasRightClickDown)
-	{
-		bLock = !bLock;  // トグル（切り替え）
 
-		if (bLock)
-		{
-			ShowCursor(FALSE); // カーソル非表示
-
-			// 中央にリセット
-			POINT center = { (LONG)(screenWidth / 2.0f), (LONG)(screenHeight / 2.0f) };
-			::ClientToScreen(hWnd, &center);
-			::SetCursorPos(center.x, center.y);
-
-			// 前回座標を中央に初期化（これが重要）
-			positionX[0] = positionX[1] = screenWidth / 2.0f;
-			positionY[0] = positionY[1] = screenHeight / 2.0f;
-			deltaPositionX = deltaPositionY = 0;
-		}
-		else
-		{
-			ShowCursor(TRUE); // カーソル表示
-		}
-	}
 
 	// カーソル位置の取得
 	POINT cursor;

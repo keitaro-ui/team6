@@ -120,7 +120,8 @@ ActionBase::State PursuitAction::Run(float elapsedTime)
 			result = SearchAlgorithm::Instance().BuildPath(StageManager::Instance().GetStage(), startIndex, goalIndex);
 
 			// 経路保存
-			std::vector<int>currPaths = SearchAlgorithm::Instance().GetCurrentPath();
+			//std::vector<int>currPaths = SearchAlgorithm::Instance().GetCurrentPath();
+			auto& currPaths = SearchAlgorithm::Instance().GetCurrentPath();
 			currPaths = result;
 
 
@@ -152,13 +153,28 @@ ActionBase::State PursuitAction::Run(float elapsedTime)
 
 	case 1:
 	{
+		// ?? これを必ず最初に入れる
+		if (path.empty()) {
+			printf("PATH EMPTY!!\n");
+			step = 0;
+			return ActionBase::State::Failed;
+		}
+
+		if (path_idx < 0 || path_idx >= path.size()) {
+			printf("path_idx OUT OF RANGE!! idx=%d size=%d\n",
+				path_idx, (int)path.size());
+
+			// とりあえず 0 に戻す
+			path_idx = 0;
+		}
 		float dix = owner->GetPosition().x - PlayerManager::Instance().GetPlayer()->GetPosition().x;
 		float diy = owner->GetPosition().y - PlayerManager::Instance().GetPlayer()->GetPosition().y;
 		float diz = owner->GetPosition().z - PlayerManager::Instance().GetPlayer()->GetPosition().z;
 
 		float dist = dix * dix + diy * diy + diz * diz;
+		float distSQ = sqrtf(dist);
 
-		if (dist < 10.0f)
+		if (distSQ < 2.5f)
 		{
 			SceneManager::Instance().ChangeScene(new SceneResult(ResultType::GameOver));
 		}
@@ -257,7 +273,8 @@ ActionBase::State BringAction::Run(float elapsedTime)
 				result = SearchAlgorithm::Instance().BuildPath(StageManager::Instance().GetStage(), startIndex, goalIndex);
 
 				// 経路保存
-				std::vector<int>currPaths = SearchAlgorithm::Instance().GetCurrentPath();
+				//std::vector<int>currPaths = SearchAlgorithm::Instance().GetCurrentPath();
+				auto& currPaths = SearchAlgorithm::Instance().GetCurrentPath();
 				currPaths = result;
 
 
@@ -285,6 +302,11 @@ ActionBase::State BringAction::Run(float elapsedTime)
 			break;
 
 		}
+<<<<<<< HEAD
+=======
+		break;
+	}
+>>>>>>> master
 
 		case 1:
 		{
@@ -353,8 +375,6 @@ ActionBase::State BringAction::Run(float elapsedTime)
 	return ActionBase::State::Run;
 }
 
-
-
 // AStarを実行して経路を作る 徘徊
 ActionBase::State ComputePathAction::Run(float elapsedTime)
 {
@@ -383,14 +403,34 @@ ActionBase::State ComputePathAction::Run(float elapsedTime)
 
 #if 1 // ゲーム用
 		// 必要な情報を取得
-		int startIndex = StageManager::Instance().GetStage()->NearWayPointIndex(owner->GetPosition());
-		//int goalIndex = StageManager::Instance().GetStage()->NearWayPointIndex(owner->GetTargetPosition());
-		int goalIndex = rand() % StageManager::Instance().GetStage()->GetWayPointCount();
+		//int startIndex = StageManager::Instance().GetStage()->NearWayPointIndex(owner->GetPosition());
+		////int goalIndex = StageManager::Instance().GetStage()->NearWayPointIndex(owner->GetTargetPosition());
+		//int goalIndex = rand() % StageManager::Instance().GetStage()->GetWayPointCount();
 
-		while (startIndex == goalIndex) {
-			goalIndex = rand() % StageManager::Instance().GetStage()->GetWayPointCount();
-		}
+		//if (startIndex == goalIndex)
+		//{
+		//	goalIndex = rand() % StageManager::Instance().GetStage()->GetWayPointCount();
+		//}
+
+	/*	int count = StageManager::Instance().GetStage()->GetWayPointCount();
+		int startIndex = StageManager::Instance().GetStage()->NearWayPointIndex(owner->GetPosition());
+
+		int goalIndex = startIndex;
+		while (goalIndex == startIndex)
+		{
+			goalIndex = rand() % count;
+		}*/
+
+		int startIndex = StageManager::Instance().GetStage()->NearWayPointIndex(owner->GetPosition());
+
+		int goalIndex;
+		int wpCount = StageManager::Instance().GetStage()->GetWayPointCount();
+
+		do {
+			goalIndex = rand() % wpCount;
+		} while (goalIndex == startIndex);
 		
+
 #else
 		int startIndex = StageManager::Instance().GetStage()->NearWayPointIndex(owner->GetPosition());
 		int goalIndex = rand() % StageManager::Instance().GetStage()->GetWayPointCount();
@@ -422,8 +462,11 @@ ActionBase::State ComputePathAction::Run(float elapsedTime)
 			result = SearchAlgorithm::Instance().BuildPath(StageManager::Instance().GetStage(),startIndex,goalIndex);
 
 			// 経路保存
-			std::vector<int>currPaths = SearchAlgorithm::Instance().GetCurrentPath();
+			//std::vector<int>currPaths = SearchAlgorithm::Instance().GetCurrentPath();
+			auto& currPaths = SearchAlgorithm::Instance().GetCurrentPath();
 			currPaths = result;
+
+			auto& path = SearchAlgorithm::Instance().GetCurrentPath();
 
 
 			DirectX::XMFLOAT3 way_pos = StageManager::Instance().GetStage()->GetWayPoint(path.at(path_idx))->position;
@@ -435,10 +478,15 @@ ActionBase::State ComputePathAction::Run(float elapsedTime)
 			float distSq = dx * dx + dy * dy + dz * dz;
 
 			path_idx = distSq < 0.1f ? 1 : 0;
+<<<<<<< HEAD
 		
+=======
+			
+>>>>>>> master
 			// 次のステップへ
 			step = 1;
 			return ActionBase::State::Complete;
+
 		}
 		else
 		{
@@ -451,16 +499,36 @@ ActionBase::State ComputePathAction::Run(float elapsedTime)
 
 	case 1:
 	{
+
+		// ?? これを必ず最初に入れる
+		if (path.empty()) {
+			printf("PATH EMPTY!!\n");
+			step = 0;
+			return ActionBase::State::Failed;
+		}
+
+		if (path_idx < 0 || path_idx >= path.size()) {
+			printf("path_idx OUT OF RANGE!! idx=%d size=%d\n",
+				path_idx, (int)path.size());
+
+			// とりあえず 0 に戻す
+			path_idx = 0;
+		}
 		float dix = owner->GetPosition().x - PlayerManager::Instance().GetPlayer()->GetPosition().x;
 		float diy = owner->GetPosition().y - PlayerManager::Instance().GetPlayer()->GetPosition().y;
 		float diz = owner->GetPosition().z - PlayerManager::Instance().GetPlayer()->GetPosition().z;
 
 		float dist = dix * dix + diy * diy + diz * diz;
+		float distSQ = sqrtf(dist);
 
-		if (dist < 10.0f)
+		if (distSQ < 2.5f)
 		{
 			SceneManager::Instance().ChangeScene(new SceneResult(ResultType::GameOver));
 		}
+	/*	if (dist < 0.1f)
+		{
+			SceneManager::Instance().ChangeScene(new SceneResult(ResultType::GameOver));
+		}*/
 
 		DirectX::XMFLOAT3 way_pos = StageManager::Instance().GetStage()->GetWayPoint(path.at(path_idx))->position;
 		owner->SetTargetPosition(way_pos);

@@ -28,11 +28,7 @@ void SceneGame::Initialize()
 
 	//プレイヤー初期化
 	player = std::make_unique<Player>();
-	/*sprites.push_back(std::make_unique<Sprite>("Data/Sprite/Oxygen_gauge_frame.png"));
-	sprites.push_back(std::make_unique<Sprite>("Data/Sprite/Oxygen_gauge.png"));*/
-	//PlayerManager::Instance().Register(player.get());
-
-
+	
 
 	PlayerManager::Instance().Register(player.get());
 
@@ -51,6 +47,7 @@ void SceneGame::Initialize()
 	player->SetRenderer(modelRenderer);
 
 	renderer = modelRenderer;
+	renderer->InitLights();
 	
 
 	//ゴール位置初期化
@@ -61,6 +58,8 @@ void SceneGame::Initialize()
 	//スプライト初期設定
 	{
 		spr = std::make_unique<Sprite>("Data/Sprite/LoadingIcon.png");
+		sprSpace = std::make_unique<Sprite>("Data/Sprite/space.png");
+		sprR = std::make_unique<Sprite>("Data/Sprite/R.png");
 		Graphics& graphics = Graphics::Instance();
 		//スプライト読み込み
 		hpBarTex = Sprite("Data/Sprite/Oxygen_gauge_Single.png");
@@ -70,7 +69,6 @@ void SceneGame::Initialize()
 	}
 	passwordScene = new ScenePassword("3132");
 	//カメラ初期設定
-	//Graphics& graphics = Graphics::Instance();
 	Camera& camera = Camera::Instance();
 	camera.SetLookAt(
 		DirectX::XMFLOAT3(0, 10, -10),//視点
@@ -146,7 +144,7 @@ void SceneGame::Initialize()
 			for (int x = 0; x < 6; x++)
 			{
 				DirectX::XMFLOAT3 pos = { -22.5f + x * xDis, 0.0f, zDis * (2 - z) };
-
+				
 				int v = map[z][x];
 
 				if (v == 0)
@@ -178,20 +176,12 @@ void SceneGame::Initialize()
 	player->safetyAreas.push_back(new SafetyArea(&ProjectileManager::Instance()));
 	player->safetyAreas.back()->SetPosition({ 0, -1.0f, -17.5 });
 
-	/*player->safetyAreas.push_back(new SafetyArea(&ProjectileManager::Instance()));
-	player->safetyAreas.back()->SetPosition({ 26, -1.0f, -16 });
-
-	player->safetyAreas.push_back(new SafetyArea(&ProjectileManager::Instance()));
-	player->safetyAreas.back()->SetPosition({ -26, -1.0f,  16 });
-
-	player->safetyAreas.push_back(new SafetyArea(&ProjectileManager::Instance()));
-	player->safetyAreas.back()->SetPosition({ 26, -1.0f,  16 });*/
-
 	//マウス位置の取得とロック
 	Input::Instance().GetMouse().Lock();
-
+	
 	renderer->ResetHorror();
-
+	//BGM
+	SoundManager::Instance().GetSound(SoundList::gameBGM)->Play(true, 0.02f);
 }
 
 // 終了化
@@ -226,16 +216,12 @@ void SceneGame::Finalize()
 		delete passwordScene;
 		passwordScene = nullptr;
 	}
-	//for(int i=0;i<4;i++)
-	//{
-	//	if (boards[i]!=nullptr)
-	//	{
-	//		delete boards[i];
-	//		boards[i] = nullptr;
-	//	}
-	//}
 
 	delete balloon;
+
+	//BGM
+	SoundManager::Instance().GetSound(SoundList::gameBGM)->Stop();
+	SoundManager::Instance().GetSound(SoundList::walkSE)->Stop();
 
 	ProjectileManager::Instance().Clear();
 	for (auto& s : player->safetyAreas)
@@ -254,15 +240,6 @@ void SceneGame::Finalize()
 	EnemyManager::Instance().Clear();
 
 
-	////SafetyArea終了化
-	//for (auto& s : player->safetyAreas)
-	//{
-	//	if (s)
-	//	{
-	//		delete s;
-	//		s = nullptr;
-	//	}
-	//}
 
 }
 
@@ -277,21 +254,34 @@ void SceneGame::Update(float elapsedTime)
 	float dz = player->GetPosition().z - goalPoint->position.z;
 
 	float distSq = dx * dx + dy * dy + dz * dz;
-	float goalRadius = 0.4f;
+	float goalRadius = 1.0f;
 	GamePadButton button = Input::Instance().GetGamePad().GetButtonDown();
-	if (distSq <= goalRadius * goalRadius && button == GamePad::BTN_START)
+	if (distSq <= goalRadius * goalRadius )
 	{
-		
-		passward = true;
+		SpaceBool = true;
+		if (button == GamePad::BTN_START)
+		{
+			while (ShowCursor(TRUE) < 0);
+			ShowCursor(true);
+			SoundManager::Instance().GetSound(SoundList::walkSE)->Stop();
+			passward = true;
+			SpaceBool = false;
+		}
 	}
+	else
+		SpaceBool = false;
 
 	if (passward && GetAsyncKeyState(VK_BACK) & 0x8000)
 	{
+		while (ShowCursor(FALSE) >= 0);
+		Mouse& mouse = Input::Instance().GetMouse();
+		mouse.Lock();
 		passward=false;
 	}
 	if (passward) passwordScene->Update(elapsedTime);
 	else
 	{
+		ShowCursor(false);
 		// --- HPチェック ---
 		if (player->hp <= 0.0f)
 		{
@@ -328,7 +318,6 @@ void SceneGame::Update(float elapsedTime)
 		// 描画準備
 		RenderContext rc;
 		rc.deviceContext = dc;
-		renderer->RenderImGui(rc);
 		//ステージ更新処理
 		stage->Update(elapsedTime);
 
@@ -336,7 +325,7 @@ void SceneGame::Update(float elapsedTime)
 		EnemyManager::Instance().Update(elapsedTime);
 
 		//ステージ継続ダメージ
-		const float stageDamagePerSec = 3.0f;
+		const float stageDamagePerSec = 2.0f;
 		player->AddDamage(stageDamagePerSec * elapsedTime);
 
 
@@ -352,7 +341,7 @@ void SceneGame::Update(float elapsedTime)
 				if (s) s->Update(elapsedTime);
 				if (s && s->IsInside(player->GetPosition()))
 				{
-					player->Heal(5.0f * elapsedTime);
+					player->Heal(2.0f * elapsedTime);
 					break;
 				}
 			}
@@ -361,12 +350,14 @@ void SceneGame::Update(float elapsedTime)
 
 
 	bool inside = false;
+	RBool = false;
 
 	for (const auto& d : physics.GetDoorObbs())
 	{
 		if (physics.IsInside(d, { player->GetPosition().x, player->GetPosition().z }))
 		{
 			inside = true;
+			RBool = true;
 			break;
 		}
 	}
@@ -428,27 +419,18 @@ void SceneGame::Render()
 	// 3Dデバッグ描画
 	{
 		//プレイヤーデバッグプリミティブ描画
-		player->RenderDebugPrimitive(rc, shapeRenderer);
+		//player->RenderDebugPrimitive(rc, shapeRenderer);
 
 		//当たり判定デバッグプリミティブ描画
-		physics.RenderDebugPrimitive(rc, shapeRenderer);
+		//physics.RenderDebugPrimitive(rc, shapeRenderer);
 
 		//エネミーデバッグプリミティブ描画
 
-		//EnemyManager::Instance(); 
-		//.RenderDebugPrimitive(rc, shapeRenderer);
-		// ラインレンダラ描画実行
-		//graphics.GetLineRenderer()->Render(rc.deviceContext, rc.view, rc.projection);
-
 		
 
-		stage->RenderDebugPrimitive(rc, shapeRenderer);
+		//stage->RenderDebugPrimitive(rc, shapeRenderer);
 
 		enemyslime->RenderDebugPrimitive(rc, shapeRenderer);
-
-		//modelRenderer->RenderImGui(rc);
-
-
 
 
 	}
@@ -459,6 +441,12 @@ void SceneGame::Render()
 
 		float texWidth = hpBarTex.GetWidth();
 		float texHeight = hpBarTex.GetHeight();
+
+		float SpaceW = sprSpace->GetWidth();
+		float SpaceH = sprSpace->GetHeight();
+
+		float RW = sprR->GetWidth();
+		float RH = sprR->GetHeight();
 
 		float texW = hpBarFrameTex.GetWidth();
 		float texH = hpBarFrameTex.GetHeight();
@@ -488,6 +476,36 @@ void SceneGame::Render()
 			0,
 			0.5, 0.5, 0.5, 1
 		);
+
+
+		if (SpaceBool)
+		{
+
+			sprSpace->Render(
+				rc,
+				screenWidth*0.7f, screenHeight*0.6f,
+				0,
+				SpaceW * 0.8f, SpaceH * 0.5f,
+				0, 0,
+				SpaceW, SpaceH,
+				0,
+				1, 1, 1, 1
+			);
+		}
+
+		if(RBool && player->GetCanPlaceSafeArea())
+		{
+			sprR->Render(
+				rc,
+				0, 0,
+				0,
+				RW * 0.7f, RH * 0.7f,
+				0, 0,
+				RW, RH,
+				0,
+				1, 1, 1, 1
+			);
+		}
 
 		int remain = (int)player->GetMaxSafeAreaCount();
 
@@ -524,33 +542,5 @@ void SceneGame::Render()
 // GUI描画
 void SceneGame::DrawGUI()
 {
-	//プレーヤーデバッグ処理
-	player->DrawDebugGUI();
-
-	//クイズ関連のデバッグ
-	ImGui::Begin("Boards Debug");
-
-	if (ImGui::BeginTabBar("Board Tabs"))
-	{
-		for (int i = 0; i < 4; i++)
-		{
-			if (boards[i])
-			{
-				std::string tabName = "Board " + std::to_string(boards[i]->GetQuizNum());
-				if (ImGui::BeginTabItem(tabName.c_str()))
-				{
-					// ← Board.cpp の GUI 値編集部分に任せる
-					boards[i]->DrawGUIValues();
-
-					ImGui::EndTabItem();
-				}
-			}
-		}
-		ImGui::EndTabBar();
-	}
-
-	//ステージデバッグ描画
-	stage->RenderImGui();
 	
-	ImGui::End();
 }

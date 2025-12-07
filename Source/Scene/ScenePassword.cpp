@@ -15,6 +15,7 @@ constexpr int PASSWORD_BUFFER_SIZE = 4;
 ScenePassword::ScenePassword(const std::string& correctPass)
     : correctPassword(correctPass)
 {
+    cooltime = 0.0f;
 
     // char配列バッファで初期化
     char inputPassword[32];
@@ -23,7 +24,6 @@ ScenePassword::ScenePassword(const std::string& correctPass)
 	PassBackGround = std::make_unique<Sprite>("Data/Sprite/passBackground.png");
 	Triangle = std::make_unique<Sprite>("Data/Sprite/BLACK_TRIANGLE.png");
 	OK = std::make_unique<Sprite>("Data/Sprite/OK.png");
-
 }
 
 ScenePassword::~ScenePassword()
@@ -41,16 +41,17 @@ void ScenePassword::Initialize()
 
 void ScenePassword::Update(float elapsedTime)
 {
+    ShowCursor(true);
     const GamePadButton ESCButton = GamePad::BTN_A;
     Mouse& mouse = Input::Instance().GetMouse();
-    ShowCursor(true);
     mouse.Unlock();
 
+    cooltime += elapsedTime;
 
-    if (mouse.GetButtonDown() & Mouse::BTN_LEFT)
+    if (mouse.GetButtonDown() & Mouse::BTN_LEFT && cooltime > 0.85f)
     {
 		OnMouseDown(static_cast<float>(mouse.GetPositionX()), static_cast<float>(mouse.GetPositionY()));
-        
+        cooltime = 0.0f;
     }
 
     const GamePadButton anyButton = GamePad::BTN_START;
@@ -198,6 +199,9 @@ void ScenePassword::OnMouseDown(float mx, float my)
         if (mx >= tri[i].x && mx <= tri[i].x + tri[i].w &&
             my >= tri[i].y && my <= tri[i].y + tri[i].h)
         {
+            //BGM
+            SoundManager::Instance().GetSound(SoundList::numSE)->Play(false, 1.0f);
+
             clickNum[i]++;
             if (clickNum[i] > 4) clickNum[i] = 0;
 

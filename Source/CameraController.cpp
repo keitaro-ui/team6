@@ -5,6 +5,8 @@
 #include "imgui.h"
 #include <algorithm>
 
+#include "SoundManager.h"
+
 void CameraController::Initialize()
 {
 
@@ -18,32 +20,32 @@ void CameraController::Update(float elapsedTime)
 
 	static bool cKeyLast = false;
 	// Cキーでカメラモード切替
-	bool cKeyNow = (GetAsyncKeyState('C') & 0x8000) != 0;
-	if (cKeyNow && !cKeyLast)
-	{
-		if (!isTopDown && !isFreeCam)
-		{
-			// FPS → 俯瞰に切り替える前にFPS情報を保存
-			fpsBackup.eye = eye;
-			fpsBackup.target = target;
-			fpsBackup.angle = angle;
+	//bool cKeyNow = (GetAsyncKeyState('C') & 0x8000) != 0;
+	//if (cKeyNow && !cKeyLast)
+	//{
+	//	if (!isTopDown && !isFreeCam)
+	//	{
+	//		// FPS → 俯瞰に切り替える前にFPS情報を保存
+	//		fpsBackup.eye = eye;
+	//		fpsBackup.target = target;
+	//		fpsBackup.angle = angle;
 
-			isTopDown = true;
-		}
-		else if (isTopDown)
-		{
-			// 俯瞰 → 自由カメラに切り替え
-			isTopDown = false;
-			isFreeCam = true;
-		}
-		else if (isFreeCam)
-		{
-			// 自由カメラ → FPSに戻す
-			isFreeCam = false;
-			restoringFPS = true;
-		}
-	}
-	cKeyLast = cKeyNow;
+	//		isTopDown = true;
+	//	}
+	//	else if (isTopDown)
+	//	{
+	//		// 俯瞰 → 自由カメラに切り替え
+	//		isTopDown = false;
+	//		isFreeCam = true;
+	//	}
+	//	else if (isFreeCam)
+	//	{
+	//		// 自由カメラ → FPSに戻す
+	//		isFreeCam = false;
+	//		restoringFPS = true;
+	//	}
+	//}
+	//cKeyLast = cKeyNow;
 
 	// マウス入力による角度更新
 	float movePower = 0.01f;
@@ -165,15 +167,23 @@ void CameraController::HandleNormal(float elapsedTime)
 	// 移動量正規化して速度を反映
 	float moveLen = sqrt(moveVec.x * moveVec.x + moveVec.y * moveVec.y + moveVec.z * moveVec.z);
 	if (moveLen > 0.0f)
+	{
+		SoundManager::Instance().GetSound(SoundList::walkSE)->Play(false, 1.0f);
+	}
+	else
+	{
+		SoundManager::Instance().GetSound(SoundList::walkSE)->Stop();
+	}
 
 	// Bobタイマー更新
 	if (isWalking)
-
 	{
+		//SoundManager::Instance().GetSound(SoundList::walkSE)->Play(false, 1.0f);
 		bobTimer += elapsedTime * bobSpeed;
 	}
 	else
 	{
+		//SoundManager::Instance().GetSound(SoundList::walkSE)->Stop();
 		bobTimer = 0.0f;
 	}
 
@@ -291,19 +301,6 @@ void CameraController::HandleFreeCam(float elapsedTime)
 
 void CameraController::RenderImGui()
 {
-	if (ImGui::Begin("Camera Controller"))
-	{
-		ImGui::Text("Eye: %.2f, %.2f, %.2f", eye.x, eye.y, eye.z);
-		ImGui::Text("Target: %.2f, %.2f, %.2f", target.x, target.y, target.z);
-
-		ImGui::Separator();
-
-		// 各値の調整
-		ImGui::DragFloat3("Angle (rad)", &angle.x, 0.01f, -DirectX::XM_PI, DirectX::XM_PI);
-		ImGui::DragFloat("Bob Amount X", &bobAmountX, 0.01f, 0.0f, 0.05f);
-		ImGui::DragFloat("Bob Amount Y", &bobAmountY, 0.01f, 0.0f, 0.05f);
-
-	}
-	ImGui::End();
+	
 }
 

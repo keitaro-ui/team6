@@ -75,6 +75,8 @@ ModelRenderer::ModelRenderer(ID3D11Device* device)
 		sizeof(light_constants),
 		light_constant_buffer.GetAddressOf());
 
+	ZeroMemory(point_light, sizeof(point_light));
+	ZeroMemory(spot_light, sizeof(spot_light));
 	// デバッグ用 ShapeRenderer の生成（ライトの可視化）
 	debugRenderer = std::make_unique<ShapeRenderer>(device);
 
@@ -107,38 +109,6 @@ void ModelRenderer::InitLights()
 	// 全ライトを 0 クリア
 	ZeroMemory(point_light, sizeof(point_light));
 	ZeroMemory(spot_light, sizeof(spot_light));
-
-	point_light[0].position = { 0.0f, 4.0f, 5.0f, 1.0f };
-	point_light[0].range = 0.0;
-	point_light[0].color = { 1, 1, 1, 1 };
-
-	point_light[1].position = { -10.0f, -2.0f, 0.0f, 1.0f };
-	point_light[1].range = 0.0f;
-	point_light[1].color = { 0, 1, 0, 1 };
-
-	point_light[2].position = { 28.0f, -2.0f, -17.0f, 1.0f };
-	point_light[2].range = 3.0f;
-	point_light[2].color = { 1, 1, 1, 1 };
-
-	point_light[3].position = { -28.0f, -2.0f, -17.0f, 1.0f };
-	point_light[3].range = 3.0f;
-	point_light[3].color = { 1, 1, 1, 1 };
-
-	point_light[4].position = { -28.0f,-2.0f,17.0f,1.0f };
-	point_light[4].range = 3.0f;
-	point_light[4].color = { 1.0f,1.0f,1.0f,1.0f };
-
-	point_light[5].position = { 28.0f,-2.0f,17.0f,1.0f };
-	point_light[5].range = 3.0f;
-	point_light[5].color = { 1.0f,1.0f,1.0f,1.0f };
-
-	point_light[6].position = { 0.0f,-2.0f,17.0f,1.0f };
-	point_light[6].range = 3.0f;
-	point_light[6].color = { 1.0f,1.0f,1.0f,1.0f };
-
-	point_light[7].position = { 0.0f,-2.0f,-17.0f,1.0f };
-	point_light[7].range = 3.0f;
-	point_light[7].color = { 1.0f,1.0f,1.0f,1.0f };
 
 	// スポットライトは空（カメラ追従で埋める）
 	ZeroMemory(&spot_light[0], sizeof(spot_lights) * 8);

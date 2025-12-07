@@ -25,6 +25,7 @@ void SceneRule::Update(float elapsedTime)
     // Enter（Return）が押されたらシーン切り替え
     if (GetAsyncKeyState(VK_RETURN) & 1)   // Enterキー
     {
+        SoundManager::Instance().GetSound(SoundList::startSE)->Play(false, 1.0f);
         SceneManager::Instance().ChangeScene(new SceneLoading(new SceneGame));
         return;
     }

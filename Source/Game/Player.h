@@ -7,6 +7,8 @@
 #include "System/AudioSource.h"
 #include "SafetyArea.h"
 #include <vector>
+#include "SoundManager.h"
+
 
 //ƒvƒŒƒCƒ„[
 class Player : public Character
@@ -105,6 +107,7 @@ public:
     void coolgun(float elapsedTime);
 
     float GetMaxSafeAreaCount() { return maxSafetyAreaCount; }
+	bool GetCanPlaceSafeArea() { return canPlaceSafeArea; }
     bool GetputTrue() { return putTrue; }
     int GetLastSafetyAreaIndex() const { return lastSafetyAreaIndex; }
     float GethitRadius() { return hitRadius; }
