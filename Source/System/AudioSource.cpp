@@ -27,7 +27,7 @@ AudioSource::~AudioSource()
 // 再生
 void AudioSource::Play(bool loop, float volume)
 {
-	//Stop();
+	Stop();
 
 	// ソースボイスにデータを送信
 	XAUDIO2_BUFFER buffer = { 0 };

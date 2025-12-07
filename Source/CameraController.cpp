@@ -5,6 +5,8 @@
 #include "imgui.h"
 #include <algorithm>
 
+#include "SoundManager.h"
+
 void CameraController::Initialize()
 {
 
@@ -165,15 +167,23 @@ void CameraController::HandleNormal(float elapsedTime)
 	// 移動量正規化して速度を反映
 	float moveLen = sqrt(moveVec.x * moveVec.x + moveVec.y * moveVec.y + moveVec.z * moveVec.z);
 	if (moveLen > 0.0f)
+	{
+		SoundManager::Instance().GetSound(SoundList::walkSE)->Play(false, 1.0f);
+	}
+	else
+	{
+		SoundManager::Instance().GetSound(SoundList::walkSE)->Stop();
+	}
 
 	// Bobタイマー更新
 	if (isWalking)
-
 	{
+		//SoundManager::Instance().GetSound(SoundList::walkSE)->Play(false, 1.0f);
 		bobTimer += elapsedTime * bobSpeed;
 	}
 	else
 	{
+		//SoundManager::Instance().GetSound(SoundList::walkSE)->Stop();
 		bobTimer = 0.0f;
 	}
 

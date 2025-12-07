@@ -99,9 +99,6 @@ void Player::Update(float elapsedTime)
 //移動入力処理
 void Player::InputMove(float elapsedTime)
 {
-	//SE
-	SoundManager::Instance().GetSound(SoundList::walkSE)->Play(false, 1.0f);
-
 	//進行ベクトル取得
 	DirectX::XMFLOAT3 moveVec = GetMoveVec();
 
@@ -110,7 +107,6 @@ void Player::InputMove(float elapsedTime)
 
 	//旋回処理
 	Turn(elapsedTime, moveVec.x, moveVec.z, turnSpeed);
-
 }
 
 //弾丸入力処理
@@ -418,10 +414,10 @@ void Player::InputSafetrSrea()
 		DirectX::XMFLOAT3 CamPos = Camera::Instance().GetEye();
 		DirectX::XMFLOAT3 forward = Camera::Instance().GetFront();
 
-		float distance = 3.0f;
+		float distance = 0.0f;
 		DirectX::XMFLOAT3 spawnPos = {
 		 CamPos.x + forward.x * distance,
-		1.0f,
+		-1.0f,
 		CamPos.z + forward.z * distance
 		};
 

@@ -178,7 +178,7 @@ void SceneGame::Initialize()
 
 	renderer->ResetHorror();
 	//BGM
-	SoundManager::Instance().GetSound(SoundList::gameBGM)->Play(true, 0.2f);
+	SoundManager::Instance().GetSound(SoundList::gameBGM)->Play(true, 0.02f);
 }
 
 // I—¹‰»
@@ -216,7 +216,9 @@ void SceneGame::Finalize()
 
 	delete balloon;
 
+	//BGM
 	SoundManager::Instance().GetSound(SoundList::gameBGM)->Stop();
+	SoundManager::Instance().GetSound(SoundList::walkSE)->Stop();
 
 	ProjectileManager::Instance().Clear();
 	for (auto& s : player->safetyAreas)
