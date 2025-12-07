@@ -10,6 +10,7 @@
 #include "Scene/SceneManager.h"
 #include "Scene/Scene.h"
 #include "Scene/SceneResult.h"
+#include"SoundManager.h"
 #include <random>
 
 // 徘徊行動
@@ -69,6 +70,7 @@ ActionBase::State WanderAction::Run(float elapsedTime)
 // 追跡行動
 ActionBase::State PursuitAction::Run(float elapsedTime)
 {
+	SoundManager::Instance().GetSound(SoundList::heartSE)->Play(false,1.0f);
 	auto& path = SearchAlgorithm::Instance().GetCurrentPath();
 
 	switch (step)
@@ -204,6 +206,7 @@ ActionBase::State PursuitAction::Run(float elapsedTime)
 			{
 				//
 				step = 0;
+				SoundManager::Instance().GetSound(SoundList::heartSE)->Stop();
 				//SceneManager::Instance().ChangeScene(new SceneResult(ResultType::GameOver));
 
 			}
@@ -302,11 +305,10 @@ ActionBase::State BringAction::Run(float elapsedTime)
 			break;
 
 		}
-<<<<<<< HEAD
-=======
+
 		break;
-	}
->>>>>>> master
+
+
 
 		case 1:
 		{
@@ -336,7 +338,7 @@ ActionBase::State BringAction::Run(float elapsedTime)
 				}
 			}
 
-			
+
 			DirectX::XMFLOAT3 way_pos = StageManager::Instance().GetStage()->GetWayPoint(path.at(path_idx))->position;
 			owner->SetTargetPosition(way_pos);
 
@@ -370,6 +372,7 @@ ActionBase::State BringAction::Run(float elapsedTime)
 			//return ActionBase::State::Complete;
 			break;
 		}
+
 		}
 	}
 	return ActionBase::State::Run;
@@ -378,6 +381,8 @@ ActionBase::State BringAction::Run(float elapsedTime)
 // AStarを実行して経路を作る 徘徊
 ActionBase::State ComputePathAction::Run(float elapsedTime)
 {
+
+	
 
 	// プレイヤーとの高低差を考慮して3Dで距離判定をする
 	//const DirectX::XMFLOAT3& playerPosition = PlayerManager::Instance().GetPlayer()->GetPosition();
@@ -478,11 +483,7 @@ ActionBase::State ComputePathAction::Run(float elapsedTime)
 			float distSq = dx * dx + dy * dy + dz * dz;
 
 			path_idx = distSq < 0.1f ? 1 : 0;
-<<<<<<< HEAD
-		
-=======
-			
->>>>>>> master
+
 			// 次のステップへ
 			step = 1;
 			return ActionBase::State::Complete;

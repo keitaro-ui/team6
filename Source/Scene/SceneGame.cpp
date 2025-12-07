@@ -430,7 +430,7 @@ void SceneGame::Render()
 
 		//stage->RenderDebugPrimitive(rc, shapeRenderer);
 
-		enemyslime->RenderDebugPrimitive(rc, shapeRenderer);
+		//enemyslime->RenderDebugPrimitive(rc, shapeRenderer);
 
 
 	}

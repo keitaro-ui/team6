@@ -61,6 +61,7 @@ void SceneTitle::Finalize()
 //XVˆ—
 void SceneTitle::Update(float elapsedTime)
 {
+    while (ShowCursor(true) < 0);
     ShowCursor(true);
     GetCursorPos(&cursorPos);
     HWND hwnd = GetForegroundWindow();

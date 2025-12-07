@@ -24,7 +24,7 @@ EnemySlime::EnemySlime()
 	height = 0.0f;
 
 	CreateModel();
-	SetPosition(StageManager::Instance().GetStage()->GetWayPoint(19)->position);
+	SetPosition(StageManager::Instance().GetStage()->GetWayPoint(1)->position);
 
 	behaviorData = new BehaviorData();
 	aiTree = new BehaviorTree(this);
@@ -111,16 +111,7 @@ void EnemySlime::RenderDebugPrimitive(const RenderContext& rc, ShapeRenderer* re
 
 void EnemySlime::DrawGUI()
 {
-	if (ImGui::Begin("EnemySlime Debug"))
-	{
-		std::string name = activeNode ? activeNode->GetName() : "None";
-		ImGui::Text("Behavior: %s", name.c_str());
-
-		ImGui::DragFloat3("pos", &position.x, 0.01f);
-
-		ImGui::Checkbox("Search_Player", &search_player);
-	}
-	ImGui::End();
+	
 }
 
 void EnemySlime::SetTerritory(const DirectX::XMFLOAT3& origin, float range)
